@@ -8,6 +8,9 @@ export function ProfileLookup(props:{profile:SteamProfile|null;games:Game[];onLo
   const [error,setError]=createSignal('');
   const [stage,setStage]=createSignal<'finding'|'loading'>('finding');
   const [success,setSuccess]=createSignal('');
+  const privateProfile=()=>/private|Game details/i.test(error());
+  const canRetry=()=>!privateProfile()&&!/not configured|profile URL|custom handle|not found|Display names/i.test(error());
+  function editProfile(){const input=document.getElementById('steam-profile') as HTMLInputElement|null;input?.focus();input?.select();}
   let controller:AbortController|undefined;
   onCleanup(()=>controller?.abort());
   async function lookup(event:SubmitEvent) {
@@ -38,6 +41,6 @@ export function ProfileLookup(props:{profile:SteamProfile|null;games:Game[];onLo
     <Show when={busy()}><p class="lookup-progress" role="status"><span class="lookup-spinner" aria-hidden="true" />{stage()==='finding'?'Finding profile and requesting public game details…':'Loading library and saving your games…'}</p></Show>
     <Show when={!busy()&&success()}><p class="lookup-success" role="status">{success()}</p></Show>
     <Show when={props.profile}><div class="profile-summary"><Show when={props.profile?.avatar}><img src={props.profile?.avatar} alt="" width="40" height="40" /></Show><div><a href={props.profile?.url} target="_blank" rel="noopener noreferrer">Viewing {props.profile?.name} ↗</a><small>{props.games.length} owned games · Last synced {new Date(props.profile?.updatedAt??'').toLocaleString()}</small><small>Playtime syncs on refresh; results can be up to five minutes old.</small></div><button disabled={busy()||props.disabled} onClick={()=>{setQuery(props.profile?.url??'');requestAnimationFrame(()=>document.querySelector<HTMLFormElement>('.profile-lookup form')?.requestSubmit());}}>{busy()?'Refreshing…':'Refresh library'}</button></div></Show>
-    <p class="lookup-error" role="alert" hidden={!error()}>{error()}</p>
+    <div class="lookup-error" role="alert" hidden={!error()}><strong>{privateProfile()?'This library is private':'The library could not be loaded'}</strong><p>{error()}</p><Show when={privateProfile()}><p>The profile owner needs to set both Profile and Game details to Public in Steam’s privacy settings.</p></Show><p>{props.profile||props.games.length?'Your saved library is unchanged.':'You can still explore the Top 250 below.'}</p><div class="lookup-recovery"><Show when={canRetry()}><button type="button" disabled={busy()||props.disabled} onClick={()=>document.querySelector<HTMLFormElement>('.profile-lookup form')?.requestSubmit()}>Try again</button></Show><button type="button" onClick={editProfile}>Edit profile link</button></div></div>
   </section>;
 }

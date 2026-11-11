@@ -1,7 +1,7 @@
 import {bindings,defineConfig} from 'cf/config';
 
 export default defineConfig({worker:{
-  name:'steam-backlog',
+  name:'steam-backlog-roulette',
   entrypoint:'./server/worker.mjs',
   compatibilityDate:'2026-10-01',
   compatibilityFlags:['nodejs_compat'],

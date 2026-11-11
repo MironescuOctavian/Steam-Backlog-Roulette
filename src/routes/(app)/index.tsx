@@ -14,6 +14,10 @@ export default function BacklogPage(){
   const {library,games,loaded,profile,saveMessage,saveFailed,filters,setFilters,worstValue,setWorstValue,weeklyHours,setWeeklyHours,soundEnabled,setSoundEnabled,activeGames,stats,filtered,genres,changeFilter,backlog,hoursLeft,applyLibrary,updateGame}=useLibrary();
   const pulseHref=useHref(()=>'/activity');
   const [expanded,setExpanded]=createSignal(false);
+  const [working,setWorking]=createSignal(loaded());
+  function pauseHero(event:Event){if(event.target instanceof Element&&!event.target.closest('.hero-deck'))setWorking(true);}
+  function focusProfile(){const input=document.getElementById('steam-profile') as HTMLInputElement|null;input?.focus();input?.select();}
+  const clearedBacklog=()=>loaded()&&backlog().length===0&&games().length>0&&filters().state!=='all';
   const visibleGames=()=>loaded()||expanded()?filtered():filtered().slice(0,6);
   const [winner, setWinner] = createSignal<Game | null>(null);
   const sound=createRouletteSound();
@@ -26,7 +30,7 @@ export default function BacklogPage(){
     requestAnimationFrame(()=>{if(!winnerDialog.open)winnerDialog.showModal();});
   }
   onCleanup(()=>sound.close());
-  return <>
+  return <div class="backlog-page" onFocusIn={pauseHero} onClick={pauseHero}>
 
         <section class="hero" aria-labelledby="hero-title">
           <div class="hero-copy">
@@ -36,7 +40,7 @@ export default function BacklogPage(){
             <ProfileLookup profile={profile()} games={games()} disabled={Boolean(library.warning)} onLoad={(next,p)=>{const sameProfile=profile()?.steamId===p.steamId;if(!applyLibrary(next,p))return false;if(!sameProfile)setFilters({...defaultFilters});return true;}} />
             <Show when={library.warning}><p class="storage-warning" role="alert">{library.warning}</p></Show>
           </div>
-          <HeroDeck />
+          <HeroDeck paused={working()} onResume={()=>setWorking(false)} />
         </section>
 
         <DataTools games={games()} onApply={next=>{if(!applyLibrary(next,null))return false;setFilters({...defaultFilters});return true;}} readOnly={Boolean(library.warning)} />
@@ -94,7 +98,7 @@ export default function BacklogPage(){
                 <span class="score-badge">{game.steamPositivePercent!==undefined?`Steam ${game.steamPositivePercent}%`:game.metacritic!==null?`MC ${game.metacritic}`:'Score unknown'}</span>
               </div>
               <div class="game-content">
-                <div class="game-title-row"><h3>{game.title}</h3><Show when={loaded()}><span class="value-badge">{game.priceKnown===false ? "Cost unknown" : costPerHour(game) === null ? "Unplayed" : `$${costPerHour(game)!.toFixed(2)}/h`}</span></Show></div>
+                <div class="game-title-row"><h3>{game.title}</h3></div>
                 <p class="game-genres">{game.genres.join(" · ")}</p>
                 <Show when={loaded()}>
                 <div class="game-hours"><span>{game.playtimeHours}h played</span><span>{game.timeToBeatHours===null?'Completion time unknown':`~${game.timeToBeatHours}h to beat`}</span></div>
@@ -111,17 +115,22 @@ export default function BacklogPage(){
                   </label>
                   <button type="button" class={["play-next", {"is-next": game.playNext}]} aria-pressed={game.playNext ? "true" : "false"} aria-label={`Play next: ${game.title}`} disabled={Boolean(library.warning)} onClick={() => updateGame(game.appId, { playNext: !game.playNext })}>{game.playNext ? "✓ Play Next" : "+ Play Next"}</button>
                 </div>
-                <label class="tag-label">Tags · comma separated<input value={game.tags.join(', ')} maxlength="500" placeholder="weekend, cozy…" disabled={Boolean(library.warning)} aria-label={`Tags for ${game.title}`} onBlur={e=>{const input=e.currentTarget;const tags=input.value.split(',').map(s=>s.trim()).filter(Boolean);if(!updateGame(game.appId,{tags}))input.value=game.tags.join(', ');}} /></label>
+
                 </Show>
                 <Show when={!loaded()}><p class="catalog-rank">#{game.rank} in Steam 250</p></Show>
                 <a class="game-store" href={`https://store.steampowered.com/app/${game.appId}/`} target="_blank" rel="noopener noreferrer">View on Steam ↗</a>
-                <p class="metadata-label">{game.metadataSource}</p>
+                <details class="game-details"><summary>{loaded()?'Details & tags':'Game details'}</summary><div>
+                  <p class="game-genres">{game.genres.length?game.genres.join(' · '):'Genre not provided'}</p>
+                  <Show when={loaded()}><span class="value-badge">{game.priceKnown===false?'Purchase cost unknown':costPerHour(game)===null?'Cost per hour unavailable until played':'$'+costPerHour(game)!.toFixed(2)+'/h'}</span>
+                    <label class="tag-label">Tags · comma separated<input value={game.tags.join(', ')} maxlength="500" placeholder="weekend, cozy…" disabled={Boolean(library.warning)} aria-label={`Tags for ${game.title}`} onBlur={e=>{const input=e.currentTarget;const tags=input.value.split(',').map(s=>s.trim()).filter(Boolean);if(!updateGame(game.appId,{tags}))input.value=game.tags.join(', ');}} /></label></Show>
+                  <p class="metadata-label">Source: {game.metadataSource}</p>
+                </div></details>
               </div>
             </li>}</For>
           </ul>
           <Show when={!loaded()&&filtered().length>6}><div class="discovery-expand"><button type="button" aria-controls="library-grid" aria-expanded={expanded()?'true':'false'} onClick={()=>{const collapse=expanded();setExpanded(!collapse);if(collapse)document.getElementById('library')?.scrollIntoView();}}>{expanded()?'Show fewer games':`Show all ${filtered().length} games`}</button><span>Showing {visibleGames().length} of {filtered().length} matches · roulette uses every matching game</span></div></Show>
-          <Show when={activeGames().length > 0 && filtered().length === 0}><div class="library-empty"><h3>No games match these filters.</h3><button onClick={() => setFilters({...defaultFilters})}>Reset filters</button></div></Show>
-          <Show when={loaded()&&games().length === 0}><div class="library-empty"><h3>This library is empty.</h3><p>There are no games to spin. Look up another profile or import a library.</p></div></Show>
+          <Show when={activeGames().length > 0 && filtered().length === 0}><div class="library-empty" role="status"><span class="i-lucide-library" aria-hidden="true" /><h3>{clearedBacklog()?'Your backlog is clear.':filters().state==='next'?'No Play Next games match.':'No games match these filters.'}</h3><p>{clearedBacklog()?'Your saved games are completed or dropped. You can still browse them.':filters().state==='next'?'Add games with + Play Next to build your short list, or broaden your filters.':filters().time!=='all'||filters().maxHours<200?'Time filters only include games with known completion estimates. Try Any length to include the rest.':'Try clearing your search, choosing another genre, or lowering the review score.'}</p><button onClick={() => setFilters({...defaultFilters,...(clearedBacklog()?{state:'all'}:{})})}>{clearedBacklog()?'View all saved games':'Reset filters'}</button></div></Show>
+          <Show when={loaded()&&games().length === 0}><div class="library-empty"><h3>This library has no games.</h3><p>Look up another profile, or add games and import a JSON library using the controls above.</p><button onClick={focusProfile}>Look up another profile</button></div></Show>
         </section>
 
       <dialog class="modal winner-modal" ref={winnerDialog} onClose={()=>setWinner(null)} aria-labelledby="winner-title">
@@ -136,5 +145,5 @@ export default function BacklogPage(){
           <p role="status">{saveMessage()}</p>
         </div></Show>
       </dialog>
-  </>;
+  </div>;
 }

@@ -6,7 +6,7 @@ Too many games, nothing to play. Load a public Steam library, narrow it down, an
 
 - **Public profile lookup:** paste a Steam profile URL, custom handle, or Steam64 ID. No visitor login required.
 - **Backlog roulette:** spin through unfinished games that match your filters, with optional sound and reduced-motion support.
-- **Library management:** track status, add tags, save games to Play Next, and import or export JSON backups.
+- **Library management:** keep status and remaining time in view; expand Details & tags for purchase value, tags and source information. Save games to Play Next, and import or export JSON backups.
 - **Filters:** quick choices for Never played, Under 10 hours and Play Next, with genre, review score and more inside Advanced filters.
 - **Steam pulse:** browse 1,000 games in pages of 50, compare activity, and find popular games you already own. Four discovery cards show ten picks each.
 - **Top 250 discovery:** start with six recommendations, or expand the full list. Once a library is loaded, roulette picks only from that library.
@@ -14,6 +14,8 @@ Too many games, nothing to play. Load a public Steam library, narrow it down, an
 Your library and changes stay in your browser. Steam does not provide prices paid or time-to-beat, so those fields stay unknown unless you supply them.
 
 Use **Refresh library** to update Steam playtime. The last sync time stays visible, and saved statuses, tags, priorities and filters are preserved when refreshing the same profile. Results can be up to five minutes old.
+
+Hero motion pauses while you work with the library. Private profiles, empty libraries and failed activity refreshes offer recovery actions without replacing saved data. Bottom pagination brings you back to the ranking heading.
 
 ## Run locally
 

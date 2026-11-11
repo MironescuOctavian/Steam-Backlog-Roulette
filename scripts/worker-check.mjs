@@ -7,7 +7,7 @@ const require=createRequire(fs.realpathSync('node_modules/@cloudflare/vite-plugi
 const {Miniflare}=require('miniflare');
 const root=path.resolve('.cloudflare/output/v0/workers/default');
 const runtime=new Miniflare({workers:[{config:{
-  name:'steam-backlog',compatibilityDate:'2026-10-01',compatibilityFlags:['nodejs_compat'],
+  name:'steam-backlog-roulette',compatibilityDate:'2026-10-01',compatibilityFlags:['nodejs_compat'],
   manifest:{mainModule:'index.js',modulesRoot:path.join(root,'bundle'),modules:{'index.js':{type:'esm',contents:fs.readFileSync(path.join(root,'bundle/index.js'),'utf8')}}},
   env:{ASSETS:{type:'assets'},HISTORY:{type:'kv'}},
   assets:{directory:path.join(root,'assets'),hasUserWorker:true,notFoundHandling:'single-page-application',runWorkerFirst:['/api/*']},

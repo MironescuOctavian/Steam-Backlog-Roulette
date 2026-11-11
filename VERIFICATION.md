@@ -11,6 +11,7 @@ Verified on Windows with Node 26.13.0 and headless Chrome on November 11, 2026.
 - Pagination renders 50 rows, starts page two at rank 51, ends at ranks 951–1,000, and disables navigation past the final page. Search, sort and ownership changes reset the page.
 - Browser checks verify four shuffling hero cards, two header page links, three sidebar links and a centered add-game dialog.
 - First-pass browser checks cover profile input examples and loading feedback, collapsed advanced filters, working quick filters, visible sync times, and refreshing a profile without losing priorities or active filters.
+- Second-pass checks cover automatic hero pause and manual resume, collapsed card details and editable tags, the currency marker for known value, keyboard focus after bottom pagination, cleared ranking searches, private-profile guidance, empty/finished library recovery and retrying a failed activity refresh while retaining the saved ranking.
 - Hosted resource checks confirm the activity data chunk is absent on the backlog page and downloaded on Steam pulse navigation. Standalone checks cover the same page with its embedded dynamic import.
 - Cloudflare Worker and static assets build successfully. A local workerd check covers asset serving, direct `/activity` navigation and API validation; deployment packaging passes `cf deploy --prebuilt --dry-run`.
 - Discovery starts with six cards; expand/collapse checks verify all 250 remain available to roulette regardless of the grid preview.
@@ -20,6 +21,7 @@ Verified on Windows with Node 26.13.0 and headless Chrome on November 11, 2026.
 - No horizontal page overflow at 1440px or 390px; desktop/mobile screenshots were visually inspected.
 - The ranking updater verified 250 unique Steam IDs with contiguous ranks from the attributed Steam 250 source.
 - Single-file packaging verifies that local JavaScript, stylesheet, and font references are embedded.
-- The background is a 14,948-byte WebP, converted from the 1,522,165-byte generated PNG at the same dimensions. Only the sans-serif font family is shipped. The initial main JavaScript is about 155 KB (54 KB gzip), with the 327 KB activity snapshot deferred. The standalone HTML is about 977 KB. These are build artifact sizes, not a network speed benchmark.
+- The background is a 14,948-byte WebP, converted from the 1,522,165-byte generated PNG at the same dimensions. Only the sans-serif font family is shipped. The initial main JavaScript is about 159 KB (55 KB gzip), with the 327 KB activity snapshot deferred. The standalone HTML is about 983 KB. These are build artifact sizes, not a network speed benchmark.
+- The build command runs TypeScript validation before packaging either target, so malformed routes fail before deployment output is produced.
 
 Live Steam access still requires a server API key. No default profile or account credential is shipped. Private-profile and network failures are tested with fixtures. No production Cloudflare deployment was performed; real account permissions and Worker secrets remain to be verified there. Audible output and desktop Steam launching require user-side verification. External CDN resources need a network connection; use JSON exports as backups.
