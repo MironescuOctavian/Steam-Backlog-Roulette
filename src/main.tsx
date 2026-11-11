@@ -5,6 +5,8 @@ import { RLButton } from "@rimelight/ui/components/button/RLButton.tsx";
 import "virtual:uno.css";
 import "./styles.css";
 import "./cards.css";
+import { defaultFilters, filterGames, type Filters } from "./planner";
+import "./features.css";
 
 function App() {
   const storage: Pick<Storage, "getItem" | "setItem"> = {
@@ -15,6 +17,10 @@ function App() {
   const [games, setGames] = createSignal(library.games);
   const [saveMessage, setSaveMessage] = createSignal("");
   const [saveFailed, setSaveFailed] = createSignal(false);
+  const [filters, setFilters] = createSignal<Filters>({...defaultFilters});
+  const filtered = () => filterGames(games(), filters());
+  const genres = () => [...new Set(games().flatMap(g => g.genres))].sort();
+  const changeFilter = (patch: Partial<Filters>) => setFilters({...filters(), ...patch});
   const backlog = () => games().filter(game => game.status !== "Completed" && game.status !== "Dropped");
   const hoursLeft = () => backlog().reduce((sum, game) => sum + remainingHours(game), 0);
   function updateGame(appId: number, patch: Partial<Pick<Game, "status" | "playNext">>): boolean {
@@ -51,7 +57,7 @@ function App() {
       </header>
 
       <main id="main" class="page-wrap">
-        <div class="project-progress"><label for="project-progress">Project progress</label><progress id="project-progress" max="10" value="4">40%</progress><span>4 of 10 stages complete · 40%</span></div>
+        <div class="project-progress"><label for="project-progress">Project progress</label><progress id="project-progress" max="10" value="5">50%</progress><span>5 of 10 stages complete · 50%</span></div>
         <section id="roulette" class="hero" aria-labelledby="hero-title">
           <div class="hero-copy">
             <p class="eyebrow"><span class="status-dot" /> YOUR NEXT ADVENTURE IS ALREADY IN YOUR LIBRARY</p>
@@ -94,8 +100,20 @@ function App() {
           <Show when={library.warning}><p class="storage-warning" role="alert">{library.warning}</p></Show>
           <p class="demo-note">Demo prices (USD), playtime, review scores, and completion times are illustrative. Time-to-beat is an estimate, not a session length. Sandbox and replayable games have no fixed finish line.</p>
           <p class={["save-message", {"save-error": saveFailed()}]} role="status" aria-live="polite">{saveMessage()}</p>
+          <section class="filter-panel" aria-label="What should I play tonight?">
+            <div class="filter-heading"><h3>What should I play tonight?</h3><button onClick={() => setFilters({...defaultFilters})}>Reset filters</button></div>
+            <div class="filter-fields">
+              <label>Search your library<input type="search" placeholder="Find a game…" value={filters().search} onInput={e => changeFilter({search:e.currentTarget.value})} /></label>
+              <label>Playtime state<select value={filters().state} onChange={e => changeFilter({state:e.currentTarget.value})}><option value="backlog">All backlog</option><option value="never">Never played (0 hours)</option><option value="under2">Under 2 hours</option><option value="next">Play Next</option><option value="all">All library, including finished</option></select></label>
+              <label>Minimum Metacritic: {filters().score || "Any"}<input type="range" min="0" max="100" step="5" value={filters().score} onInput={e => changeFilter({score:Number(e.currentTarget.value)})} /></label>
+              <label>Maximum remaining: {filters().maxHours}h<input type="range" min="0" max="200" step="1" value={filters().maxHours} onInput={e => changeFilter({maxHours:Number(e.currentTarget.value)})} /></label>
+            </div>
+            <div class="pills" aria-label="Remaining time presets"><For each={[["all","Any length"],["quick","Quick · under 10h"],["medium","Medium · 10–30h"],["epic","Epic · 50h+"]]}>{item => <button aria-pressed={filters().time === item[0] ? "true" : "false"} onClick={() => changeFilter({time:item[0]!})}>{item[1]}</button>}</For></div>
+            <div class="pills" aria-label="Genres"><button aria-pressed={!filters().genre ? "true" : "false"} onClick={() => changeFilter({genre:""})}>All genres</button><For each={genres()}>{genre => <button aria-pressed={filters().genre === genre ? "true" : "false"} onClick={() => changeFilter({genre})}>{genre}</button>}</For></div>
+            <p class="demo-note">Filter by estimated hours remaining, not the length of a single session. <strong aria-live="polite">{filtered().length} matching games</strong></p>
+          </section>
           <ul class="game-grid" aria-label="Game library">
-            <For each={games()}>{game => <li class="game-card">
+            <For each={filtered()}>{game => <li class="game-card">
               <div class="game-cover">
                 <span class="cover-fallback" aria-hidden="true">{game.title}</span>
                 <img src={coverUrl(game.appId)} alt="" loading="lazy" width="460" height="215" onError={event => { event.currentTarget.style.visibility = "hidden"; }} />
@@ -121,6 +139,7 @@ function App() {
               </div>
             </li>}</For>
           </ul>
+          <Show when={games().length > 0 && filtered().length === 0}><div class="library-empty"><h3>No games match these filters.</h3><button onClick={() => setFilters({...defaultFilters})}>Reset filters</button></div></Show>
           <Show when={games().length === 0}><div class="library-empty"><h3>Your library is empty.</h3><p>No games have been saved.</p></div></Show>
         </section>
       </main>
