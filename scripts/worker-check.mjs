@@ -15,6 +15,7 @@ const runtime=new Miniflare({workers:[{config:{
 try{
   const home=await runtime.dispatchFetch('https://app.test/');assert.equal(home.status,200);assert.match(await home.text(),/id="app"/);
   const activity=await runtime.dispatchFetch('https://app.test/activity',{headers:{Accept:'text/html'}});assert.equal(activity.status,200);assert.match(await activity.text(),/id="app"/);
+  const discovery=await runtime.dispatchFetch('https://app.test/top250',{headers:{Accept:'text/html'}});assert.equal(discovery.status,200);assert.match(await discovery.text(),/id="app"/);
   assert.equal((await runtime.dispatchFetch('https://app.test/api/activity',{method:'POST'})).status,405);
   assert.equal((await runtime.dispatchFetch('https://app.test/api/steam/profile?profile=76561198000000001')).status,503);
   console.log('PASS: Cloudflare workerd serves assets, clean SPA routes and API validation.');

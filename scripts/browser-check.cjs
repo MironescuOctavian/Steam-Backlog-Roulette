@@ -27,6 +27,10 @@ async function main(){
  assert.equal(await evaluate(`document.querySelectorAll('.deck-card').length`),4,'four layered hero cards');
  assert.equal(await evaluate(`document.querySelectorAll('.site-header nav a').length`),2,'header has two page links');
  assert.equal(await evaluate(`document.querySelectorAll('.app-sidebar nav a').length`),3,'backlog tools live in the sidebar');
+ assert.deepEqual(await evaluate(`[...document.querySelectorAll('.sidebar-copy strong')].map(e=>e.textContent)`),['Backlog','Roulette','Top 250'],'sidebar has the requested destinations');
+ assert.equal(await evaluate(`document.querySelector('.sidebar-note')`),null,'no discovery note at the bottom of the sidebar');
+ assert.equal(await evaluate(`document.querySelectorAll('.footer-destinations>a').length`),3,'footer has three useful destination cards');
+ assert.equal(await evaluate(`document.querySelector('.brand-icon').getBoundingClientRect().width`),60,'desktop logo is large enough to read');
  assert.equal(await evaluate(`document.querySelectorAll('.hero-deck button').length`),0,'hero has no shuffle or motion buttons');
  await evaluate(`document.fonts.ready`);
  const heroBefore=await evaluate(`[...document.querySelectorAll('.deck-card')].map(e=>({title:e.getAttribute('aria-label'),x:e.getBoundingClientRect().x,y:e.getBoundingClientRect().y}))`);
@@ -44,6 +48,13 @@ async function main(){
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),6,'discovery collapses back to six games');
  assert.equal(await evaluate(`document.querySelectorAll('.kpi,.game-hours,.game-controls,.tag-label').length`),0,'no fabricated personal stats before lookup');
  assert.equal(await evaluate(`localStorage.getItem('steam-backlog-roulette.library.v1')`),null,'no default saved profile or library');
+ await evaluate(`document.querySelector('.app-sidebar nav a:last-child').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('#discovery-title').textContent`),'Your next great discovery.','Top 250 opens its own discovery page');
+ assert.equal(await evaluate(`document.querySelectorAll('.discovery-grid .game-card').length`),6,'Top 250 starts with six cards');
+ await evaluate(`document.querySelector('.discovery-expand button').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelectorAll('.discovery-grid .game-card').length`),250,'Top 250 can show all ranked games');
+ assert.equal(await evaluate(`localStorage.getItem('steam-backlog-roulette.library.v1')`),null,'browsing Top 250 does not create a library');
+ await evaluate(`document.querySelector('.app-sidebar nav a:first-child').click()`);await settle();
  await evaluate(`[...document.querySelectorAll('nav a')].find(a=>a.textContent==='Steam pulse').click()`);await delay(400);
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-brief').length`),4,'four distinct Steam discovery cards');
  assert.equal(await evaluate(`document.querySelectorAll('.online-chart path').length`),1,'real online-user chart is present');
@@ -91,6 +102,13 @@ async function main(){
  await call('DOM.setFileInputFiles',{nodeId:seedInput.nodeId,files:[seedPath]});await settle();
  await evaluate(`document.querySelector('.import-preview button').click()`);await settle();
  const initial=await evaluate(`document.querySelectorAll('.game-card').length`);assert.ok(initial>20,'imported library mounts');
+ const savedBeforeDiscovery=await evaluate(`localStorage.getItem('steam-backlog-roulette.library.v1')`);
+ await evaluate(`document.querySelector('.app-sidebar nav a:last-child').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelectorAll('.discovery-grid .game-card').length`),6,'Top 250 stays available with an imported library');
+ assert.equal(await evaluate(`localStorage.getItem('steam-backlog-roulette.library.v1')`),savedBeforeDiscovery,'Top 250 leaves the loaded library unchanged');
+ assert.equal(await evaluate(`scrollY`),0,'Top 250 navigation starts at the page heading');
+ await evaluate(`document.querySelector('.app-sidebar nav a:first-child').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),initial,'returning to backlog restores the imported library');
  assert.equal(await evaluate(`[...document.querySelectorAll('.game-details')].every(d=>!d.open)`),true,'secondary card details start collapsed');
  await evaluate(`(()=>{document.querySelector('.game-details').open=true;const i=document.querySelector('.tag-label input');window.draftTag=i;i.focus();i.value='unsaved draft';i.dispatchEvent(new Event('input',{bubbles:true}));})()`);await settle();
  await evaluate(`(()=>{const s=document.querySelectorAll('.game-controls select')[1];window.oldSecondStatus=s.value;s.value='Playing';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);await settle();

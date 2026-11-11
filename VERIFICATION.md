@@ -1,6 +1,6 @@
 # Verification
 
-Verified on Windows with Node 26.13.0 and headless Chrome on November 11, 2026.
+Verified on Windows with Node 26.13.0 and headless Chrome on November 12, 2026.
 
 - TypeScript check and production build pass.
 - 42 unit tests cover validation, persistence, exclusions, recommendation reasons, sorting/preferences, imports, profile lookup, metadata/hero caching, rankings, unknown data, reel selection, activity aggregation, per-game history parsing, failure backoff, portable observation history, Worker API routing, pagination chart gaps and nearest recorded tooltip samples.
@@ -23,7 +23,9 @@ Verified on Windows with Node 26.13.0 and headless Chrome on November 11, 2026.
 - No horizontal page overflow at 1440px or 390px; desktop/mobile screenshots were visually inspected.
 - The ranking updater verified 250 unique Steam IDs with contiguous ranks from the attributed Steam 250 source.
 - Single-file packaging verifies that local JavaScript, stylesheet, and font references are embedded.
-- The background is a 14,948-byte WebP; the generated brand mark is a 13,118-byte WebP. Only the sans-serif font family is shipped. The main JavaScript is about 221 KB (69 KB gzip); activity and history snapshots remain separate deferred chunks. Standalone HTML is about 1.4 MB. These are build artifact sizes, not a network speed benchmark.
+- The background is a 14,948-byte WebP; the generated brand mark is a 14,972-byte WebP. Only the sans-serif font family is shipped. The main JavaScript is about 226 KB (70 KB gzip); activity and history snapshots remain separate deferred chunks. Standalone HTML is about 1.4 MB. These are build artifact sizes, not a network speed benchmark.
 - The build command runs TypeScript validation before packaging either target, so malformed routes fail before deployment output is produced.
 
 Live Steam access still requires a server API key. No default profile or account credential is shipped. Private-profile and network failures are tested with fixtures. No production Cloudflare deployment was performed; real account permissions and Worker secrets remain to be verified there. Audible output and desktop Steam launching require user-side verification. External CDN resources need a network connection; use JSON exports as backups.
+
+Sidebar links now lead to Backlog, Roulette and a dedicated Top 250 page. Browser checks verify its six-card preview, expansion to 250 games and no saved-library mutation. Footer layout checks cover three destination cards and desktop/mobile overflow.

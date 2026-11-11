@@ -11,7 +11,7 @@ Too many games, nothing to play. Load a public Steam library, narrow it down, an
 - **Remembered preferences:** filters, library sorting, exclusions, sound, gaming budget, Steam pulse sorting/page and the last visited page stay saved in this browser.
 - **Steam pulse:** browse 1,000 games in pages of 50, with reported all-time peaks, recent activity sparklines and an online Steam-user chart. Four discovery panels show ten picks each.
 - **Automatic discovery hero:** four fixed cards cycle through the games in Steam’s top 25 most-played ranking. The cards themselves do not move between positions.
-- **Top 250 discovery:** start with six recommendations, or expand the full list. Once a library is loaded, roulette picks only from that library.
+- **Top 250 discovery:** start with six recommendations, or expand the full list. A dedicated Top 250 page stays available from the sidebar without replacing your library. Once a library is loaded, roulette picks only from that library.
 
 Loaded libraries and changes stay in your browser. Steam does not provide prices paid or time-to-beat, so those fields stay unknown unless you supply them. Undo keeps up to 20 library changes during the current session. Removing a game here never changes Steam ownership; refreshing a Steam profile can bring it back.
 
@@ -66,7 +66,7 @@ Refresh bundled snapshots with `pnpm update:top250` or `pnpm update:activity`, t
 
 ## Development
 
-Built with Solid 2, TypeScript, UnoCSS, Rimelight UI, Vite+, and Node. Pages live in `src/routes`: `(app)/index.tsx` for the backlog and `(app)/activity/index.tsx` for Steam pulse. `(app).tsx` holds the shared layout.
+Built with Solid 2, TypeScript, UnoCSS, Rimelight UI, Vite+, and Node. Pages live in `src/routes`: `(app)/index.tsx` for the backlog and `(app)/activity/index.tsx` for Steam pulse, and `(app)/top250/index.tsx` for discovery. `(app).tsx` holds the shared layout.
 
 ```sh
 pnpm typecheck

@@ -1,3 +1,4 @@
 Generated with image_gen.imagegen. Amber orbital ring framing two centered game-library cards. Front card has a gamepad icon with a d-pad and buttons. No Steam linkage, personal initials, text or play triangle. Transparent background; optimized to 192px WebP for header, footer and favicon.
 Revision: add exactly one Steam linkage logo in a small charcoal medallion centered at the bottom of the orbit. Preserve centered cards, gamepad, gold ring and transparent background.
 Revision: move the single Steam medallion outside the orbit at bottom-right; restore the bottom-center ring. Preserve the centered cards and gamepad.
+Revision: smooth circular concentric ring, larger single Steam badge overlapping bottom-right. Preserve centered cards and gamepad. Header emblem enlarged to 60px desktop / 44px mobile.

@@ -7,6 +7,7 @@ import {loadLibrary,saveLibrary} from '../src/library.ts';
 test('preferences round trip filters, sorting, exclusions and safe internal routes',()=>{
   const p=validatePreferences({...defaultPreferences,filters:{...defaultFilters,genre:'RPG'},excludedIds:[70,70,220],lastRoute:'/activity',pulsePage:20});
   assert.deepEqual(p.excludedIds,[70,220]);assert.equal(loadPreferences({getItem:()=>JSON.stringify(p)}).value.pulsePage,20);
+  assert.equal(validatePreferences({...p,lastRoute:'/top250'}).lastRoute,'/top250');
   for(const patch of [{lastRoute:'https://evil.test'},{pulsePage:21},{excludedIds:[-1]},{hideDemos:'yes'},{filters:{...defaultFilters,score:101}}])assert.throws(()=>validatePreferences({...p,...patch}));
   assert.ok(loadPreferences({getItem:()=>'{broken'}).warning);assert.ok(loadPreferences({getItem:()=>{throw Error('blocked');}}).warning);
 });
