@@ -1,0 +1,28 @@
+{
+  "name": "steam-backlog-roulette",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vp dev",
+    "build": "vp build",
+    "preview": "vp preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@rimelight/i18n": "0.1.22",
+    "@rimelight/ui": "0.0.97",
+    "@solidjs/web": "2.0.0-rc.21",
+    "solid-js": "2.0.0-rc.21"
+  },
+  "devDependencies": {
+    "@iconify-json/lucide": "1.2.151",
+    "@rimelight/config": "0.0.48",
+    "@solidjs/vite-plugin": "3.0.0-next.56",
+    "@types/node": "^26.6.6",
+    "typescript": "7.1.0-beta",
+    "unocss": "66.12.0",
+    "vite-plus": "1.5.0"
+  },
+  "packageManager": "pnpm@12.16.1"
+}
