@@ -1,5 +1,5 @@
 import { render } from "@solidjs/web";
-import { createSignal, For, Show } from "solid-js";
+import { createSignal, For, onCleanup, Show } from "solid-js";
 import { coverUrl, costPerHour, loadLibrary, remainingHours, saveLibrary, statuses, type Game } from "./library";
 import { RLButton } from "@rimelight/ui/components/button/RLButton.tsx";
 import "virtual:uno.css";
@@ -8,6 +8,7 @@ import "./cards.css";
 import { analytics, defaultFilters, filterGames, rankValue, type Filters } from "./planner";
 import "./features.css";
 import { Roulette } from "./roulette";
+import { createRouletteSound } from "./sound";
 
 function App() {
   const storage: Pick<Storage, "getItem" | "setItem"> = {
@@ -21,6 +22,18 @@ function App() {
   const [filters, setFilters] = createSignal<Filters>({...defaultFilters});
   const [worstValue, setWorstValue] = createSignal(false);
   const [weeklyHours, setWeeklyHours] = createSignal(5);
+  const [winner, setWinner] = createSignal<Game | null>(null);
+  const [soundEnabled,setSoundEnabled] = createSignal(true);
+  const sound=createRouletteSound();
+  let winnerDialog!: HTMLDialogElement;
+  const winnerGame=()=>games().find(g=>g.appId===winner()?.appId) ?? winner();
+  function celebrate(game: Game) {
+    setWinner(game);
+    if(soundEnabled())sound.win();
+    if(!matchMedia('(prefers-reduced-motion: reduce)').matches)window.confetti?.({particleCount:100,spread:70,origin:{y:.65},colors:['#ffbf00','#ffdd70','#eeeeee'],disableForReducedMotion:true});
+    requestAnimationFrame(()=>{if(!winnerDialog.open)winnerDialog.showModal();});
+  }
+  onCleanup(()=>sound.close());
   const stats = () => analytics(games());
   const filtered = () => filterGames(games(), filters());
   const genres = () => [...new Set(games().flatMap(g => g.genres))].sort();
@@ -61,7 +74,7 @@ function App() {
       </header>
 
       <main id="main" class="page-wrap">
-        <div class="project-progress"><label for="project-progress">Project progress</label><progress id="project-progress" max="10" value="7">70%</progress><span>7 of 10 stages complete · 70%</span></div>
+        <div class="project-progress"><label for="project-progress">Project progress</label><progress id="project-progress" max="10" value="8">80%</progress><span>8 of 10 stages complete · 80%</span></div>
         <section class="hero" aria-labelledby="hero-title">
           <div class="hero-copy">
             <p class="eyebrow"><span class="status-dot" /> YOUR NEXT ADVENTURE IS ALREADY IN YOUR LIBRARY</p>
@@ -80,7 +93,7 @@ function App() {
           </aside>
         </section>
 
-        <div id="roulette"><Roulette games={filtered()} onWinner={game => setSaveMessage(`Roulette selected ${game.title}.`)} /></div>
+        <div id="roulette"><label class="sound-toggle"><input type="checkbox" checked={soundEnabled()} onChange={e=>setSoundEnabled(e.currentTarget.checked)} /> Roulette sound</label><Roulette games={filtered()} onWinner={celebrate} onStart={()=>{if(soundEnabled())void sound.start();}} onTick={()=>{if(soundEnabled())sound.tick();}} /></div>
 
         <section id="insights" class="insights-section" aria-labelledby="insights-title">
           <div class="section-heading"><div><p class="eyebrow">A LITTLE PERSPECTIVE</p><h2 id="insights-title">Your backlog, at a glance.</h2></div><span class="section-note">Entire library · Updates as you play</span></div>
@@ -146,6 +159,18 @@ function App() {
           <Show when={games().length === 0}><div class="library-empty"><h3>Your library is empty.</h3><p>No games have been saved.</p></div></Show>
         </section>
       </main>
+      <dialog class="modal winner-modal" ref={winnerDialog} onClose={()=>setWinner(null)} aria-labelledby="winner-title">
+        <button class="modal-close" autofocus onClick={()=>winnerDialog.close()} aria-label="Close winner spotlight">✕</button>
+        <Show when={winnerGame()}><div>
+          <p class="eyebrow">FATE HAS EXCELLENT TASTE</p><h2 id="winner-title">{winnerGame()?.title}</h2>
+          <img class="winner-cover" src={coverUrl(winnerGame()?.appId ?? 0)} alt={winnerGame()?.title ?? ""} onError={e=>{e.currentTarget.style.display='none';}} />
+          <p class="demo-note">{winnerGame()?.genres.join(' · ')} · {winnerGame()?.metadataSource}</p>
+          <dl class="winner-stats"><div><dt>Played</dt><dd>{winnerGame()?.playtimeHours}h</dd></div><div><dt>Estimated to beat</dt><dd>~{winnerGame()?.timeToBeatHours}h</dd></div><div><dt>Metacritic</dt><dd>{winnerGame()?.metacritic ?? 'Unknown'}</dd></div><div><dt>Status</dt><dd>{winnerGame()?.status}</dd></div></dl>
+          <div class="tool-actions"><a href={`steam://run/${winnerGame()?.appId}`}>Launch in Steam ↗</a><a href={`https://store.steampowered.com/app/${winnerGame()?.appId}/`} target="_blank" rel="noopener noreferrer">Store page ↗</a><button disabled={Boolean(library.warning) || winnerGame()?.status==='Playing'} onClick={()=>{const game=winnerGame();if(game)updateGame(game.appId,{status:'Playing'});}}>Mark currently playing</button></div>
+          <p class="demo-note">Launching requires the Steam desktop app. Completion times are estimates.</p>
+          <p role="status">{saveMessage()}</p>
+        </div></Show>
+      </dialog>
       <footer class="page-wrap site-footer"><span>BACKLOG / ROULETTE <span class="footer-divider">·</span> Make time for play.</span><span>Independent project. Not affiliated with Valve or Steam.</span></footer>
     </>
   );
