@@ -5,7 +5,7 @@ import { RLButton } from "@rimelight/ui/components/button/RLButton.tsx";
 import "virtual:uno.css";
 import "./styles.css";
 import "./cards.css";
-import { defaultFilters, filterGames, type Filters } from "./planner";
+import { analytics, defaultFilters, filterGames, rankValue, type Filters } from "./planner";
 import "./features.css";
 
 function App() {
@@ -18,6 +18,9 @@ function App() {
   const [saveMessage, setSaveMessage] = createSignal("");
   const [saveFailed, setSaveFailed] = createSignal(false);
   const [filters, setFilters] = createSignal<Filters>({...defaultFilters});
+  const [worstValue, setWorstValue] = createSignal(false);
+  const [weeklyHours, setWeeklyHours] = createSignal(5);
+  const stats = () => analytics(games());
   const filtered = () => filterGames(games(), filters());
   const genres = () => [...new Set(games().flatMap(g => g.genres))].sort();
   const changeFilter = (patch: Partial<Filters>) => setFilters({...filters(), ...patch});
@@ -57,7 +60,7 @@ function App() {
       </header>
 
       <main id="main" class="page-wrap">
-        <div class="project-progress"><label for="project-progress">Project progress</label><progress id="project-progress" max="10" value="5">50%</progress><span>5 of 10 stages complete · 50%</span></div>
+        <div class="project-progress"><label for="project-progress">Project progress</label><progress id="project-progress" max="10" value="6">60%</progress><span>6 of 10 stages complete · 60%</span></div>
         <section id="roulette" class="hero" aria-labelledby="hero-title">
           <div class="hero-copy">
             <p class="eyebrow"><span class="status-dot" /> YOUR NEXT ADVENTURE IS ALREADY IN YOUR LIBRARY</p>
@@ -86,13 +89,19 @@ function App() {
         </section>
 
         <section id="insights" class="insights-section" aria-labelledby="insights-title">
-          <div class="section-heading"><div><p class="eyebrow">A LITTLE PERSPECTIVE</p><h2 id="insights-title">Your backlog, at a glance.</h2></div><span class="section-note">Analytics arrive in stage 06</span></div>
+          <div class="section-heading"><div><p class="eyebrow">A LITTLE PERSPECTIVE</p><h2 id="insights-title">Your backlog, at a glance.</h2></div><span class="section-note">Entire library · Updates as you play</span></div>
           <div class="kpi-grid">
             <article class="kpi"><span class="i-lucide-library kpi-icon" aria-hidden="true" /><h3>Games in backlog</h3><p>{backlog().length}<small>excludes completed and dropped</small></p></article>
             <article class="kpi"><span class="i-lucide-clock-3 kpi-icon" aria-hidden="true" /><h3>Hours to clear</h3><p>~{Math.round(hoursLeft()).toLocaleString()}<small>estimated remaining hours</small></p></article>
-            <article class="kpi"><span class="i-lucide-gamepad-2 kpi-icon" aria-hidden="true" /><h3>Pile of shame</h3><p>—<small>haven't hit play yet</small></p></article>
-            <article class="kpi"><span class="i-lucide-chart-no-axes-combined kpi-icon" aria-hidden="true" /><h3>Average cost / hour</h3><p>—<small>every hour counts</small></p></article>
+            <article class="kpi"><span class="i-lucide-gamepad-2 kpi-icon" aria-hidden="true" /><h3>Pile of shame</h3><p>{stats().unplayedPercent.toFixed(0)}%<small>zero hours across all games</small></p></article>
+            <article class="kpi"><span class="i-lucide-chart-no-axes-combined kpi-icon" aria-hidden="true" /><h3>Average cost / hour</h3><p>{stats().averageCost === null ? "—" : `$${stats().averageCost!.toFixed(2)}`}<small>mean $/hour · played games only</small></p></article>
           </div>
+          <div class="session-plan"><label>My weekly gaming budget<input type="number" min="1" max="168" value={weeklyHours()} onInput={e => {const n=Number(e.currentTarget.value); if(Number.isFinite(n)&&n>=1&&n<=168)setWeeklyHours(n);}} />hours</label><p>At {weeklyHours()}h/week: approximately {Math.ceil(hoursLeft()/weeklyHours()).toLocaleString()} weeks to clear your current backlog. Estimates assume playtime counts toward the main story.</p></div>
+          <section class="leaderboard" aria-labelledby="value-title"><div class="filter-heading"><h3 id="value-title">Cost per hour · {worstValue() ? "Worst value" : "Best value"}</h3><button onClick={() => setWorstValue(!worstValue())}>Show {worstValue() ? "best" : "worst"} value</button></div>
+            <p class="demo-note">Unplayed games have no cost/hour yet. Worst value puts these first by purchase price; best value includes played games only.</p>
+            <ol><For each={rankValue(games(),worstValue()).slice(0,8)}>{(game,index) => <li><div class="rank-row"><strong>{game.title}</strong><span>{game.playtimeHours === 0 ? `$${game.pricePaid.toFixed(2)} · Unplayed` : `$${costPerHour(game)!.toFixed(2)}/h`}</span></div><div class="rank-meter" aria-hidden="true"><span style={{width:`${100-index()*10}%`}} /></div></li>}</For></ol>
+            <Show when={rankValue(games(),worstValue()).length===0}><p>No played games to rank yet.</p></Show>
+          </section>
         </section>
 
         <section id="library" class="library-section" aria-labelledby="library-title">
