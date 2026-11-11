@@ -1,3 +1,4 @@
+import {HeroDeck} from '../../hero-deck';
 import {createSignal,For,onCleanup,Show} from 'solid-js';
 import {useHref} from '@solidjs/router';
 import {coverUrl,costPerHour,remainingHours,statuses,type Game} from '../../library';
@@ -35,12 +36,7 @@ export default function BacklogPage(){
             <ProfileLookup profile={profile()} games={games()} disabled={Boolean(library.warning)} onLoad={(next,p)=>{if(!applyLibrary(next,p))return false;setFilters({...defaultFilters});return true;}} />
             <Show when={library.warning}><p class="storage-warning" role="alert">{library.warning}</p></Show>
           </div>
-          <aside class="feature-art" aria-label="Featured game artwork from Hades and Hollow Knight">
-            <div class="orbit orbit-one" /><div class="orbit orbit-two" />
-            <div class="art-card art-back"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/367520/header.jpg" alt="Hollow Knight" /><span>ONE MORE WORLD TO DISCOVER</span></div>
-            <div class="art-card art-front"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1145360/header.jpg" alt="Hades" /><div class="art-caption"><span>YOUR NEXT FAVORITE?</span><span class="i-lucide-arrow-up-right" aria-hidden="true" /></div></div>
-            <span class="art-label"><span class="i-lucide-sparkles" aria-hidden="true" /> GOOD GAMES DON'T EXPIRE.</span>
-          </aside>
+          <HeroDeck />
         </section>
 
         <DataTools games={games()} onApply={next=>{if(!applyLibrary(next,null))return false;setFilters({...defaultFilters});return true;}} readOnly={Boolean(library.warning)} />

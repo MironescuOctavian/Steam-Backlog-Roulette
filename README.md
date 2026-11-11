@@ -1,4 +1,4 @@
-# Steam Backlog Roulette
+# Steam Backlog
 
 Too many games, nothing to play. Load a public Steam library, narrow it down, and let the roulette pick your next game.
 
@@ -8,14 +8,14 @@ Too many games, nothing to play. Load a public Steam library, narrow it down, an
 - **Backlog roulette:** spin through unfinished games that match your filters, with optional sound and reduced-motion support.
 - **Library management:** track status, add tags, save games to Play Next, and import or export JSON backups.
 - **Filters:** search by title, genre, review score, playtime, and known completion estimates.
-- **Steam pulse:** browse 1,000 games by reported player counts, compare activity, and find popular games you already own. Four discovery cards show ten picks each.
+- **Steam pulse:** browse 1,000 games in pages of 50, compare activity, and find popular games you already own. Four discovery cards show ten picks each.
 - **Top 250 discovery:** start with six recommendations, or expand the full list. Once a library is loaded, roulette picks only from that library.
 
 Your library and changes stay in your browser. Steam does not provide prices paid or time-to-beat, so those fields stay unknown unless you supply them.
 
 ## Run locally
 
-Requires Node 26.10+ and pnpm 12.16.1.
+Requires Node 26.13.0 and pnpm 12.16.1.
 
 ```sh
 pnpm install
@@ -26,6 +26,21 @@ pnpm start
 Open **http://localhost:8787**. To enable profile lookup, copy `.env.example` to `.env` and set `STEAM_API_KEY`. This is the app's server key; visitors never enter one. Profiles and Game details must be public.
 
 For frontend development, keep the backend running and use `pnpm dev` in another terminal.
+
+## Cloudflare Workers
+
+The build produces both the standalone app and Cloudflare Worker output. Use these settings in Workers Builds:
+
+| Setting | Command |
+| --- | --- |
+| Build | `pnpm run build` |
+| Deploy | `pnpm run deploy` |
+| Version upload | `pnpm run upload:version` |
+| Root directory | `/` |
+
+`cf preview` is not a version-upload command. The scripts above use the prebuilt Worker output. Add `STEAM_API_KEY` as a Worker secret in Cloudflare to enable public-profile lookup. Keep it out of frontend variables and Git. The `HISTORY` KV binding stores observed activity; it is provisioned with the Worker. KV is eventually consistent, so overlapping refreshes may omit a sample. No missing counts are filled in.
+
+Run `pnpm test:worker` after building to check the packaged app in Cloudflare’s local runtime. `pnpm cf deploy --prebuilt --dry-run` validates deployment packaging without publishing. On Workers, review enrichment is limited per refresh to leave room for the 1,000-game ranking requests and history storage; unavailable reviews remain unknown.
 
 ## Standalone version
 
@@ -49,6 +64,7 @@ Built with Solid 2, TypeScript, UnoCSS, Rimelight UI, Vite+, and Node. Pages liv
 pnpm typecheck
 pnpm test
 pnpm test:browser
+pnpm test:worker
 ```
 
 Browser checks use Chrome; set `CHROME_PATH` if needed. See [VERIFICATION.md](VERIFICATION.md) for test coverage and remaining live-account checks.

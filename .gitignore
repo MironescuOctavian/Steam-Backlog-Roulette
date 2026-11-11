@@ -7,3 +7,5 @@ artifacts/
 .env.*
 !.env.example
 .data/
+.cloudflare/
+.wrangler/

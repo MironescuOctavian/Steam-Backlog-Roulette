@@ -3,7 +3,7 @@ import path from 'node:path';
 import {validateActivity} from '../src/activity-model.ts';
 import {createExtendedChart} from './extended-chart.mjs';
 
-export function createActivityService({request=fetch,historyFile=path.resolve('.data/activity-history.json'),now=()=>Date.now(),extended=createExtendedChart({request,now})}={}) {
+export function createActivityService({request=fetch,historyFile=path.resolve('.data/activity-history.json'),historyStore,metadataBatchLimit=Infinity,now=()=>Date.now(),extended=createExtendedChart({request,now})}={}) {
   let cached;let expires=0;let pending;
   const metadata=new Map();
   async function json(url){const response=await request(url,{signal:AbortSignal.timeout(15000),redirect:'error'});if(!response.ok)throw new Error('Steam feed unavailable.');return response.json();}
@@ -27,7 +27,8 @@ export function createActivityService({request=fetch,historyFile=path.resolve('.
     for(const [id,entry] of metadata)if(now()-entry.at>=3600000)metadata.delete(id);
     const details=new Map([...metadata].map(([id,entry])=>[id,entry.item]));
     const missing=ids.filter(id=>!details.has(id));
-    for(let i=0;i<missing.length;i+=50){
+    if(missing.length>metadataBatchLimit*50)warnings.push('Some review details are unavailable during this refresh; reported player counts are still shown.');
+    for(let i=0;i<Math.min(missing.length,metadataBatchLimit*50);i+=50){
       const input={ids:missing.slice(i,i+50).map(appid=>({appid})),context:{language:'english',country_code:'US'},data_request:{include_basic_info:true,include_reviews:true,include_assets:true}};
       try{const result=await json('https://api.steampowered.com/IStoreBrowseService/GetItems/v1/?input_json='+encodeURIComponent(JSON.stringify(input)));for(const item of result.response?.store_items??[])if(item.success===1){details.set(item.appid??item.id,item);metadata.set(item.appid??item.id,{at:now(),item});}}
       catch{warnings.push('Some game names or reviews are unavailable.');break;}
@@ -45,8 +46,8 @@ export function createActivityService({request=fetch,historyFile=path.resolve('.
     const timestamp=Number(live.response.last_update)*1000;
     const sampledAt=new Date(Number.isFinite(timestamp)&&timestamp>0?timestamp:now()).toISOString();
     let history=[];let writable=true;
-    if(historyFile){
-      try{const saved=JSON.parse(await fs.readFile(historyFile,'utf8'));history=validateActivity({sampledAt,games:[],movers:[],releases:[],acclaimed:[],history:saved,warnings:[],stale:false}).history;}
+    if(historyFile||historyStore){
+      try{const saved=historyStore?await historyStore.read():JSON.parse(await fs.readFile(historyFile,'utf8'));history=validateActivity({sampledAt,games:[],movers:[],releases:[],acclaimed:[],history:saved,warnings:[],stale:false}).history;}
       catch(e){if(e.code!=='ENOENT'){writable=false;warnings.push('Observation history is unavailable; existing history was preserved.');}}
     }
     history=history.filter(p=>Date.parse(p.at)>=now()-7*86400000);
@@ -54,7 +55,7 @@ export function createActivityService({request=fetch,historyFile=path.resolve('.
     history=history.slice(-2016);
     const reviewPool=[...new Map([...games,...releaseGames].map(g=>[g.appId,g])).values()];
     const data=validateActivity({sampledAt,extendedCapturedAt:wider.capturedAt,games,movers:weeklyRanks.filter(g=>g.last_week_rank>g.rank).map(g=>game(g.appid)).sort((a,b)=>b.weeklyChange-a.weeklyChange),releases:releaseGames,acclaimed:reviewPool.filter(g=>g.reviewCount>=50&&g.reviewPercent!==null).sort((a,b)=>b.reviewPercent-a.reviewPercent||b.reviewCount-a.reviewCount).slice(0,100),history,warnings,stale:false});
-    if(historyFile&&writable){try{await fs.mkdir(path.dirname(historyFile),{recursive:true});await fs.writeFile(historyFile+'.tmp',JSON.stringify(history));await fs.rename(historyFile+'.tmp',historyFile);}catch{data.warnings.push('New observation history could not be saved.');}}
+    if((historyFile||historyStore)&&writable){try{if(historyStore)await historyStore.write(history);else{await fs.mkdir(path.dirname(historyFile),{recursive:true});await fs.writeFile(historyFile+'.tmp',JSON.stringify(history));await fs.rename(historyFile+'.tmp',historyFile);}}catch{data.warnings.push('New observation history could not be saved.');}}
     cached=data;expires=now()+300000;return data;
   }
   return async()=>{

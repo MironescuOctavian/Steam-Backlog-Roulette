@@ -20,6 +20,15 @@ async function main(){
  await call('Page.navigate',{url});
  await evaluate(`new Promise((resolve,reject)=>{let n=0;const t=setInterval(()=>{if(document.querySelector('.game-card')){clearInterval(t);resolve(true);}else if(++n>100){clearInterval(t);reject(new Error('App did not mount'));}},100);})`);
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),6,'discovery starts with six games');
+ assert.equal(await evaluate(`document.querySelectorAll('.deck-card').length`),4,'four layered hero cards');
+ assert.equal(await evaluate(`document.querySelectorAll('.site-header nav a').length`),2,'header has two page links');
+ assert.equal(await evaluate(`document.querySelectorAll('.app-sidebar nav a').length`),3,'backlog tools live in the sidebar');
+ const beforeShuffle=await evaluate(`document.querySelector('.deck-card').style.getPropertyValue('--depth')`);
+ await evaluate(`document.querySelector('[aria-label="Shuffle featured games"]').click()`);await settle();
+ assert.notEqual(await evaluate(`document.querySelector('.deck-card').style.getPropertyValue('--depth')`),beforeShuffle,'hero shuffle changes card order');
+ await evaluate(`Promise.race([Promise.all([...document.querySelectorAll('.hero-deck img')].map(i=>i.complete?Promise.resolve():new Promise(r=>{i.addEventListener('load',r,{once:true});i.addEventListener('error',r,{once:true});}))),new Promise(r=>setTimeout(r,10000))])`);
+ fs.writeFileSync(path.resolve('artifacts/home-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
+
  assert.equal(await evaluate(`document.querySelector('.roulette-panel .section-note').textContent`),'250 eligible games','collapsed grid does not restrict roulette candidates');
  await evaluate(`document.querySelector('.discovery-expand button').click()`);await settle();
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),250,'discovery expands to all matching games');
@@ -36,6 +45,10 @@ async function main(){
  await evaluate(`document.querySelector('[aria-label="Ranking pages"] [aria-label="Page 20"]').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.pulse-rank').textContent`),'#951','last page starts at rank 951');
  assert.equal(await evaluate(`document.querySelector('[aria-label="Ranking pages"] [aria-label="Next page"]').disabled`),true);
+ await evaluate(`(()=>{const q=document.querySelector('.pulse-table-filters input[type=search]');q.value='Counter-Strike';q.dispatchEvent(new Event('input',{bubbles:true}));})()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('[aria-label="Ranking pages"] [aria-current=page]').textContent`),'1','search resets pagination');
+ await evaluate(`(()=>{const q=document.querySelector('.pulse-table-filters input[type=search]');q.value='';q.dispatchEvent(new Event('input',{bubbles:true}));})()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('.pulse-rank').textContent`),'#1','clearing search keeps the first page');
  await evaluate(`document.querySelector('[aria-label="Ranking pages"] [aria-label="Page 1"]').click()`);await settle();
 
  assert.equal(await evaluate(`document.querySelector('.owned-filter input').disabled`),true,'no personal ownership invented before lookup');
@@ -63,6 +76,9 @@ async function main(){
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games[0].status`),'Completed','reload persistence');
  await evaluate(`[...document.querySelectorAll('.data-tools>.tool-actions button')].find(b=>b.textContent.includes('Add game')).click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.data-tools dialog').open`),true,'custom dialog');
+ assert.equal(await evaluate(`(()=>{const r=document.querySelector('.data-tools dialog').getBoundingClientRect();return Math.abs(r.left+r.width/2-document.documentElement.clientWidth/2)<2&&Math.abs(r.top+r.height/2-innerHeight/2)<2;})()`),true,'add-game dialog is centered');
+ fs.writeFileSync(path.resolve('artifacts/add-game.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
+
  await evaluate(`(()=>{const f=document.querySelector('.data-form');for(const [n,v] of Object.entries({title:'Half-Life QA',appId:'70',playtime:'0',ttb:'6',price:'10',genres:'Action',tags:'test'}))f.elements.namedItem(n).value=v;f.requestSubmit();})()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.data-tools dialog').open`),false,'custom save closes dialog');
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games.length`),31,'custom game persisted');
@@ -129,7 +145,7 @@ async function main(){
  await evaluate(`[...document.querySelectorAll('nav a')].find(a=>a.textContent==='Steam pulse').click()`);await delay(500);
  assert.equal(await evaluate('location.pathname'),'/activity','hosted route uses a clean URL');
  await call('Page.reload');await delay(700);
- assert.equal(await evaluate('document.title'),'Steam pulse · Backlog Roulette','direct /activity reload renders the correct page');
+ assert.equal(await evaluate('document.title'),'Steam pulse · Steam Backlog','direct /activity reload renders the correct page');
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-brief').length`),4,'hosted activity cards mount');
  assert.equal(await evaluate(`[...document.querySelectorAll('.pulse-brief li img')].every(img=>img.getBoundingClientRect().width<=100)`),true,'discovery thumbnails stay compact');
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-table input:checked').length`),3,'comparison defaults to three games');
@@ -152,7 +168,7 @@ async function main(){
  assert.equal(await evaluate(`document.querySelector('.play-next').getAttribute('aria-pressed')`),'true','priority retained after page navigation');
  assert.deepEqual(exceptions,[],'no runtime exceptions');
  assert.deepEqual(consoleErrors,[],'no console errors');
- console.log('PASS: backlog/profile flows, roulette, and imports; Steam pulse navigation, four ten-item cards, 1,000-game table, comparisons, honest history state, owned filter, Play Next persistence, return-to-backlog actions, desktop/mobile layout. Runtime exceptions and console errors: 0.');
+ console.log('PASS: backlog/profile flows, roulette, and imports; Steam pulse navigation, four ten-item cards, 50-game pagination across the 1,000-game ranking, comparisons, honest history state, owned filter, Play Next persistence, return-to-backlog actions, desktop/mobile layout. Runtime exceptions and console errors: 0.');
  await call('Browser.close');
 }
 main().catch(e=>{console.error(e);process.exitCode=1;}).finally(async()=>{appServer?.closeAllConnections();appServer?.close();ws?.close();chrome.kill();await delay(1000);const resolved=path.resolve(profile);const temp=path.resolve(require('node:os').tmpdir())+path.sep;if(resolved.startsWith(temp)&&path.basename(resolved).startsWith('backlog-qa-')){try{fs.rmSync(resolved,{recursive:true,force:true});}catch{console.warn('Temporary Chrome profile could not be removed:',resolved);}}});

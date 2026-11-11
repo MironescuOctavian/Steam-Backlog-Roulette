@@ -20,7 +20,7 @@ export function SteamActivity(props:{data:ActivityData;onData:(data:ActivityData
   const unfinished=(g:Game)=>g.status!=='Completed'&&g.status!=='Dropped';
   const ownedCount=()=>props.data.games.filter(g=>{const saved=own(g.appId);return saved&&unfinished(saved);}).length;
   const waiting=()=>props.games.filter(unfinished).length;
-  const rows=()=>sortActivity(props.data.games.filter(g=>g.title.toLowerCase().includes(search().trim().toLowerCase())&&(!ownedOnly()||Boolean(own(g.appId)&&unfinished(own(g.appId)!)))),sort());
+  const rows=createMemo(()=>sortActivity(props.data.games.filter(g=>g.title.toLowerCase().includes(search().trim().toLowerCase())&&(!ownedOnly()||Boolean(own(g.appId)&&unfinished(own(g.appId)!)))),sort()));
   const pageCount=()=>Math.max(1,Math.ceil(rows().length/50));
   const currentPage=()=>Math.min(page(),pageCount());
   const visibleRows=()=>rows().slice((currentPage()-1)*50,currentPage()*50);

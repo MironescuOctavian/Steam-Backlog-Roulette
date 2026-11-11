@@ -68,3 +68,10 @@ test('optional feed failures keep real player counts and show explicit warnings'
   }});
   const data=await service();assert.equal(data.games[0].playersNow,100);assert.deepEqual(data.movers,[]);assert.deepEqual(data.releases,[]);assert.equal(data.warnings.length,2);
 });
+test('portable history storage preserves samples and limits optional metadata requests',async()=>{
+  let stored=[];let now=Date.parse('2026-11-11T08:00:00Z');
+  const service=createActivityService({historyFile:null,historyStore:{read:async()=>stored,write:async history=>{stored=history;}},metadataBatchLimit:0,now:()=>now,extended:async()=>({ranks:[],capturedAt:new Date(now).toISOString()}),request:feeds(now)});
+  const first=await service();assert.equal(first.games[0].playersNow,100);assert.equal(first.games[0].reviewPercent,null);assert.match(first.warnings.join(' '),/review details/);assert.equal(stored.length,1);
+  now+=300001;
+  const second=await service();assert.equal(second.history.length,1,'duplicate source timestamps are not invented');
+});
