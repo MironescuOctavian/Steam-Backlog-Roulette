@@ -7,6 +7,7 @@ import "./styles.css";
 import "./cards.css";
 import { analytics, defaultFilters, filterGames, rankValue, type Filters } from "./planner";
 import "./features.css";
+import { Roulette } from "./roulette";
 
 function App() {
   const storage: Pick<Storage, "getItem" | "setItem"> = {
@@ -60,8 +61,8 @@ function App() {
       </header>
 
       <main id="main" class="page-wrap">
-        <div class="project-progress"><label for="project-progress">Project progress</label><progress id="project-progress" max="10" value="6">60%</progress><span>6 of 10 stages complete · 60%</span></div>
-        <section id="roulette" class="hero" aria-labelledby="hero-title">
+        <div class="project-progress"><label for="project-progress">Project progress</label><progress id="project-progress" max="10" value="7">70%</progress><span>7 of 10 stages complete · 70%</span></div>
+        <section class="hero" aria-labelledby="hero-title">
           <div class="hero-copy">
             <p class="eyebrow"><span class="status-dot" /> YOUR NEXT ADVENTURE IS ALREADY IN YOUR LIBRARY</p>
             <h1 id="hero-title">Great games.<br />Unplayed stories.<br /><span>Let fate pick one.</span></h1>
@@ -79,14 +80,7 @@ function App() {
           </aside>
         </section>
 
-        <section class="roulette-panel" aria-labelledby="spin-title">
-          <div class="flex flex-wrap items-center justify-between gap-4">
-            <div><p class="eyebrow">THE DECISION-FREE ZONE</p><h2 id="spin-title">Leave your next game to chance.</h2></div>
-            <span class="coming-label">ROULETTE ARRIVES IN STAGE 07</span>
-          </div>
-          <div class="reel-preview" aria-hidden="true"><span>?</span><span>?</span><span class="selected-slot"><i class="i-lucide-shuffle" /></span><span>?</span><span>?</span></div>
-          <div class="reel-footer"><span><i class="i-lucide-clock-3" aria-hidden="true" /> Your time. Your filters. A little fate.</span><button class="spin-button" disabled>SPIN THE ROULETTE <span class="i-lucide-shuffle" aria-hidden="true" /></button></div>
-        </section>
+        <div id="roulette"><Roulette games={filtered()} onWinner={game => setSaveMessage(`Roulette selected ${game.title}.`)} /></div>
 
         <section id="insights" class="insights-section" aria-labelledby="insights-title">
           <div class="section-heading"><div><p class="eyebrow">A LITTLE PERSPECTIVE</p><h2 id="insights-title">Your backlog, at a glance.</h2></div><span class="section-note">Entire library · Updates as you play</span></div>
