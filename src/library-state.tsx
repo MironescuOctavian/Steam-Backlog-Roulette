@@ -1,4 +1,4 @@
-import {createContext,createEffect,createSignal,useContext,type ParentProps} from 'solid-js';
+import {createContext,createEffect,createMemo,createSignal,useContext,type ParentProps} from 'solid-js';
 import {loadLibrary,remainingHours,saveLibrary,validateLibrary,type Game,type SteamProfile} from './library';
 import {analytics,exclusionReason,filterGames,sortLibrary,type Filters} from './planner';
 import {loadPreferences,preferencesKey,validatePreferences,type Preferences} from './preferences';
@@ -37,10 +37,10 @@ function createLibraryState(){
   const soundEnabled=()=>preferences().sound,setSoundEnabled=(value:boolean)=>setPreference({sound:value});
   const [undoStack,setUndoStack]=createSignal<{games:Game[];profile:SteamProfile|null;loaded:boolean}[]>([]);
   const activeGames=()=>loaded()?games():top250;
-  const stats=()=>analytics(games());
-  const filtered=()=>filterGames(activeGames(),filters());
-  const libraryRows=()=>sortLibrary(filtered(),preferences().librarySort);
-  const eligible=()=>filtered().filter(g=>!exclusionReason(g,preferences()));
+  const stats=createMemo(()=>analytics(games()));
+  const filtered=createMemo(()=>filterGames(activeGames(),filters()));
+  const libraryRows=createMemo(()=>sortLibrary(filtered(),preferences().librarySort));
+  const eligible=createMemo(()=>filtered().filter(g=>!exclusionReason(g,preferences())));
   function toggleExcluded(id:number){setPreference({excludedIds:preferences().excludedIds.includes(id)?preferences().excludedIds.filter(n=>n!==id):[...preferences().excludedIds,id]});}
   const genres=()=>[...new Set(activeGames().flatMap(g=>g.genres))].sort();
   const changeFilter=(patch:Partial<Filters>)=>setFilters(current=>({...current,...patch}));
@@ -64,14 +64,16 @@ function createLibraryState(){
     void (async()=>{
       const pending=games().filter(g=>g.appType===undefined).map(g=>g.appId);if(!pending.length)return;
       setMetadataMessage('Loading Steam classifications…');
+      const metadata=new Map<number,{appType:Game['appType'];multiplayerOnly:boolean;image?:string}>();
       try{for(let i=0;i<pending.length;i+=50){
         const batch=pending.slice(i,i+50),response=await fetch('/api/steam/metadata?ids='+batch.join(','),{signal:controller.signal});if(!response.ok)throw Error('unavailable');
         const items=await response.json();if(!Array.isArray(items)||items.length>50)throw Error('invalid');
-        const byId=new Map(items.filter(item=>batch.includes(item?.appId)&&['game','demo','software','other'].includes(item?.appType)&&typeof item?.multiplayerOnly==='boolean').map(item=>[item.appId,item]));
+        for(const item of items.filter(item=>batch.includes(item?.appId)&&['game','demo','software','other'].includes(item?.appType)&&typeof item?.multiplayerOnly==='boolean'))metadata.set(item.appId,item);
         if(profile()?.steamId!==identity||controller.signal.aborted)return;
-        const next=validateLibrary(games().map(g=>{const item=byId.get(g.appId);return item?{...g,appType:item.appType,multiplayerOnly:item.multiplayerOnly,...(typeof item.image==='string'?{image:item.image}:{})}:g;}));
+      }
+        const next=validateLibrary(games().map(g=>{const item=metadata.get(g.appId);return item?{...g,appType:item.appType,multiplayerOnly:item.multiplayerOnly,...(typeof item.image==='string'?{image:item.image}:{})}:g;}));
         saveLibrary(storage,next,profile());setGames(next);
-      }setMetadataMessage('Steam classifications loaded. Unknown entries remain eligible.');}
+        setMetadataMessage('Steam classifications loaded. Unknown entries remain eligible.');}
       catch{if(!controller.signal.aborted)setMetadataMessage('Some Steam classifications are unavailable. Unknown entries remain eligible.');}
     })();
     return ()=>controller.abort();

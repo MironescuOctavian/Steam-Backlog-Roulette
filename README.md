@@ -7,7 +7,7 @@ Too many games, nothing to play. Load a public Steam library, narrow it down, an
 - **Public profile lookup:** paste a Steam profile URL, custom handle, or Steam64 ID. See whose library is loaded and switch profiles without logging in.
 - **Backlog roulette:** spin through eligible unfinished games and see why the pick matches your filters and shortlist.
 - **Exclusions:** leave individual titles, software, demos or multiplayer-only games out of roulette while keeping them in your library. Unknown classifications stay eligible.
-- **Library management:** track status, tags and Play Next, remove games from the local list, and import or export JSON backups. Undo restores recent library changes, including replacement imports and profile switches.
+- **Library management:** browse 24 games per page, track status, tags and Play Next, remove games from the local list, and import or export JSON backups. Search, filters and roulette still use the full library. Undo restores recent library changes, including replacement imports and profile switches.
 - **Remembered preferences:** filters, library sorting, exclusions, sound, gaming budget, Steam pulse sorting/page and the last visited page stay saved in this browser.
 - **Steam pulse:** browse 1,000 games in pages of 50, with reported all-time peaks, recent activity sparklines and an online Steam-user chart. Four discovery panels show ten picks each.
 - **Automatic discovery hero:** four fixed cards cycle through the games in Steam’s top 25 most-played ranking. The cards themselves do not move between positions.

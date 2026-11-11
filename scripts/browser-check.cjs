@@ -27,6 +27,8 @@ async function main(){
  assert.equal(await evaluate(`document.querySelectorAll('.deck-card').length`),4,'four layered hero cards');
  assert.equal(await evaluate(`document.querySelectorAll('.site-header nav a').length`),2,'header has two page links');
  assert.equal(await evaluate(`document.querySelectorAll('.app-sidebar nav a').length`),3,'backlog tools live in the sidebar');
+ assert.equal(await evaluate(`getComputedStyle(document.querySelector('.app-sidebar')).borderRightWidth`),'0px','sidebar divider is removed');
+ assert.equal(await evaluate(`getComputedStyle(document.querySelector('.app-sidebar nav a')).borderTopWidth`),'0px','sidebar links have no border');
  assert.deepEqual(await evaluate(`[...document.querySelectorAll('.sidebar-copy strong')].map(e=>e.textContent)`),['Backlog','Roulette','Top 250'],'sidebar has the requested destinations');
  assert.equal(await evaluate(`document.querySelector('.sidebar-note')`),null,'no discovery note at the bottom of the sidebar');
  assert.equal(await evaluate(`document.querySelectorAll('.footer-destinations>a').length`),3,'footer has three useful destination cards');
@@ -74,6 +76,8 @@ async function main(){
  assert.equal(await evaluate(`[...document.querySelectorAll('.pulse-table thead th')].some(e=>e.textContent==='All-time peak')`),true,'ranking includes all-time peaks');
  assert.deepEqual(await evaluate(`[...document.querySelectorAll('.pulse-brief')].map(card=>card.querySelectorAll('li').length)`),[10,10,10,10],'all four cards show ten real entries');
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-table tbody tr').length`),50,'first page contains 50 games from the 1000-game snapshot');
+ assert.equal(await evaluate(`getComputedStyle(document.querySelector('.pulse-table th:nth-child(3)')).textAlign`),'center','player heading is centered');
+ assert.equal(await evaluate(`getComputedStyle(document.querySelector('.pulse-table td.numeric')).textAlign`),'center','player values align with their heading');
  await evaluate(`document.querySelector('[aria-label="Ranking pages"] [aria-label="Next page"]').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.pulse-rank').textContent`),'#51','next page starts at rank 51');
  await evaluate(`document.querySelector('[aria-label="Bottom ranking pages"] [aria-label="Next page"]').click()`);await settle();
@@ -197,6 +201,7 @@ async function main(){
  appServer=createApp({key:'test-only',metadata:async ids=>ids.map(appId=>({appId,appType:'game',multiplayerOnly:appId===730})),hero:async()=>JSON.parse(fs.readFileSync('src/data/hero.json','utf8')),gameHistory:async ids=>ids.map(appId=>({appId,peakAllTime:100000,samples:[[Date.now()-3600000,100],[Date.now(),120]],capturedAt:new Date().toISOString(),unavailable:false})),activity:async()=>{if(failActivity)throw new Error('offline');return activityFixture;},lookup:async input=>{
    if(input==='example-profile')await delay(150);
    if(input==='private-profile')throw new Error('Game details are private.');
+   if(input==='large-profile')return {profile:{steamId:'76561198000000004',name:'Large Library QA',avatar:'https://avatars.steamstatic.com/0000000000000000000000000000000000000000_full.jpg',url:'https://steamcommunity.com/profiles/76561198000000004/',updatedAt:new Date().toISOString()},steam:{response:{games:Array.from({length:5000},(_,i)=>({appid:1000000+i,name:'Library QA '+String(i+1).padStart(4,'0'),playtime_forever:0}))}}};
    const empty=input==='empty-profile';const other=input==='other-profile';
    return {profile:{steamId:empty?'76561198000000002':other?'76561198000000003':'76561198000000001',name:empty?'Empty QA':other?'Other QA':'Profile QA',avatar:'',url:'https://steamcommunity.com/profiles/76561198000000001/',updatedAt:new Date().toISOString()},steam:{response:{games:empty?[]:other?[{appid:730,name:'Counter-Strike 2',playtime_forever:120}]:[{appid:70,name:'Half-Life',playtime_forever:90},{appid:220,name:'Half-Life 2',playtime_forever:0}]}}};
  }});
@@ -303,6 +308,27 @@ async function main(){
  await evaluate(`document.querySelector('.pulse-owned-actions .pulse-link').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.game-title-row h3').textContent`),'Counter-Strike 2','activity action opens the owned game in backlog');
  assert.equal(await evaluate(`document.querySelector('.play-next').getAttribute('aria-pressed')`),'true','priority retained after page navigation');
+ await call('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});await settle();
+ const largeStarted=Date.now();await lookup('large-profile');
+ await evaluate(`new Promise((resolve,reject)=>{let n=0;const t=setInterval(()=>{if(document.querySelector('.lookup-success')?.textContent.includes('5000 games')){clearInterval(t);resolve(true);}else if(++n>100){clearInterval(t);reject(Error('Large profile did not finish'));}},100);})`);
+ await evaluate(`document.querySelector('.filter-panel .filter-heading button').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelectorAll('#library-grid>.game-card').length`),24,'5,000-game profile mounts only 24 game cards');
+ assert.equal(await evaluate(`document.querySelector('.roulette-panel .section-note').textContent`),'5000 eligible games','roulette keeps the entire eligible library');
+ assert.equal(await evaluate(`document.querySelector('.profile-summary img').getBoundingClientRect().width`),48,'avatar cannot expand to full width');
+ assert.ok(await evaluate(`document.querySelector('.profile-summary>div').getBoundingClientRect().width`)>200,'profile identity has readable width');
+ assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth`),true,'large profile has no desktop overflow');
+ await evaluate(`document.querySelector('[aria-label="Library pages"] [aria-label="Next library page"]').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('.game-title-row h3').textContent`),'Library QA 0025','second library page starts at game 25');
+ assert.equal(await evaluate(`document.querySelectorAll('#library-grid>.game-card').length`),24,'changing pages keeps the DOM bounded');
+ await evaluate(`(()=>{const q=document.querySelector('.roulette-search input');q.value='Library QA 5000';q.dispatchEvent(new Event('input',{bubbles:true}));})()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('.game-title-row h3').textContent`),'Library QA 5000','search finds a game outside the mounted page');
+ assert.equal(await evaluate(`document.querySelector('[aria-label="Library pages"] [aria-current=page]').textContent`),'1','filtering resets the library page');
+ await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await settle();
+ assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth`),true,'large profile has no mobile overflow');
+ assert.ok(await evaluate(`document.querySelector('.profile-summary>div').getBoundingClientRect().width`)>150,'mobile identity stays readable');
+ await evaluate(`document.querySelector('.profile-lookup').scrollIntoView({block:'start',behavior:'instant'})`);await settle();
+ fs.writeFileSync(path.resolve('artifacts/large-profile-mobile.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
+ console.log('5,000-game profile checked in '+(Date.now()-largeStarted)+'ms including interaction waits; at most 24 library cards mounted.');
  assert.deepEqual(exceptions,[],'no runtime exceptions');
  assert.deepEqual(consoleErrors,[],'no console errors');
  console.log('PASS: backlog/profile flows, roulette, and imports; Steam pulse navigation, four ten-item cards, 50-game pagination across the 1,000-game ranking, comparisons, honest history state, owned filter, Play Next persistence, return-to-backlog actions, desktop/mobile layout. Runtime exceptions and console errors: 0.');

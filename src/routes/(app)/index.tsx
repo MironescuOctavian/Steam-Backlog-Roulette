@@ -1,7 +1,8 @@
 import {GameTags} from '../../game-tags';
 import {HeroDeck} from '../../hero-deck';
-import {createSignal,For,onCleanup,Show} from 'solid-js';
+import {createEffect,createSignal,For,onCleanup,Show} from 'solid-js';
 import {useHref} from '@solidjs/router';
+import {paginationPages} from '../../activity-model';
 import {coverUrl,costPerHour,remainingHours,statuses,type Game} from '../../library';
 import {defaultFilters,exclusionReason,recommendationReasons,rankValue} from '../../planner';
 import {Roulette} from '../../roulette';
@@ -17,7 +18,13 @@ export default function BacklogPage(){
   const [expanded,setExpanded]=createSignal(false);
   function focusProfile(){const input=document.getElementById('steam-profile') as HTMLInputElement|null;input?.focus();input?.select();}
   const clearedBacklog=()=>loaded()&&backlog().length===0&&games().length>0&&filters().state!=='all';
-  const visibleGames=()=>loaded()||expanded()?libraryRows():libraryRows().slice(0,6);
+  const [libraryPage,setLibraryPage]=createSignal(1);
+  const libraryPageCount=()=>Math.max(1,Math.ceil(libraryRows().length/24));
+  const currentLibraryPage=()=>Math.min(libraryPage(),libraryPageCount());
+  createEffect(()=>JSON.stringify([filters(),preferences().librarySort,loaded(),profile()?.steamId]),()=>{setLibraryPage(1);});
+  const visibleGames=()=>loaded()?libraryRows().slice((currentLibraryPage()-1)*24,currentLibraryPage()*24):expanded()?libraryRows():libraryRows().slice(0,6);
+  function turnLibraryPage(page:number,bottom=false){setLibraryPage(Math.max(1,Math.min(page,libraryPageCount())));if(bottom)requestAnimationFrame(()=>{const title=document.getElementById('library-title');title?.focus({preventScroll:true});title?.scrollIntoView({block:'start',behavior:'instant'});});}
+  const libraryPagination=(bottom=false)=><div class="library-pagination"><p role="status">Showing {libraryRows().length?(currentLibraryPage()-1)*24+1:0}–{Math.min(currentLibraryPage()*24,libraryRows().length)} of {libraryRows().length.toLocaleString()} games · roulette uses all matches</p><nav aria-label={bottom?'Bottom library pages':'Library pages'}><button disabled={currentLibraryPage()===1} aria-label="Previous library page" onClick={()=>turnLibraryPage(currentLibraryPage()-1,bottom)}>‹</button><For each={paginationPages(libraryPageCount(),currentLibraryPage())}>{page=>typeof page==='number'?<button aria-label={`Library page ${page}`} aria-current={currentLibraryPage()===page?'page':undefined} onClick={()=>turnLibraryPage(page,bottom)}>{page}</button>:<span aria-hidden="true">…</span>}</For><button disabled={currentLibraryPage()===libraryPageCount()} aria-label="Next library page" onClick={()=>turnLibraryPage(currentLibraryPage()+1,bottom)}>›</button></nav></div>;
   const [winner, setWinner] = createSignal<Game | null>(null);
   const [spinFilters,setSpinFilters]=createSignal({...filters()});
   const sound=createRouletteSound();
@@ -86,11 +93,12 @@ export default function BacklogPage(){
 
         <aside class="pulse-home-teaser"><div><p class="eyebrow">A LITTLE INSPIRATION · YOUR BACKLOG STILL COMES FIRST</p><h2>What’s being played on Steam?</h2><p>Explore 1,000 popular games and see which ones are already in your library. Rankings load when you open Steam pulse.</p></div><a href={pulseHref()}>Explore Steam pulse →</a></aside>
         <section id="library" class="library-section" aria-labelledby="library-title">
-          <div class="section-heading"><div><p class="eyebrow">LESS COLLECTING. MORE COMPLETING.</p><h2 id="library-title">{loaded()?profile()?profile()!.name+'’s library':'Your local library':'Explore the Top 250'}</h2></div><span class="section-note">{activeGames().length} games · {loaded()?'Saved on this device':'Top-rated discovery'}</span><label class="library-sort">Sort library<select value={preferences().librarySort} onChange={e=>setPreference({librarySort:e.currentTarget.value})}><option value="default">Original order</option><option value="title">Title</option><option value="remaining">Remaining time</option><option value="playtime">Most played</option><option value="priority">Play Next first</option></select></label></div>
+          <div class="section-heading"><div><p class="eyebrow">LESS COLLECTING. MORE COMPLETING.</p><h2 id="library-title" tabindex={-1}>{loaded()?profile()?profile()!.name+'’s library':'Your local library':'Explore the Top 250'}</h2></div><span class="section-note">{activeGames().length} games · {loaded()?'Saved on this device':'Top-rated discovery'}</span><label class="library-sort">Sort library<select value={preferences().librarySort} onChange={e=>setPreference({librarySort:e.currentTarget.value})}><option value="default">Original order</option><option value="title">Title</option><option value="remaining">Remaining time</option><option value="playtime">Most played</option><option value="priority">Play Next first</option></select></label></div>
           <Show when={!loaded()}><p class="demo-note">Ranking: <a href={catalogSource} target="_blank" rel="noopener noreferrer">Steam 250 ↗</a> · Snapshot {new Date(catalogUpdatedAt).toLocaleDateString()}. Based on Steam player reviews; not an official Valve ranking. These are recommendations, not games you own.</p></Show>
           <Show when={loaded()}><p class="demo-note">Playtime comes from the loaded library. Prices paid and completion times are unknown unless supplied; unknown values are excluded from planning and value calculations.</p></Show>
           <p class={["save-message", {"save-error": saveFailed()}]} role="status" aria-live="polite">{saveMessage()}</p>
 
+          <Show when={loaded()}>{libraryPagination()}</Show>
           <ul class="game-grid" id="library-grid" aria-label="Game library">
             <For each={visibleGames()} keyed={item=>item.appId}>{game => <li class="game-card">
               <div class="game-cover">
@@ -129,6 +137,7 @@ export default function BacklogPage(){
               </div>
             </li>}</For>
           </ul>
+          <Show when={loaded()&&libraryRows().length>24}>{libraryPagination(true)}</Show>
           <Show when={!loaded()&&filtered().length>6}><div class="discovery-expand"><button type="button" aria-controls="library-grid" aria-expanded={expanded()?'true':'false'} onClick={()=>{const collapse=expanded();setExpanded(!collapse);if(collapse)document.getElementById('library')?.scrollIntoView();}}>{expanded()?'Show fewer games':`Show all ${filtered().length} games`}</button><span>Showing {visibleGames().length} of {filtered().length} matches · roulette uses every matching game</span></div></Show>
           <Show when={activeGames().length > 0 && filtered().length === 0}><div class="library-empty" role="status"><span class="i-lucide-library" aria-hidden="true" /><h3>{clearedBacklog()?'Your backlog is clear.':filters().state==='next'?'No Play Next games match.':'No games match these filters.'}</h3><p>{clearedBacklog()?'Your saved games are completed or dropped. You can still browse them.':filters().state==='next'?'Add games with + Play Next to build your short list, or broaden your filters.':filters().time!=='all'||filters().maxHours<200?'Time filters only include games with known completion estimates. Try Any length to include the rest.':'Try clearing your search, choosing another genre, or lowering the review score.'}</p><button onClick={() => setFilters({...defaultFilters,...(clearedBacklog()?{state:'all'}:{})})}>{clearedBacklog()?'View all saved games':'Reset filters'}</button></div></Show>
           <Show when={loaded()&&games().length === 0}><div class="library-empty"><h3>This library has no games.</h3><p>Look up another profile, or add games and import a JSON library using the controls above.</p><button onClick={focusProfile}>Look up another profile</button></div></Show>
