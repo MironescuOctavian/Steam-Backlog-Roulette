@@ -2,11 +2,13 @@ import { defineConfig } from "vite-plus";
 import solid from "@solidjs/vite-plugin";
 import { ui } from "@rimelight/ui/plugin";
 import { i18n } from "@rimelight/i18n/plugin";
+import { fileRoutes } from "filesystem-routing/vite";
 
 export default defineConfig({
   server: { proxy: { "/api": "http://127.0.0.1:8787" } },
   plugins: [
     solid(),
+    fileRoutes({types:"src/file-routes.d.ts",codeSplitting:false}),
     i18n(),
     ui({
       colors: {

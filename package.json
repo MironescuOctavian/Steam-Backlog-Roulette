@@ -7,6 +7,7 @@
     "dev": "vp dev",
     "start": "node --env-file-if-exists=.env server/index.mjs",
     "update:top250": "node scripts/update-top250.mjs",
+    "update:activity": "node scripts/update-activity.mjs",
     "build": "vp build && node scripts/singlefile.mjs",
     "preview": "vp preview",
     "typecheck": "tsc --noEmit",
@@ -16,6 +17,7 @@
   "dependencies": {
     "@rimelight/i18n": "0.1.22",
     "@rimelight/ui": "0.0.97",
+    "@solidjs/router": "2.0.0-next.44",
     "@solidjs/web": "2.0.0-rc.21",
     "solid-js": "2.0.0-rc.21"
   },
@@ -24,6 +26,7 @@
     "@rimelight/config": "0.0.48",
     "@solidjs/vite-plugin": "3.0.0-next.56",
     "@types/node": "^26.6.6",
+    "filesystem-routing": "0.4.2",
     "typescript": "7.1.0-beta",
     "unocss": "66.12.0",
     "vite-plus": "1.5.0"

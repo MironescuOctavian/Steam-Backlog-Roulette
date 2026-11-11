@@ -42,6 +42,35 @@ Profile lookup resolves vanity handles, requests profile identity and owned game
 
 Roulette draws equally from matching unfinished games. Reduced motion skips the long animation and confetti. Steam launch links require the desktop client and are shown only for a loaded library.
 
+## Steam pulse
+
+Steam pulse (`/activity`, or `#/activity` in the standalone file) is a secondary page for discovery; the default page remains the backlog and roulette. Four cards cover current player leaders, weekly rank gainers, new arrivals, and review favorites. The homepage has a compact link and an owned-library match count. Activity-table actions can mark owned games Play Next or return directly to their backlog card; unowned recommendations are never inserted into the library.
+
+The server's `/api/activity` endpoint uses public Steam charts, the weekly ranking, store new releases, and StoreBrowse review summaries. It needs no Steam API key. Results are cached for five minutes, simultaneous refreshes share one upstream request, and refresh failures preserve the last good observation. Feed failures and timestamps are displayed. Review favorites are ranked only within the sampled top 100/new-release lists and require at least 50 reviews. Store prices are labeled US asking prices, never purchase prices.
+
+The comparison chart shows current concurrent players and Steam's peak-today count. The hosted app records actual observations in ignored `.data/activity-history.json` on requests at least four minutes apart (normally five-minute refreshes), retaining up to seven days. History survives server restarts when that directory is persisted. It does not claim years of history or all-time peaks. Gaps longer than 15 minutes are not connected; missing counts are not zeros. Historical lines show relative activity using each series' own observed maximum; the now/peak view compares absolute counts.
+
+The standalone HTML includes a dated real activity snapshot. Run `pnpm update:activity` then `pnpm build` to refresh this bundled fallback. Live charts/history require the hosted server; profile lookup independently still requires its server API key.
+
+## Page routes
+
+Routes follow the same filesystem convention as octavianmironescu.com, using `filesystem-routing` and Solid Router:
+
+```text
+src/
+  main.tsx                         # browser entry and global styles
+  App.tsx                          # router
+  library-state.tsx                # shared library/profile state
+  routes/
+    (app).tsx                      # shared header, main, and footer layout
+    (app)/
+      index.tsx                    # / — backlog and roulette
+      activity/index.tsx           # /activity — Steam pulse
+      [...404].tsx                 # unknown pages
+```
+
+The Vite plugin generates `src/file-routes.d.ts`. Hosted navigation uses browser history with server-side HTML fallback for page reloads. The standalone build uses the router's hash-history adapter; route code stays bundled in the single HTML file. Shared library state remains mounted across page changes.
+
 ## Verification
 
 Run `pnpm typecheck`, `pnpm test`, and `pnpm build`. `pnpm test:browser` uses headless Chrome to verify discovery without personal stats, library replacement, profile/private/empty states, persistence, filters, JSON transfers, roulette, and desktop/mobile layout. Hosted profile tests use explicit fixtures, not a default application profile. Set `CHROME_PATH` if Chrome is outside the default Windows location. Screenshots are saved to ignored `artifacts/`.

@@ -22,6 +22,11 @@ async function main(){
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),250,'discovery shows exactly 250 games');
  assert.equal(await evaluate(`document.querySelectorAll('.kpi,.game-hours,.game-controls,.tag-label').length`),0,'no fabricated personal stats before lookup');
  assert.equal(await evaluate(`localStorage.getItem('steam-backlog-roulette.library.v1')`),null,'no default saved profile or library');
+ await evaluate(`[...document.querySelectorAll('nav a')].find(a=>a.textContent==='Steam pulse').click()`);await delay(400);
+ assert.equal(await evaluate(`document.querySelectorAll('.pulse-brief').length`),4,'four distinct Steam discovery cards');
+ assert.equal(await evaluate(`document.querySelectorAll('.pulse-table tbody tr').length`),100,'real top-100 snapshot in standalone activity page');
+ assert.equal(await evaluate(`document.querySelector('.owned-filter input').disabled`),true,'no personal ownership invented before lookup');
+ await evaluate(`[...document.querySelectorAll('nav a')].find(a=>a.textContent==='Backlog').click()`);await settle();
  const seedPath=path.join(profile,'test-library.json');
  const {demoLibrary}=await import(pathToFileURL(path.resolve('tests/fixtures/library.ts')).href);
  fs.writeFileSync(seedPath,JSON.stringify(demoLibrary()));
@@ -76,10 +81,11 @@ async function main(){
  await call('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});await settle();
  fs.writeFileSync(path.resolve('artifacts/desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  const {createApp}=await import(pathToFileURL(path.resolve('server/index.mjs')).href);
- appServer=createApp({key:'test-only',lookup:async input=>{
+ const activityFixture=JSON.parse(fs.readFileSync(path.resolve('src/data/activity.json'),'utf8'));
+ appServer=createApp({key:'test-only',activity:async()=>activityFixture,lookup:async input=>{
    if(input==='private-profile')throw new Error('Game details are private.');
    const empty=input==='empty-profile';const other=input==='other-profile';
-   return {profile:{steamId:empty?'76561198000000002':other?'76561198000000003':'76561198000000001',name:empty?'Empty QA':other?'Other QA':'Profile QA',avatar:'',url:'https://steamcommunity.com/profiles/76561198000000001/',updatedAt:new Date().toISOString()},steam:{response:{games:empty?[]:other?[{appid:400,name:'Portal',playtime_forever:120}]:[{appid:70,name:'Half-Life',playtime_forever:90},{appid:220,name:'Half-Life 2',playtime_forever:0}]}}};
+   return {profile:{steamId:empty?'76561198000000002':other?'76561198000000003':'76561198000000001',name:empty?'Empty QA':other?'Other QA':'Profile QA',avatar:'',url:'https://steamcommunity.com/profiles/76561198000000001/',updatedAt:new Date().toISOString()},steam:{response:{games:empty?[]:other?[{appid:730,name:'Counter-Strike 2',playtime_forever:120}]:[{appid:70,name:'Half-Life',playtime_forever:90},{appid:220,name:'Half-Life 2',playtime_forever:0}]}}};
  }});
  await new Promise(resolve=>appServer.listen(0,'127.0.0.1',resolve));
  await call('Page.navigate',{url:'http://127.0.0.1:'+appServer.address().port});await delay(600);
@@ -107,9 +113,33 @@ async function main(){
  fs.writeFileSync(path.resolve('artifacts/profile-mobile.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  await call('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});await settle();
  fs.writeFileSync(path.resolve('artifacts/profile-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
+ await evaluate(`[...document.querySelectorAll('nav a')].find(a=>a.textContent==='Steam pulse').click()`);await delay(500);
+ assert.equal(await evaluate('location.pathname'),'/activity','hosted route uses a clean URL');
+ await call('Page.reload');await delay(700);
+ assert.equal(await evaluate('document.title'),'Steam pulse · Backlog Roulette','direct /activity reload renders the correct page');
+ assert.equal(await evaluate(`document.querySelectorAll('.pulse-brief').length`),4,'hosted activity cards mount');
+ assert.equal(await evaluate(`[...document.querySelectorAll('.pulse-brief li img')].every(img=>img.getBoundingClientRect().width<=100)`),true,'discovery thumbnails stay compact');
+ assert.equal(await evaluate(`document.querySelectorAll('.pulse-table input:checked').length`),3,'comparison defaults to three games');
+ await evaluate(`document.querySelector('.owned-filter input').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelectorAll('.pulse-table tbody tr').length`),1,'activity can filter to unfinished owned games');
+ await evaluate(`document.querySelector('.pulse-owned-actions button').click()`);await settle();
+ assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games[0].playNext`),true,'activity Play Next saves to actual backlog');
+ await evaluate(`document.querySelector('.pulse-chart').scrollIntoView()`);await settle();
+ fs.writeFileSync(path.resolve('artifacts/activity-chart.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
+ await evaluate(`[...document.querySelectorAll('.pulse-chart .pills button')].find(b=>b.textContent==='Observed history').click()`);await settle();
+ assert.equal(await evaluate(`Boolean(document.querySelector('.history-empty'))`),true,'one real sample does not fabricate a historical chart');
+ await evaluate('scrollTo(0,0)');await settle();
+ fs.writeFileSync(path.resolve('artifacts/activity-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
+ await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await settle();
+ assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth`),true,'activity page has no mobile overflow');
+ await evaluate('scrollTo(0,0)');await settle();
+ fs.writeFileSync(path.resolve('artifacts/activity-mobile.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
+ await evaluate(`document.querySelector('.pulse-owned-actions .pulse-link').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('.game-title-row h3').textContent`),'Counter-Strike 2','activity action opens the owned game in backlog');
+ assert.equal(await evaluate(`document.querySelector('.play-next').getAttribute('aria-pressed')`),'true','priority retained after page navigation');
  assert.deepEqual(exceptions,[],'no runtime exceptions');
  assert.deepEqual(consoleErrors,[],'no console errors');
- console.log('PASS: Top 250 without personal stats; library/profile replacement; private/empty/switch-profile behavior; real playtime mapping; unknown prices/times; persistence; imports; roulette; desktop/mobile layout. Runtime exceptions and console errors: 0.');
+ console.log('PASS: backlog/profile flows, roulette, and imports; Steam pulse navigation, four discovery cards, top-100 table, comparisons, honest history state, owned filter, Play Next persistence, return-to-backlog actions, desktop/mobile layout. Runtime exceptions and console errors: 0.');
  await call('Browser.close');
 }
 main().catch(e=>{console.error(e);process.exitCode=1;}).finally(async()=>{appServer?.closeAllConnections();appServer?.close();ws?.close();chrome.kill();await delay(1000);const resolved=path.resolve(profile);const temp=path.resolve(require('node:os').tmpdir())+path.sep;if(resolved.startsWith(temp)&&path.basename(resolved).startsWith('backlog-qa-')){try{fs.rmSync(resolved,{recursive:true,force:true});}catch{console.warn('Temporary Chrome profile could not be removed:',resolved);}}});

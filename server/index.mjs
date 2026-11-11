@@ -3,14 +3,19 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {fetchPublicProfile,parseProfileInput} from './steam.mjs';
+import {createActivityService} from './activity.mjs';
 
-export function createApp({key=process.env.STEAM_API_KEY,lookup=fetchPublicProfile,root=path.resolve('dist')}={}) {
+export function createApp({key=process.env.STEAM_API_KEY,lookup=fetchPublicProfile,activity=createActivityService(),root=path.resolve('dist')}={}) {
   const cache=new Map();const limits=new Map();
   return http.createServer(async(req,res)=>{
     res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');
     const send=(status,data)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
     try {
       const url=new URL(req.url,'http://localhost');
+      if(url.pathname==='/api/activity'){
+        if(req.method!=='GET')return send(405,{error:'Use GET for activity data.'});
+        try{return send(200,await activity());}catch{return send(503,{error:'Steam activity could not be refreshed. Please retry shortly.'});}
+      }
       if(url.pathname==='/api/steam/profile'){
         if(req.method!=='GET')return send(405,{error:'Use GET for profile lookup.'});
         const input=url.searchParams.get('profile');
@@ -30,9 +35,13 @@ export function createApp({key=process.env.STEAM_API_KEY,lookup=fetchPublicProfi
       if(url.pathname.startsWith('/api/'))return send(404,{error:'Endpoint not found.'});
       if(req.method!=='GET'&&req.method!=='HEAD')return send(405,{error:'Method not allowed.'});
       const requested=decodeURIComponent(url.pathname)==='/'?'/index.html':decodeURIComponent(url.pathname);
-      const file=path.resolve(root,'.'+requested);
+      let file=path.resolve(root,'.'+requested);
       if(!file.startsWith(root+path.sep))return send(403,{error:'Forbidden.'});
-      const content=await fs.readFile(file);
+      let content;
+      try{content=await fs.readFile(file);}catch(error){
+        if(error.code==='ENOENT'&&!path.extname(requested)&&req.headers.accept?.includes('text/html')){file=path.join(root,'index.html');content=await fs.readFile(file);}
+        else throw error;
+      }
       const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.woff2':'font/woff2'}[path.extname(file)]??'application/octet-stream';
       res.writeHead(200,{'Content-Type':mime,'Cache-Control':'no-cache'});res.end(req.method==='HEAD'?undefined:content);
     }catch{send(404,{error:'Not found.'});}
