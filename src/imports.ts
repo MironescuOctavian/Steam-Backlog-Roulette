@@ -1,0 +1,45 @@
+import {demoLibrary,validateLibrary,type Game} from './library.ts';
+export function parseImport(text:string):Game[] {
+  if(text.length>5_000_000)throw new Error('JSON must be smaller than 5 MB.');
+  const data=JSON.parse(text);
+  if(!Array.isArray(data) && data?.version!==1)throw new Error('Unsupported JSON format. Use a game array or version 1 export.');
+  const rows=Array.isArray(data) ? data : data.games;
+  if(!Array.isArray(rows))throw new Error('Expected an array of games.');
+  return validateLibrary(rows.map(g=>({...g,tags:g.tags??[],playNext:g.playNext??g.status==='Play Next',status:g.status==='Play Next'?'Backlog':g.status,metadataSource:g.metadataSource??'Custom'})));
+}
+export function mergeLibrary(existing:Game[],incoming:Game[]):Game[] {
+  const merged=new Map(existing.map(g=>[g.appId,g]));
+  for(const game of incoming)merged.set(game.appId,game);
+  return validateLibrary([...merged.values()]);
+}
+export function parseSteam(data:unknown,existing:Game[]):Game[] {
+  const response=(data as {response?:{games?:unknown;game_count?:unknown}})?.response;
+  if(!response || !Array.isArray(response.games))throw new Error('Steam returned no game list. Make your profile and Game details public, then check the ID and key.');
+  const demo=new Map(demoLibrary().map(g=>[g.appId,g]));
+  const saved=new Map(existing.map(g=>[g.appId,g]));
+  return validateLibrary(response.games.map((item:unknown)=>{
+    const g=item as {appid:number;name:string;playtime_forever:number};
+    if(!g || !Number.isSafeInteger(g.appid) || typeof g.name!=='string' || typeof g.playtime_forever!=='number' || !Number.isFinite(g.playtime_forever) || g.playtime_forever<0)throw new Error('Steam returned invalid game data.');
+    const old=saved.get(g.appid);
+    const real=old?.metadataSource!=='Demo estimates' ? old : undefined;
+    const metadata=real??demo.get(g.appid);
+    return {appId:g.appid,title:g.name,genres:metadata?.genres??['Unknown'],playtimeHours:Math.round(g.playtime_forever/6)/10,
+      timeToBeatHours:metadata?.timeToBeatHours??20,metacritic:metadata?.metacritic??null,pricePaid:real?.pricePaid??0,priceKnown:real ? real.priceKnown!==false : false,
+      status:real?.status??(g.playtime_forever===0?'Unplayed':'Backlog'),tags:old?.tags??[],playNext:old?.playNext??false,metadataSource:real?.metadataSource??'Estimated'};
+  }));
+}
+export async function fetchSteam(id:string,key:string,proxy:boolean,existing:Game[],signal?:AbortSignal):Promise<Game[]> {
+  if(!/^\d{17}$/.test(id))throw new Error('Enter a 17-digit Steam64 ID.');
+  if(!/^[a-fA-F0-9]{32}$/.test(key))throw new Error('Enter a valid 32-character Steam Web API key.');
+  const url=new URL('https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/');
+  url.search=new URLSearchParams({key,steamid:id,include_appinfo:'1',include_played_free_games:'1',format:'json'}).toString();
+  try {
+    const response=await fetch(proxy ? `https://api.allorigins.win/raw?url=${encodeURIComponent(url.href)}` : url.href,{signal:signal??null,credentials:'omit',referrerPolicy:'no-referrer'});
+    if(!response.ok)throw new Error('fetch failed');
+    return parseSteam(await response.json(),existing);
+  } catch(error) {
+    if(error instanceof Error && error.message.startsWith('Steam returned'))throw error;
+    if(signal?.aborted)throw new Error('Steam request timed out or was canceled.');
+    throw new Error(proxy ? 'Steam/proxy request failed. Check public game details and credentials, or use JSON import.' : 'Direct Steam requests are usually blocked by CORS. Enable the proxy only if you accept sharing the API key with it, or use JSON import.');
+  }
+}

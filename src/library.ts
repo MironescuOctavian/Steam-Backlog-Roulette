@@ -4,6 +4,7 @@ export type Game = {
   timeToBeatHours: number; metacritic: number | null; pricePaid: number;
   status: (typeof statuses)[number]; tags: string[]; playNext: boolean;
   metadataSource: "Demo estimates" | "Estimated" | "Custom";
+  priceKnown?: boolean;
 };
 type Row = [number, string, string[], number, number, number, number, Game["status"]];
 const rows: Row[] = [
@@ -44,7 +45,7 @@ export const demoLibrary = (): Game[] => rows.map(([appId,title,genres,playtimeH
 }));
 export const coverUrl = (appId: number) => `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${appId}/header.jpg`;
 export const remainingHours = (g: Game) => g.status === "Completed" || g.status === "Dropped" ? 0 : Math.max(0,g.timeToBeatHours-g.playtimeHours);
-export const costPerHour = (g: Game) => g.playtimeHours === 0 ? null : g.pricePaid/g.playtimeHours;
+export const costPerHour = (g: Game) => g.playtimeHours === 0 || g.priceKnown === false ? null : g.pricePaid/g.playtimeHours;
 
 const KEY = "steam-backlog-roulette.library.v1";
 type StorageAccess = Pick<Storage,"getItem"|"setItem">;
@@ -62,11 +63,12 @@ export function validateLibrary(value: unknown): Game[] {
       || !nonnegative(g.playtimeHours) || !nonnegative(g.timeToBeatHours) || !nonnegative(g.pricePaid)
       || !(g.metacritic === null || (nonnegative(g.metacritic) && g.metacritic <= 100))
       || !statuses.includes(g.status as Game["status"])
+      || !(g.priceKnown === undefined || typeof g.priceKnown === 'boolean')
       || !["Demo estimates","Estimated","Custom"].includes(g.metadataSource as string)) throw new Error("Invalid game data.");
     ids.add(g.appId);
     return {appId:g.appId,title:g.title.trim(),genres:[...g.genres],tags:[...g.tags],playNext:g.playNext,
       playtimeHours:g.playtimeHours,timeToBeatHours:g.timeToBeatHours,pricePaid:g.pricePaid,
-      metacritic:g.metacritic,status:g.status as Game["status"],metadataSource:g.metadataSource as Game["metadataSource"]};
+      metacritic:g.metacritic,status:g.status as Game["status"],metadataSource:g.metadataSource as Game["metadataSource"],...(g.priceKnown === undefined ? {} : {priceKnown:g.priceKnown})};
   });
 }
 export function saveLibrary(storage: StorageAccess,games: Game[]): void {

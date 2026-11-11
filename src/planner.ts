@@ -14,7 +14,7 @@ export function filterGames(games: Game[], f: Filters): Game[] {
   });
 }
 export function analytics(games: Game[]) {
-  const played = games.filter(g => g.playtimeHours > 0);
+  const played = games.filter(g => g.playtimeHours > 0 && g.priceKnown !== false);
   const backlog = games.filter(g => g.status !== 'Completed' && g.status !== 'Dropped');
   return {
     backlog:backlog.length,
@@ -24,7 +24,7 @@ export function analytics(games: Game[]) {
   };
 }
 export function rankValue(games: Game[], worst: boolean): Game[] {
-  return [...games.filter(g=>worst || g.playtimeHours>0)].sort((a,b)=>{
+  return [...games.filter(g=>g.priceKnown !== false && (worst || g.playtimeHours>0))].sort((a,b)=>{
     if(worst && (a.playtimeHours===0 || b.playtimeHours===0)) {
       if(a.playtimeHours===0 && b.playtimeHours===0)return b.pricePaid-a.pricePaid || a.title.localeCompare(b.title);
       return a.playtimeHours===0 ? -1 : 1;

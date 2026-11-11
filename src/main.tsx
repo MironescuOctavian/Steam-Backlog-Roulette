@@ -9,6 +9,7 @@ import { analytics, defaultFilters, filterGames, rankValue, type Filters } from 
 import "./features.css";
 import { Roulette } from "./roulette";
 import { createRouletteSound } from "./sound";
+import { DataTools } from "./data-tools";
 
 function App() {
   const storage: Pick<Storage, "getItem" | "setItem"> = {
@@ -40,9 +41,8 @@ function App() {
   const changeFilter = (patch: Partial<Filters>) => setFilters({...filters(), ...patch});
   const backlog = () => games().filter(game => game.status !== "Completed" && game.status !== "Dropped");
   const hoursLeft = () => backlog().reduce((sum, game) => sum + remainingHours(game), 0);
-  function updateGame(appId: number, patch: Partial<Pick<Game, "status" | "playNext">>): boolean {
+  function applyLibrary(next: Game[]): boolean {
     if (library.warning) return false;
-    const next = games().map(game => game.appId === appId ? { ...game, ...patch } : game);
     try {
       saveLibrary(storage, next);
       setGames(next);
@@ -54,6 +54,9 @@ function App() {
       setSaveMessage("Could not save this change. Your previous library is unchanged. Check browser storage and try again.");
       return false;
     }
+  }
+  function updateGame(appId: number, patch: Partial<Pick<Game, "status" | "playNext" | "tags">>): boolean {
+    return applyLibrary(games().map(game => game.appId === appId ? { ...game, ...patch } : game));
   }
   return (
     <>
@@ -74,7 +77,7 @@ function App() {
       </header>
 
       <main id="main" class="page-wrap">
-        <div class="project-progress"><label for="project-progress">Project progress</label><progress id="project-progress" max="10" value="8">80%</progress><span>8 of 10 stages complete · 80%</span></div>
+        <div class="project-progress"><label for="project-progress">Project progress</label><progress id="project-progress" max="10" value="9">90%</progress><span>9 of 10 stages complete · 90%</span></div>
         <section class="hero" aria-labelledby="hero-title">
           <div class="hero-copy">
             <p class="eyebrow"><span class="status-dot" /> YOUR NEXT ADVENTURE IS ALREADY IN YOUR LIBRARY</p>
@@ -116,6 +119,7 @@ function App() {
           <Show when={library.warning}><p class="storage-warning" role="alert">{library.warning}</p></Show>
           <p class="demo-note">Demo prices (USD), playtime, review scores, and completion times are illustrative. Time-to-beat is an estimate, not a session length. Sandbox and replayable games have no fixed finish line.</p>
           <p class={["save-message", {"save-error": saveFailed()}]} role="status" aria-live="polite">{saveMessage()}</p>
+          <DataTools games={games()} onApply={applyLibrary} readOnly={Boolean(library.warning)} />
           <section class="filter-panel" aria-label="What should I play tonight?">
             <div class="filter-heading"><h3>What should I play tonight?</h3><button onClick={() => setFilters({...defaultFilters})}>Reset filters</button></div>
             <div class="filter-fields">
@@ -133,10 +137,10 @@ function App() {
               <div class="game-cover">
                 <span class="cover-fallback" aria-hidden="true">{game.title}</span>
                 <img src={coverUrl(game.appId)} alt="" loading="lazy" width="460" height="215" onError={event => { event.currentTarget.style.visibility = "hidden"; }} />
-                <span class="score-badge" title="Illustrative Metacritic score">MC {game.metacritic ?? "—"}</span>
+                <span class="score-badge" title={`${game.metadataSource}: Metacritic score`}>MC {game.metacritic ?? "—"}</span>
               </div>
               <div class="game-content">
-                <div class="game-title-row"><h3>{game.title}</h3><span class="value-badge">{costPerHour(game) === null ? "Unplayed" : `$${costPerHour(game)!.toFixed(2)}/h`}</span></div>
+                <div class="game-title-row"><h3>{game.title}</h3><span class="value-badge">{game.priceKnown===false ? "Cost unknown" : costPerHour(game) === null ? "Unplayed" : `$${costPerHour(game)!.toFixed(2)}/h`}</span></div>
                 <p class="game-genres">{game.genres.join(" · ")}</p>
                 <div class="game-hours"><span>{game.playtimeHours}h played</span><span>~{game.timeToBeatHours}h to beat</span></div>
                 <progress class="game-progress" aria-label={`${game.title}: playtime relative to estimated completion time, not actual completion`} max={Math.max(1, game.timeToBeatHours)} value={Math.min(game.playtimeHours, Math.max(1, game.timeToBeatHours))} />
@@ -152,6 +156,8 @@ function App() {
                   </label>
                   <button type="button" class={["play-next", {"is-next": game.playNext}]} aria-pressed={game.playNext ? "true" : "false"} aria-label={`Play next: ${game.title}`} disabled={Boolean(library.warning)} onClick={() => updateGame(game.appId, { playNext: !game.playNext })}>{game.playNext ? "✓ Play Next" : "+ Play Next"}</button>
                 </div>
+                <label class="tag-label">Tags · comma separated<input value={game.tags.join(', ')} maxlength="500" placeholder="weekend, cozy…" disabled={Boolean(library.warning)} aria-label={`Tags for ${game.title}`} onBlur={e=>{const input=e.currentTarget;const tags=input.value.split(',').map(s=>s.trim()).filter(Boolean);if(!updateGame(game.appId,{tags}))input.value=game.tags.join(', ');}} /></label>
+                <p class="metadata-label">{game.metadataSource}</p>
               </div>
             </li>}</For>
           </ul>
