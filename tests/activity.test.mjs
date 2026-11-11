@@ -5,8 +5,16 @@ import os from 'node:os';
 import path from 'node:path';
 import {createActivityService} from '../server/activity.mjs';
 import {createApp} from '../server/index.mjs';
-import {validateActivity,sortActivity,historyPath} from '../src/activity-model.ts';
+import {validateActivity,sortActivity,historyPath,paginationPages} from '../src/activity-model.ts';
 import snapshot from '../src/data/activity.json' with {type:'json'};
+test('pagination keeps endpoints, nearby pages and compact gaps',()=>{
+  assert.deepEqual(paginationPages(20,1),[1,2,3,4,5,'…',20]);
+  assert.deepEqual(paginationPages(20,10),[1,'…',9,10,11,'…',20]);
+  assert.deepEqual(paginationPages(20,20),[1,'…',16,17,18,19,20]);
+  assert.deepEqual(paginationPages(1,1),[1]);
+  assert.deepEqual(paginationPages(0,1),[]);
+  assert.deepEqual(paginationPages(7,4),[1,2,3,4,5,6,7]);
+});
 
 function feeds(at){return async input=>{
   const url=new URL(input);let data;

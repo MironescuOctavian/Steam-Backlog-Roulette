@@ -19,6 +19,10 @@ export function validateActivity(value:unknown):ActivityData {
 export function sortActivity(games:ActivityGame[],sort:string):ActivityGame[]{
   return [...games].sort((a,b)=>sort==='peak'?(b.peakToday??-1)-(a.peakToday??-1):sort==='name'?a.title.localeCompare(b.title):(b.playersNow??-1)-(a.playersNow??-1));
 }
+export function paginationPages(total:number,current:number):(number|'…')[]{
+  const pages=Array.from({length:Math.max(0,total)},(_,i)=>i+1).filter(n=>total<=7||n===1||n===total||Math.abs(n-current)<=1||current<=3&&n<=5||current>=total-2&&n>=total-4);
+  return pages.flatMap((n,i)=>i&&n-pages[i-1]!>1?['…' as const,n]:[n]);
+}
 export function historyPath(history:Observation[],appId:number):string {
   const points=history.filter(p=>p.counts[String(appId)]!==undefined);
   if(points.length<2)return '';

@@ -30,7 +30,14 @@ async function main(){
  await evaluate(`[...document.querySelectorAll('nav a')].find(a=>a.textContent==='Steam pulse').click()`);await delay(400);
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-brief').length`),4,'four distinct Steam discovery cards');
  assert.deepEqual(await evaluate(`[...document.querySelectorAll('.pulse-brief')].map(card=>card.querySelectorAll('li').length)`),[10,10,10,10],'all four cards show ten real entries');
- assert.equal(await evaluate(`document.querySelectorAll('.pulse-table tbody tr').length`),1000,'real 1000-game snapshot in standalone activity page');
+ assert.equal(await evaluate(`document.querySelectorAll('.pulse-table tbody tr').length`),50,'first page contains 50 games from the 1000-game snapshot');
+ await evaluate(`document.querySelector('[aria-label="Ranking pages"] [aria-label="Next page"]').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('.pulse-rank').textContent`),'#51','next page starts at rank 51');
+ await evaluate(`document.querySelector('[aria-label="Ranking pages"] [aria-label="Page 20"]').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('.pulse-rank').textContent`),'#951','last page starts at rank 951');
+ assert.equal(await evaluate(`document.querySelector('[aria-label="Ranking pages"] [aria-label="Next page"]').disabled`),true);
+ await evaluate(`document.querySelector('[aria-label="Ranking pages"] [aria-label="Page 1"]').click()`);await settle();
+
  assert.equal(await evaluate(`document.querySelector('.owned-filter input').disabled`),true,'no personal ownership invented before lookup');
  await evaluate(`[...document.querySelectorAll('nav a')].find(a=>a.textContent==='Backlog').click()`);await settle();
  const seedPath=path.join(profile,'test-library.json');
