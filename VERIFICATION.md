@@ -3,11 +3,12 @@
 Verified on Windows with Node 26.13.0 and headless Chrome on November 11, 2026.
 
 - TypeScript check and production build pass.
-- 41 unit tests cover validation, persistence, exclusions, recommendation reasons, sorting/preferences, imports, profile lookup, metadata/hero caching, rankings, unknown data, reel selection, activity aggregation, per-game history parsing, failure backoff, portable observation history, Worker API routing, pagination and chart gaps.
+- 42 unit tests cover validation, persistence, exclusions, recommendation reasons, sorting/preferences, imports, profile lookup, metadata/hero caching, rankings, unknown data, reel selection, activity aggregation, per-game history parsing, failure backoff, portable observation history, Worker API routing, pagination chart gaps and nearest recorded tooltip samples.
 - Built single-file HTML loads directly through `file://`.
 - Browser checks verify a fresh 250-game discovery pool with no default profile or personal statistics. Imported/profile libraries replace it. They also cover status updates, search, Play Next, tags, reload persistence, custom games, JSON preview/merge, both roulette modes, and winning-card alignment.
 - Hosted browser checks use explicit mocked Steam responses to verify profile resolution UI, accurate minute-to-hour conversion, private lookup failure preservation, empty-library persistence, switching profiles, and absence of invented completion times/value figures.
 - Steam pulse browser checks verify the 1,000-game ranking, ten entries in each of four cards, comparisons, owned-only filtering, saved Play Next actions, return-to-backlog navigation, honest history state, and mobile layout.
+- Chart browser checks cover exact timestamped UTC hover values, crosshairs, highlighted points, mini-chart tooltips, keyboard inspection and mobile tooltip bounds. Comparison histories use a shared count scale.
 - Pagination renders 50 rows, starts page two at rank 51, ends at ranks 951–1,000, and disables navigation past the final page. Search, sort and ownership changes reset the page.
 - Browser checks verify that games rotate inside four fixed-position hero cards, with no shuffle or pause controls. Header navigation still contains two page links and the sidebar contains three backlog links; add-game dialogs remain centered.
 - First-pass browser checks cover profile input examples and loading feedback, collapsed advanced filters, working quick filters, visible sync times, and refreshing a profile without losing priorities or active filters.
@@ -22,7 +23,7 @@ Verified on Windows with Node 26.13.0 and headless Chrome on November 11, 2026.
 - No horizontal page overflow at 1440px or 390px; desktop/mobile screenshots were visually inspected.
 - The ranking updater verified 250 unique Steam IDs with contiguous ranks from the attributed Steam 250 source.
 - Single-file packaging verifies that local JavaScript, stylesheet, and font references are embedded.
-- The background is a 14,948-byte WebP; the generated brand mark is a 14,032-byte WebP. Only the sans-serif font family is shipped. The main JavaScript is about 218 KB (67 KB gzip); activity and history snapshots remain separate deferred chunks. Standalone HTML is about 1.4 MB. These are build artifact sizes, not a network speed benchmark.
+- The background is a 14,948-byte WebP; the generated brand mark is a 13,118-byte WebP. Only the sans-serif font family is shipped. The main JavaScript is about 221 KB (69 KB gzip); activity and history snapshots remain separate deferred chunks. Standalone HTML is about 1.4 MB. These are build artifact sizes, not a network speed benchmark.
 - The build command runs TypeScript validation before packaging either target, so malformed routes fail before deployment output is produced.
 
 Live Steam access still requires a server API key. No default profile or account credential is shipped. Private-profile and network failures are tested with fixtures. No production Cloudflare deployment was performed; real account permissions and Worker secrets remain to be verified there. Audible output and desktop Steam launching require user-side verification. External CDN resources need a network connection; use JSON exports as backups.

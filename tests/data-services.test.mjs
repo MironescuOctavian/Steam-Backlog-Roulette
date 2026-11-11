@@ -2,7 +2,17 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {createMetadataService,parseMetadataIds} from '../server/metadata.mjs';
 import {createGameHistoryService,parseGameHistory,parseSteamOnline,parseHistoryIds} from '../server/game-history.mjs';
-import {seriesPath,validateGameHistories} from '../src/charts.ts';
+import {nearestSample,seriesPath,validateGameHistories} from '../src/charts.ts';
+test('chart inspection selects actual nearest samples without inventing values',()=>{
+  const points=[[1000,10],[2000,30],[10000,5]];
+  assert.equal(nearestSample([],123),undefined);
+  assert.equal(nearestSample(points,-1),points[0]);
+  assert.equal(nearestSample(points,99999),points[2]);
+  assert.equal(nearestSample(points,2000),points[1]);
+  assert.equal(nearestSample(points,1600),points[1]);
+  assert.equal(nearestSample(points,1500),points[0]);
+  assert.deepEqual(points,[[1000,10],[2000,30],[10000,5]]);
+});
 import {createHeroService} from '../server/hero.mjs';
 test('metadata validates IDs, classifies Steam flags and caches responses',async()=>{
   assert.deepEqual(parseMetadataIds('70,70,220'),[70,220]);assert.throws(()=>parseMetadataIds('https://evil.test'));assert.throws(()=>parseHistoryIds('1,2,3,4,5,6,7,8,9'));

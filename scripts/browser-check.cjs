@@ -47,6 +47,18 @@ async function main(){
  await evaluate(`[...document.querySelectorAll('nav a')].find(a=>a.textContent==='Steam pulse').click()`);await delay(400);
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-brief').length`),4,'four distinct Steam discovery cards');
  assert.equal(await evaluate(`document.querySelectorAll('.online-chart path').length`),1,'real online-user chart is present');
+ await evaluate(`(()=>{const plot=document.querySelector('.online-series .time-plot');plot.scrollIntoView({block:'center',behavior:'instant'});const r=plot.getBoundingClientRect();plot.dispatchEvent(new PointerEvent('pointermove',{clientX:r.left+r.width*.6,clientY:r.top+r.height*.4,bubbles:true}));})()`);await settle();
+ assert.match(await evaluate(`document.querySelector('.online-series .chart-tooltip').textContent`),/UTCOnline: [\d,]+/,'platform hover shows a dated exact online-user value');
+ assert.equal(await evaluate(`document.querySelectorAll('.online-series .time-crosshair,.online-series .time-point').length`),2,'hover highlights the recorded point and crosshair');
+ fs.writeFileSync(path.resolve('artifacts/chart-tooltip.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
+ await evaluate(`document.querySelector('.online-series .time-plot').focus()`);await settle();
+ const lastTooltip=await evaluate(`document.querySelector('.online-series .chart-tooltip').textContent`);
+ await evaluate(`document.querySelector('.online-series .time-plot').dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true}))`);await settle();
+ assert.notEqual(await evaluate(`document.querySelector('.online-series .chart-tooltip').textContent`),lastTooltip,'keyboard moves to the previous recorded sample');
+ await evaluate(`document.querySelector('.online-series .time-plot').blur()`);await settle();
+ await evaluate(`(()=>{const plot=document.querySelector('.is-mini .time-plot');const r=plot.getBoundingClientRect();plot.dispatchEvent(new PointerEvent('pointermove',{clientX:r.left+r.width/2,bubbles:true}));})()`);await settle();
+ assert.match(await evaluate(`document.querySelector('.is-mini .chart-tooltip').textContent`),/UTC/,'mini charts expose dated player counts');
+ await evaluate(`document.querySelector('.is-mini .time-plot').dispatchEvent(new PointerEvent('pointerleave'))`);await settle();
  assert.ok(await evaluate(`document.querySelectorAll('.game-sparkline').length`)>0,'discovery cards contain real game sparklines');
  assert.equal(await evaluate(`[...document.querySelectorAll('.pulse-table thead th')].some(e=>e.textContent==='All-time peak')`),true,'ranking includes all-time peaks');
  assert.deepEqual(await evaluate(`[...document.querySelectorAll('.pulse-brief')].map(card=>card.querySelectorAll('li').length)`),[10,10,10,10],'all four cards show ten real entries');
@@ -265,6 +277,9 @@ async function main(){
  fs.writeFileSync(path.resolve('artifacts/activity-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await settle();
  assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth`),true,'activity page has no mobile overflow');
+ await evaluate(`(()=>{const p=document.querySelector('.online-series .time-plot');p.scrollIntoView({block:'center',behavior:'instant'});const r=p.getBoundingClientRect();p.dispatchEvent(new PointerEvent('pointerdown',{pointerType:'touch',clientX:r.left+r.width*.51,bubbles:true}));})()`);await settle();
+ assert.equal(await evaluate(`(()=>{const r=document.querySelector('.online-series .chart-tooltip').getBoundingClientRect();return r.left>=0&&r.right<=innerWidth;})()`),true,'mobile chart tooltip stays inside the screen');
+ fs.writeFileSync(path.resolve('artifacts/chart-mobile-tooltip.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  await evaluate('scrollTo(0,0)');await settle();
  fs.writeFileSync(path.resolve('artifacts/activity-mobile.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  await evaluate(`document.querySelector('.pulse-owned-actions .pulse-link').click()`);await settle();
