@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {validateActivity} from '../src/activity-model.ts';
 import {createExtendedChart} from './extended-chart.mjs';
+import {parseSteamOnline} from './game-history.mjs';
 
 export function createActivityService({request=fetch,historyFile=path.resolve('.data/activity-history.json'),historyStore,metadataBatchLimit=Infinity,now=()=>Date.now(),extended=createExtendedChart({request,now})}={}) {
   let cached;let expires=0;let pending;
@@ -9,11 +10,12 @@ export function createActivityService({request=fetch,historyFile=path.resolve('.
   async function json(url){const response=await request(url,{signal:AbortSignal.timeout(15000),redirect:'error'});if(!response.ok)throw new Error('Steam feed unavailable.');return response.json();}
   async function collect(){
     const warnings=[];
-    const [live,weekly,featured,wider]=await Promise.all([
+    const [live,weekly,featured,wider,online]=await Promise.all([
       json('https://api.steampowered.com/ISteamChartsService/GetGamesByConcurrentPlayers/v1/'),
       json('https://api.steampowered.com/ISteamChartsService/GetMostPlayedGames/v1/').catch(()=>{warnings.push('Weekly rank changes are unavailable.');return {}; }),
       json('https://store.steampowered.com/api/featuredcategories/?cc=us&l=english').catch(()=>{warnings.push('New-release lists are unavailable.');return {}; }),
       extended(),
+      json('https://store.steampowered.com/stats/userdata.json').then(parseSteamOnline).catch(()=>{warnings.push('Steam online-user history is unavailable.');return undefined;}),
     ]);
     if(!Array.isArray(live.response?.ranks)||!live.response.ranks.length)throw new Error('Steam player activity is unavailable.');
     if(wider.stale)warnings.push('The extended ranking could not refresh. Its last successful capture is shown.');
@@ -54,7 +56,7 @@ export function createActivityService({request=fetch,historyFile=path.resolve('.
     if(!history.length||Date.parse(sampledAt)-Date.parse(history.at(-1).at)>=240000)history.push({at:sampledAt,counts:Object.fromEntries(official.map(g=>[g.appid,g.concurrent_in_game]))});
     history=history.slice(-2016);
     const reviewPool=[...new Map([...games,...releaseGames].map(g=>[g.appId,g])).values()];
-    const data=validateActivity({sampledAt,extendedCapturedAt:wider.capturedAt,games,movers:weeklyRanks.filter(g=>g.last_week_rank>g.rank).map(g=>game(g.appid)).sort((a,b)=>b.weeklyChange-a.weeklyChange),releases:releaseGames,acclaimed:reviewPool.filter(g=>g.reviewCount>=50&&g.reviewPercent!==null).sort((a,b)=>b.reviewPercent-a.reviewPercent||b.reviewCount-a.reviewCount).slice(0,100),history,warnings,stale:false});
+    const data=validateActivity({sampledAt,extendedCapturedAt:wider.capturedAt,games,movers:weeklyRanks.filter(g=>g.last_week_rank>g.rank).map(g=>game(g.appid)).sort((a,b)=>b.weeklyChange-a.weeklyChange),releases:releaseGames,acclaimed:reviewPool.filter(g=>g.reviewCount>=50&&g.reviewPercent!==null).sort((a,b)=>b.reviewPercent-a.reviewPercent||b.reviewCount-a.reviewCount).slice(0,100),history,warnings,stale:false,...(online?{online}:{})});
     if((historyFile||historyStore)&&writable){try{if(historyStore)await historyStore.write(history);else{await fs.mkdir(path.dirname(historyFile),{recursive:true});await fs.writeFile(historyFile+'.tmp',JSON.stringify(history));await fs.rename(historyFile+'.tmp',historyFile);}}catch{data.warnings.push('New observation history could not be saved.');}}
     cached=data;expires=now()+300000;return data;
   }

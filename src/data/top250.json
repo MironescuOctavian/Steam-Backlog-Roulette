@@ -1,6 +1,6 @@
 {
   "source": "https://steam250.com/top250",
-  "updatedAt": "2026-11-11T07:22:59.301Z",
+  "updatedAt": "2026-11-11T18:30:57.536Z",
   "games": [
     {
       "rank": 1,
@@ -9,7 +9,10 @@
       "genres": [
         "Life Sim"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/413150/header.jpg?t=1786554168"
     },
     {
       "rank": 2,
@@ -18,7 +21,10 @@
       "genres": [
         "Open World Survival Craft"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/105600/header.jpg?t=1792530636"
     },
     {
       "rank": 3,
@@ -27,7 +33,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/550/header.jpg?t=1772742214"
     },
     {
       "rank": 4,
@@ -36,7 +45,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4000/header.jpg?t=1776868682"
     },
     {
       "rank": 5,
@@ -45,7 +57,10 @@
       "genres": [
         "Immersive Sim"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/227300/9a81dc3126c56637297b654f9dcac057cfd79b77/header.jpg?t=1793285269"
     },
     {
       "rank": 6,
@@ -54,7 +69,10 @@
       "genres": [
         "Souls-like"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/header.jpg?t=1760601605"
     },
     {
       "rank": 7,
@@ -63,7 +81,10 @@
       "genres": [
         "Puzzle Platformer"
       ],
-      "positivePercent": 99
+      "positivePercent": 99,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/620/faffc0f560786e2f05104a8d2fac837c6969bf13/header.jpg?t=1790187113"
     },
     {
       "rank": 8,
@@ -72,14 +93,20 @@
       "genres": [
         "CRPG"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/48a2fcbda8565bb45025e98fd8ebde8a7203f6a0/header.jpg?t=1777363040"
     },
     {
       "rank": 9,
       "appId": 292030,
       "title": "The Witcher 3: Wild Hunt — Remastered",
       "genres": [],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/4b5b1ba5061b8a992cc69ac58b4245434edb4296/header.jpg?t=1793900434"
     },
     {
       "rank": 10,
@@ -88,7 +115,10 @@
       "genres": [
         "Metroidvania"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/367520/3c3489495136b26b34f8a9543c7f5645b99d388c/header.jpg?t=1776125684"
     },
     {
       "rank": 11,
@@ -97,14 +127,20 @@
       "genres": [
         "Survival Horror"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1966720/header.jpg?t=1775380053"
     },
     {
       "rank": 12,
       "appId": 284160,
       "title": "BeamNG.drive",
       "genres": [],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/284160/17f8af1312bc48e6cd90e5fb639d4981682af260/header.jpg?t=1792417797"
     },
     {
       "rank": 13,
@@ -113,7 +149,10 @@
       "genres": [
         "Action Roguelike"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1145360/header.jpg?t=1758127023"
     },
     {
       "rank": 14,
@@ -122,21 +161,30 @@
       "genres": [
         "Action Roguelike"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/250900/header.jpg?t=1731977365"
     },
     {
       "rank": 15,
       "appId": 960090,
       "title": "Bloons TD 6",
       "genres": [],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/960090/header.jpg?t=1782123772"
     },
     {
       "rank": 16,
       "appId": 3164500,
       "title": "Schedule I",
       "genres": [],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3164500/header.jpg?t=1785744977"
     },
     {
       "rank": 17,
@@ -145,7 +193,10 @@
       "genres": [
         "Action Roguelike"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1794680/2ca07b690dde645771125ed9d9206c4c5fde4dd4/header.jpg?t=1794307910"
     },
     {
       "rank": 18,
@@ -154,7 +205,10 @@
       "genres": [
         "Open World Survival Craft"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/242760/header.jpg?t=1699381053"
     },
     {
       "rank": 19,
@@ -163,7 +217,10 @@
       "genres": [
         "Open World Survival Craft"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/264710/header.jpg?t=1777456112"
     },
     {
       "rank": 20,
@@ -172,14 +229,20 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/548430/37b58a6c4816ee60b0ca97cb6724d6e904c58c41/header.jpg?t=1792497307"
     },
     {
       "rank": 21,
       "appId": 1118200,
       "title": "People Playground",
       "genres": [],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1118200/header.jpg?t=1793195503"
     },
     {
       "rank": 22,
@@ -188,7 +251,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/220/header.jpg?t=1745368545"
     },
     {
       "rank": 23,
@@ -197,7 +263,10 @@
       "genres": [
         "Puzzle Platformer"
       ],
-      "positivePercent": 99
+      "positivePercent": 99,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/400/header.jpg?t=1745368554"
     },
     {
       "rank": 24,
@@ -206,7 +275,10 @@
       "genres": [
         "Colony Sim"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/294100/76e0613b8197327299d5dbabb0a7fd7828a689a2/header.jpg?t=1782756789"
     },
     {
       "rank": 25,
@@ -215,28 +287,40 @@
       "genres": [
         "Survival Horror"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2050650/header.jpg?t=1772502922"
     },
     {
       "rank": 26,
       "appId": 739630,
       "title": "Phasmophobia",
       "genres": [],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/739630/c227a2855aba60f3657bc0c3a46515b8c41fb2b6/header.jpg?t=1794312564"
     },
     {
       "rank": 27,
       "appId": 526870,
       "title": "Satisfactory",
       "genres": [],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/526870/header.jpg?t=1791192059"
     },
     {
       "rank": 28,
       "appId": 3241660,
       "title": "R.E.P.O.",
       "genres": [],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3241660/62177765c05399116f0453fe1177b00ceed698c4/header_alt_assets_3.jpg?t=1793278962"
     },
     {
       "rank": 29,
@@ -245,7 +329,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": true,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/10/header.jpg?t=1745368572"
     },
     {
       "rank": 30,
@@ -254,7 +341,10 @@
       "genres": [
         "Bullet Hell"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/391540/header.jpg?t=1757349115"
     },
     {
       "rank": 31,
@@ -263,7 +353,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1229490/header.jpg?t=1792046802"
     },
     {
       "rank": 32,
@@ -272,7 +365,10 @@
       "genres": [
         "Roguelike Deckbuilder"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2379780/7a85430784e4d613cdb0547414d8cf16ffa45747/header.jpg?t=1790693638"
     },
     {
       "rank": 33,
@@ -281,7 +377,10 @@
       "genres": [
         "Souls-like"
       ],
-      "positivePercent": 93
+      "positivePercent": 93,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/header.jpg?t=1790290043"
     },
     {
       "rank": 34,
@@ -290,14 +389,20 @@
       "genres": [
         "Survival Horror"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/239140/9d1b810b85ae46a0acbdfddf583ccbb81271183e/header.jpg?t=1793627304"
     },
     {
       "rank": 35,
       "appId": 427520,
       "title": "Factorio",
       "genres": [],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/427520/ab9a2df0a77caebde20dc45adc021de8cdcf7cc5/header.jpg?t=1792752343"
     },
     {
       "rank": 36,
@@ -306,7 +411,10 @@
       "genres": [
         "Open World Survival Craft"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/322330/050ea9c51a4e96f707309d33b7cdd38e0a6cbfff/header_alt_assets_51.jpg?t=1793044716"
     },
     {
       "rank": 37,
@@ -315,7 +423,10 @@
       "genres": [
         "Roguelike Deckbuilder"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/646570/header.jpg?t=1774015376"
     },
     {
       "rank": 38,
@@ -324,21 +435,30 @@
       "genres": [
         "Survival Horror"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/883710/header.jpg?t=1779433152"
     },
     {
       "rank": 39,
       "appId": 433340,
       "title": "Slime Rancher",
       "genres": [],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/433340/header.jpg?t=1758651509"
     },
     {
       "rank": 40,
       "appId": 1222140,
       "title": "Detroit: Become Human",
       "genres": [],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/header.jpg?t=1667468479"
     },
     {
       "rank": 41,
@@ -347,14 +467,20 @@
       "genres": [
         "Choose Your Own Adventure"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2592160/header.jpg?t=1792683942"
     },
     {
       "rank": 42,
       "appId": 48700,
       "title": "Mount & Blade: Warband",
       "genres": [],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/48700/header.jpg?t=1750147149"
     },
     {
       "rank": 43,
@@ -363,14 +489,20 @@
       "genres": [
         "Creature Collector"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1623730/6912f19c43a95ff5fe514eedd35e68bf12335459/header.jpg?t=1790336367"
     },
     {
       "rank": 44,
       "appId": 508440,
       "title": "Totally Accurate Battle Simulator",
       "genres": [],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/508440/header.jpg?t=1730715415"
     },
     {
       "rank": 45,
@@ -379,14 +511,20 @@
       "genres": [
         "Souls-like"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/814380/header.jpg?t=1762888662"
     },
     {
       "rank": 46,
       "appId": 3590,
       "title": "Plants vs. Zombies GOTY Edition",
       "genres": [],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3590/header.jpg?t=1777394124"
     },
     {
       "rank": 47,
@@ -395,7 +533,10 @@
       "genres": [
         "Bullet Hell"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1671210/7ccda5b1631d2e60cc756a3271e845dbb9168821/header.jpg?t=1782314340"
     },
     {
       "rank": 48,
@@ -404,7 +545,10 @@
       "genres": [
         "Third-Person Shooter"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/203160/13a6dfaa4655377988aa627f03b2322f8bf18ec9/header_alt_assets_0.jpg?t=1792674634"
     },
     {
       "rank": 49,
@@ -413,14 +557,20 @@
       "genres": [
         "Psychological Horror"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/698780/header.jpg?t=1681943582"
     },
     {
       "rank": 50,
       "appId": 1332010,
       "title": "Stray",
       "genres": [],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1332010/71daca1910d664d31240b9623a495e0c0828807f/header.jpg?t=1785424330"
     },
     {
       "rank": 51,
@@ -429,14 +579,20 @@
       "genres": [
         "Immersive Sim"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/270880/a80e5a18363259677ca96c2a39503ea595d2a45f/header.jpg?t=1794418935"
     },
     {
       "rank": 52,
       "appId": 22380,
       "title": "Fallout: New Vegas",
       "genres": [],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/22380/header.jpg?t=1765992876"
     },
     {
       "rank": 53,
@@ -445,7 +601,10 @@
       "genres": [
         "Metroidvania"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/588650/header.jpg?t=1779086887"
     },
     {
       "rank": 54,
@@ -454,14 +613,20 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1237970/header.jpg?t=1779987598"
     },
     {
       "rank": 55,
       "appId": 1174180,
       "title": "Red Dead Redemption 2",
       "genres": [],
-      "positivePercent": 93
+      "positivePercent": 93,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1174180/header.jpg?t=1759502961"
     },
     {
       "rank": 56,
@@ -470,7 +635,10 @@
       "genres": [
         "Psychological Horror"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2527500/header.jpg?t=1794371304"
     },
     {
       "rank": 57,
@@ -479,7 +647,10 @@
       "genres": [
         "Souls-like"
       ],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/374320/header.jpg?t=1748630784"
     },
     {
       "rank": 58,
@@ -488,7 +659,10 @@
       "genres": [
         "Precision Platformer"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/504230/header.jpg?t=1714089525"
     },
     {
       "rank": 59,
@@ -497,14 +671,20 @@
       "genres": [
         "Bullet Hell"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/268910/header.jpg?t=1709068852"
     },
     {
       "rank": 60,
       "appId": 1426210,
       "title": "It Takes Two",
       "genres": [],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": true,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1426210/header.jpg?t=1777395376"
     },
     {
       "rank": 61,
@@ -513,7 +693,10 @@
       "genres": [
         "Action Roguelike"
       ],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3527290/31bac6b2eccf09b368f5e95ce510bae2baf3cfcd/header.jpg?t=1792684718"
     },
     {
       "rank": 62,
@@ -522,7 +705,10 @@
       "genres": [
         "Dating Sim"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1289310/header.jpg?t=1620755466"
     },
     {
       "rank": 63,
@@ -531,7 +717,10 @@
       "genres": [
         "Open World Survival Craft"
       ],
-      "positivePercent": 93
+      "positivePercent": 93,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/892970/df65cafab20dae97a243c7cc988e8bf959e4b906/header.jpg?t=1791544831"
     },
     {
       "rank": 64,
@@ -540,7 +729,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/546560/header.jpg?t=1790202165"
     },
     {
       "rank": 65,
@@ -549,7 +741,10 @@
       "genres": [
         "Open World Survival Craft"
       ],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/108600/header.jpg?t=1794338497"
     },
     {
       "rank": 66,
@@ -558,7 +753,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": true,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/240/header.jpg?t=1745368575"
     },
     {
       "rank": 67,
@@ -567,7 +765,10 @@
       "genres": [
         "JRPG"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1903340/be3305b02d4db0dffa3458537118423bf2792d7e/header.jpg?t=1793903997"
     },
     {
       "rank": 68,
@@ -576,14 +777,20 @@
       "genres": [
         "Precision Platformer"
       ],
-      "positivePercent": 93
+      "positivePercent": 93,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/322170/header.jpg?t=1775300400"
     },
     {
       "rank": 69,
       "appId": 72850,
       "title": "The Elder Scrolls V: Skyrim",
       "genres": [],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/72850/header.jpg?t=1788199504"
     },
     {
       "rank": 70,
@@ -592,7 +799,10 @@
       "genres": [
         "Card Battler"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1092790/header.jpg?t=1777572925"
     },
     {
       "rank": 71,
@@ -601,14 +811,20 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/70/header.jpg?t=1745368462"
     },
     {
       "rank": 72,
       "appId": 319630,
       "title": "Life is Strange - Episode 1",
       "genres": [],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/319630/header.jpg?t=1772725755"
     },
     {
       "rank": 73,
@@ -617,7 +833,10 @@
       "genres": [
         "Roguelite"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1868140/81bdb3bce15d27ca1b4554a642d91096e89be229/header.jpg?t=1791478061"
     },
     {
       "rank": 74,
@@ -626,7 +845,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/223470/header.jpg?t=1794195312"
     },
     {
       "rank": 75,
@@ -635,7 +857,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/379720/header.jpg?t=1750784856"
     },
     {
       "rank": 76,
@@ -644,7 +869,10 @@
       "genres": [
         "Hero Shooter"
       ],
-      "positivePercent": 91
+      "positivePercent": 91,
+      "appType": "game",
+      "multiplayerOnly": true,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/440/header.jpg?t=1757348372"
     },
     {
       "rank": 77,
@@ -653,14 +881,20 @@
       "genres": [
         "Survival Horror"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3764200/ce5437442768e38eb575f205ab9397d0264017b0/header.jpg?t=1779840172"
     },
     {
       "rank": 78,
       "appId": 8930,
       "title": "Sid Meier's Civilization® V",
       "genres": [],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/8930/header.jpg?t=1724341158"
     },
     {
       "rank": 79,
@@ -669,7 +903,10 @@
       "genres": [
         "Colony Sim"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/457140/header.jpg?t=1790785089"
     },
     {
       "rank": 80,
@@ -678,7 +915,10 @@
       "genres": [
         "Tactical RPG"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/435150/3f6ee788cb01bd65097c52399d536eb424b4876f/header.jpg?t=1765811123"
     },
     {
       "rank": 81,
@@ -687,7 +927,10 @@
       "genres": [
         "Hack and Slash"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1593500/header.jpg?t=1763059412"
     },
     {
       "rank": 82,
@@ -696,7 +939,10 @@
       "genres": [
         "Metroidvania"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1057090/header.jpg?t=1759530749"
     },
     {
       "rank": 83,
@@ -705,7 +951,10 @@
       "genres": [
         "Social Deduction"
       ],
-      "positivePercent": 92
+      "positivePercent": 92,
+      "appType": "game",
+      "multiplayerOnly": true,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/d611f3f87743b5121532023b1d3ee2dd0e96e772/header.jpg?t=1793821899"
     },
     {
       "rank": 84,
@@ -714,7 +963,10 @@
       "genres": [
         "Hack and Slash"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/601150/header.jpg?t=1790215341"
     },
     {
       "rank": 85,
@@ -723,7 +975,10 @@
       "genres": [
         "3D Platformer"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": true,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2001120/header.jpg?t=1763484567"
     },
     {
       "rank": 86,
@@ -732,7 +987,10 @@
       "genres": [
         "Third-Person Shooter"
       ],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/632360/header.jpg?t=1791475448"
     },
     {
       "rank": 87,
@@ -741,14 +999,20 @@
       "genres": [
         "Top-Down Shooter"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/219150/header.jpg?t=1785434922"
     },
     {
       "rank": 88,
       "appId": 238320,
       "title": "Outlast",
       "genres": [],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/238320/header.jpg?t=1666817106"
     },
     {
       "rank": 89,
@@ -757,7 +1021,10 @@
       "genres": [
         "JRPG"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1687950/header.jpg?t=1783356822"
     },
     {
       "rank": 90,
@@ -766,21 +1033,30 @@
       "genres": [
         "Beat 'em up"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/204360/header.jpg?t=1764096331"
     },
     {
       "rank": 91,
       "appId": 205100,
       "title": "Dishonored",
       "genres": [],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/205100/08e23dc25023aac81f2b40e35785e01de64dd171/header.jpg?t=1789050056"
     },
     {
       "rank": 92,
       "appId": 1817070,
       "title": "Marvel’s Spider-Man Remastered",
       "genres": [],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1817070/header.jpg?t=1787838689"
     },
     {
       "rank": 93,
@@ -789,14 +1065,20 @@
       "genres": [
         "2D Platformer"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2231450/header.jpg?t=1732516978"
     },
     {
       "rank": 94,
       "appId": 1366540,
       "title": "Dyson Sphere Program",
       "genres": [],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1366540/2521472f3f71b6f179515fdcfa33d27c212ba3ce/header.jpg?t=1776523171"
     },
     {
       "rank": 95,
@@ -805,7 +1087,10 @@
       "genres": [
         "Puzzle Platformer"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/477160/9258286b309480a3ce438c07cb51fadf3ea2f1d1/header_alt_assets_27.jpg?t=1793018738"
     },
     {
       "rank": 96,
@@ -814,7 +1099,10 @@
       "genres": [
         "Survival Horror"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1196590/header.jpg?t=1776927117"
     },
     {
       "rank": 97,
@@ -823,7 +1111,10 @@
       "genres": [
         "2D Platformer"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/460950/header.jpg?t=1761066027"
     },
     {
       "rank": 98,
@@ -832,7 +1123,10 @@
       "genres": [
         "Typing"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3419430/2e6c93c020fe13d09d8120bb9164ed7cb58f00c5/header.jpg?t=1791309178"
     },
     {
       "rank": 99,
@@ -841,7 +1135,10 @@
       "genres": [
         "Choose Your Own Adventure"
       ],
-      "positivePercent": 99
+      "positivePercent": 99,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1089980/header.jpg?t=1781289354"
     },
     {
       "rank": 100,
@@ -850,7 +1147,10 @@
       "genres": [
         "Open World Survival Craft"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/219740/88641e235d75934ea9f7ed4e947edfd9da682732/header.jpg?t=1790876891"
     },
     {
       "rank": 101,
@@ -859,14 +1159,20 @@
       "genres": [
         "Education"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/220200/header.jpg?t=1738037585"
     },
     {
       "rank": 102,
       "appId": 1167630,
       "title": "Teardown",
       "genres": [],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1167630/38bac946654a2cc775607518fb5c8e4e0a0f9a87/header.jpg?t=1791807602"
     },
     {
       "rank": 103,
@@ -875,7 +1181,10 @@
       "genres": [
         "Open World Survival Craft"
       ],
-      "positivePercent": 93
+      "positivePercent": 93,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/648800/header.jpg?t=1727184011"
     },
     {
       "rank": 104,
@@ -884,7 +1193,10 @@
       "genres": [
         "Psychological Horror"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/420530/header.jpg?t=1785326211"
     },
     {
       "rank": 105,
@@ -893,7 +1205,10 @@
       "genres": [
         "City Builder"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/813780/header.jpg?t=1790623375"
     },
     {
       "rank": 106,
@@ -902,7 +1217,10 @@
       "genres": [
         "Action Roguelike"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1313140/19f32bb477a6e9d058e05193b4e282149bd70644/header.jpg?t=1786554901"
     },
     {
       "rank": 107,
@@ -911,7 +1229,10 @@
       "genres": [
         "Hack and Slash"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4115450/7f882f889630270d3d3fb93825ac6f55b55e7a6c/header.jpg?t=1793261976"
     },
     {
       "rank": 108,
@@ -920,14 +1241,20 @@
       "genres": [
         "Psychological Horror"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1150690/header.jpg?t=1671584768"
     },
     {
       "rank": 109,
       "appId": 207610,
       "title": "The Walking Dead",
       "genres": [],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/207610/header.jpg?t=1729702559"
     },
     {
       "rank": 110,
@@ -936,21 +1263,30 @@
       "genres": [
         "JRPG"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1113000/header.jpg?t=1763530422"
     },
     {
       "rank": 111,
       "appId": 239030,
       "title": "Papers, Please",
       "genres": [],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/239030/header.jpg?t=1678266428"
     },
     {
       "rank": 112,
       "appId": 213670,
       "title": "South Park™: The Stick of Truth™",
       "genres": [],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/213670/header.jpg?t=1777994062"
     },
     {
       "rank": 113,
@@ -959,7 +1295,10 @@
       "genres": [
         "Roguelite"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1145350/91ac334a2c137d08968ccc0bc474a02579602100/header.jpg?t=1779901265"
     },
     {
       "rank": 114,
@@ -968,7 +1307,10 @@
       "genres": [
         "Bullet Hell"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1942280/bf970261a3a42f346624ae9c48b5b317fc724857/header_alt_assets_4.jpg?t=1793641955"
     },
     {
       "rank": 115,
@@ -977,7 +1319,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 86
+      "positivePercent": 86,
+      "appType": "game",
+      "multiplayerOnly": true,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/162664aa5da85f418105350c5d67ca565f6c3713/header.jpg?t=1793054556"
     },
     {
       "rank": 116,
@@ -986,7 +1331,10 @@
       "genres": [
         "Incremental"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1454400/header.jpg?t=1793915203"
     },
     {
       "rank": 117,
@@ -995,7 +1343,10 @@
       "genres": [
         "2D Platformer"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/238460/header.jpg?t=1779296698"
     },
     {
       "rank": 118,
@@ -1004,7 +1355,10 @@
       "genres": [
         "Creature Collector"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3146520/header.jpg?t=1728673229"
     },
     {
       "rank": 119,
@@ -1013,7 +1367,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/362890/674b9a0e7b31996efd5032dc15e695dbf457d71d/header.jpg?t=1790377127"
     },
     {
       "rank": 120,
@@ -1022,7 +1379,10 @@
       "genres": [
         "Survival Horror"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/418370/header.jpg?t=1778464947"
     },
     {
       "rank": 121,
@@ -1031,7 +1391,10 @@
       "genres": [
         "Immersive Sim"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/233860/fa72ac8a032fd876780cd5b554e4c03b4976ef74/header.jpg?t=1779293333"
     },
     {
       "rank": 122,
@@ -1040,21 +1403,30 @@
       "genres": [
         "Puzzle Platformer"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/304430/header.jpg?t=1793958852"
     },
     {
       "rank": 123,
       "appId": 1920960,
       "title": "VPet-Simulator",
       "genres": [],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1920960/header.jpg?t=1723439659"
     },
     {
       "rank": 124,
       "appId": 489830,
       "title": "The Elder Scrolls V: Skyrim Special Edition",
       "genres": [],
-      "positivePercent": 92
+      "positivePercent": 92,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/489830/header.jpg?t=1786648247"
     },
     {
       "rank": 125,
@@ -1063,7 +1435,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/636480/header.jpg?t=1791381747"
     },
     {
       "rank": 126,
@@ -1072,35 +1447,50 @@
       "genres": [
         "Beat 'em up"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/35140/header.jpg?t=1745966724"
     },
     {
       "rank": 127,
       "appId": 1771300,
       "title": "Kingdom Come: Deliverance II",
       "genres": [],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1771300/header.jpg?t=1777975568"
     },
     {
       "rank": 128,
       "appId": 221380,
       "title": "Age of Empires II (Retired)",
       "genres": [],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/221380/header.jpg?t=1705596928"
     },
     {
       "rank": 129,
       "appId": 683320,
       "title": "GRIS",
       "genres": [],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/683320/header.jpg?t=1759429603"
     },
     {
       "rank": 130,
       "appId": 753640,
       "title": "Outer Wilds",
       "genres": [],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/753640/079ae4a7ff4b5875adc5c63c4c0b84e5a3e6966b/header.jpg?t=1785424341"
     },
     {
       "rank": 131,
@@ -1109,7 +1499,10 @@
       "genres": [
         "Bullet Heaven"
       ],
-      "positivePercent": 99
+      "positivePercent": 99,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2420510/header.jpg?t=1740642230"
     },
     {
       "rank": 132,
@@ -1118,7 +1511,10 @@
       "genres": [
         "Psychological Horror"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2835570/header.jpg?t=1783085442"
     },
     {
       "rank": 133,
@@ -1127,7 +1523,10 @@
       "genres": [
         "Looter Shooter"
       ],
-      "positivePercent": 91
+      "positivePercent": 91,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/304930/161ec2d6ace8a03afdb7a423510ff8f7d8b301ba/header.jpg?t=1783436894"
     },
     {
       "rank": 134,
@@ -1136,14 +1535,20 @@
       "genres": [
         "3D Platformer"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/253230/header.jpg?t=1790173529"
     },
     {
       "rank": 135,
       "appId": 206440,
       "title": "To the Moon",
       "genres": [],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/206440/header.jpg?t=1792212569"
     },
     {
       "rank": 136,
@@ -1152,7 +1557,10 @@
       "genres": [
         "Hack and Slash"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/235460/header.jpg?t=1740076034"
     },
     {
       "rank": 137,
@@ -1161,21 +1569,30 @@
       "genres": [
         "Third-Person Shooter"
       ],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/391220/29279804029df9b7540caef5c086c9f0393e2e2d/header_alt_assets_0.jpg?t=1792675385"
     },
     {
       "rank": 138,
       "appId": 516750,
       "title": "My Summer Car",
       "genres": [],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/516750/header.jpg?t=1736372299"
     },
     {
       "rank": 139,
       "appId": 200260,
       "title": "Batman: Arkham City - Game of the Year Edition",
       "genres": [],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/200260/header.jpg?t=1745964057"
     },
     {
       "rank": 140,
@@ -1184,14 +1601,20 @@
       "genres": [
         "Life Sim"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1669980/header.jpg?t=1793357371"
     },
     {
       "rank": 141,
       "appId": 644560,
       "title": "Mirror",
       "genres": [],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/644560/header.jpg?t=1665690863"
     },
     {
       "rank": 142,
@@ -1200,7 +1623,10 @@
       "genres": [
         "Side Scroller"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/274190/header.jpg?t=1764247760"
     },
     {
       "rank": 143,
@@ -1209,7 +1635,10 @@
       "genres": [
         "Puzzle Platformer"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/424840/facf9a7a675c6d7f210d96d6b111caffe0386cd5/header.jpg?t=1773135169"
     },
     {
       "rank": 144,
@@ -1218,7 +1647,10 @@
       "genres": [
         "Action Roguelike"
       ],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": true,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2881650/header.jpg?t=1785137321"
     },
     {
       "rank": 145,
@@ -1227,7 +1659,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/500/header.jpg?t=1745368560"
     },
     {
       "rank": 146,
@@ -1236,14 +1671,20 @@
       "genres": [
         "Open World Survival Craft"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1284190/header.jpg?t=1788266415"
     },
     {
       "rank": 147,
       "appId": 1625450,
       "title": "Muck",
       "genres": [],
-      "positivePercent": 93
+      "positivePercent": 93,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1625450/header.jpg?t=1625163481"
     },
     {
       "rank": 148,
@@ -1252,7 +1693,10 @@
       "genres": [
         "Dating Sim"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1144400/header.jpg?t=1752128014"
     },
     {
       "rank": 149,
@@ -1261,28 +1705,40 @@
       "genres": [
         "3D Platformer"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2134320/header.jpg?t=1755357900"
     },
     {
       "rank": 150,
       "appId": 629730,
       "title": "Blade and Sorcery",
       "genres": [],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/629730/header.jpg?t=1765901841"
     },
     {
       "rank": 151,
       "appId": 1288310,
       "title": "Firework",
       "genres": [],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1288310/header.jpg?t=1751067221"
     },
     {
       "rank": 152,
       "appId": 32470,
       "title": "STAR WARS™ Empire at War - Gold Pack",
       "genres": [],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/32470/header.jpg?t=1741729002"
     },
     {
       "rank": 153,
@@ -1291,7 +1747,10 @@
       "genres": [
         "Detective"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/787480/header.jpg?t=1768866317"
     },
     {
       "rank": 154,
@@ -1300,7 +1759,10 @@
       "genres": [
         "Detective"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/250320/header.jpg?t=1734104991"
     },
     {
       "rank": 155,
@@ -1309,7 +1771,10 @@
       "genres": [
         "Dungeon Crawler"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/881100/header.jpg?t=1675987871"
     },
     {
       "rank": 156,
@@ -1318,7 +1783,10 @@
       "genres": [
         "Detective"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1931770/header.jpg?t=1774006124"
     },
     {
       "rank": 157,
@@ -1327,7 +1795,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 92
+      "positivePercent": 92,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/976730/header.jpg?t=1791569963"
     },
     {
       "rank": 158,
@@ -1336,14 +1807,20 @@
       "genres": [
         "Bullet Hell"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/311690/471d245bd8a37011c16852694342e5ad2d8a4667/header.jpg?t=1779733990"
     },
     {
       "rank": 159,
       "appId": 635260,
       "title": "CarX Drift Racing Online",
       "genres": [],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/635260/7f8fd0c0df1572fa14c9505abe70e2a599cae8e7/header.jpg?t=1787303355"
     },
     {
       "rank": 160,
@@ -1352,7 +1829,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4001890/45c4ddff4901e32c4b8b643e1b97d0d01898d299/header.jpg?t=1792508550"
     },
     {
       "rank": 161,
@@ -1361,7 +1841,10 @@
       "genres": [
         "Immersive Sim"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1290000/header.jpg?t=1780392261"
     },
     {
       "rank": 162,
@@ -1370,14 +1853,20 @@
       "genres": [
         "2D Platformer"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1562700/header.jpg?t=1764564242"
     },
     {
       "rank": 163,
       "appId": 620980,
       "title": "Beat Saber",
       "genres": [],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/620980/3067664ee110fed550f5c3a1b74340cabd7d53f0/header.jpg?t=1793008842"
     },
     {
       "rank": 164,
@@ -1386,7 +1875,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 93
+      "positivePercent": 93,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/8870/header.jpg?t=1728673518"
     },
     {
       "rank": 165,
@@ -1395,14 +1887,20 @@
       "genres": [
         "Third-Person Shooter"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3357650/e32e168b25ed68a0cf6264c220c07e96c2abfb56/header.jpg?t=1791454600"
     },
     {
       "rank": 166,
       "appId": 244210,
       "title": "Assetto Corsa",
       "genres": [],
-      "positivePercent": 93
+      "positivePercent": 93,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/244210/header.jpg?t=1793288663"
     },
     {
       "rank": 167,
@@ -1411,7 +1909,10 @@
       "genres": [
         "Life Sim"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1040200/a305a7831bee10a091625950d6cd3cdb97f72a22/header.jpg?t=1790922726"
     },
     {
       "rank": 168,
@@ -1420,7 +1921,10 @@
       "genres": [
         "Third-Person Shooter"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/55230/header.jpg?t=1764671029"
     },
     {
       "rank": 169,
@@ -1429,7 +1933,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 89
+      "positivePercent": 89,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/218620/c44949287e8ffa2518f01b5033b8431dd0f984e4/header.jpg?t=1789555107"
     },
     {
       "rank": 170,
@@ -1438,7 +1945,10 @@
       "genres": [
         "Bullet Heaven"
       ],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3405340/d06cb39a82a703e42541085fc61b42d80904b3f8/header.jpg?t=1760445338"
     },
     {
       "rank": 171,
@@ -1447,7 +1957,10 @@
       "genres": [
         "Life Sim"
       ],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2709570/header.jpg?t=1770930541"
     },
     {
       "rank": 172,
@@ -1456,7 +1969,10 @@
       "genres": [
         "JRPG"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1584090/header.jpg?t=1788596587"
     },
     {
       "rank": 173,
@@ -1465,14 +1981,20 @@
       "genres": [
         "Immersive Sim"
       ],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/613100/6cee40fe293f0bab47534e78bcda64487902efc1/header.jpg?t=1790844381"
     },
     {
       "rank": 174,
       "appId": 212680,
       "title": "FTL: Faster Than Light",
       "genres": [],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/212680/f21426ac9ad51338fa33becce88984758e07c38b/header.jpg?t=1748969356"
     },
     {
       "rank": 175,
@@ -1481,7 +2003,10 @@
       "genres": [
         "Survival Horror"
       ],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/254700/header.jpg?t=1768960618"
     },
     {
       "rank": 176,
@@ -1490,7 +2015,10 @@
       "genres": [
         "Choose Your Own Adventure"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1449690/header.jpg?t=1760651835"
     },
     {
       "rank": 177,
@@ -1499,7 +2027,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/420/header.jpg?t=1745368556"
     },
     {
       "rank": 178,
@@ -1508,7 +2039,10 @@
       "genres": [
         "2D Fighter"
       ],
-      "positivePercent": 93
+      "positivePercent": 93,
+      "appType": "game",
+      "multiplayerOnly": true,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/674940/header.jpg?t=1730715399"
     },
     {
       "rank": 179,
@@ -1517,7 +2051,10 @@
       "genres": [
         "Open World Survival Craft"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/427410/0bccdb269cdbb25c701cd00c3179cc29647e1fb8/header_alt_assets_7.jpg?t=1794245513"
     },
     {
       "rank": 180,
@@ -1526,7 +2063,10 @@
       "genres": [
         "Psychological Horror"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1562430/header.jpg?t=1793158823"
     },
     {
       "rank": 181,
@@ -1535,7 +2075,10 @@
       "genres": [
         "Life Sim"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/447530/header.jpg?t=1730740610"
     },
     {
       "rank": 182,
@@ -1544,7 +2087,10 @@
       "genres": [
         "Collectathon"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3070070/b4f36532c943011a9f1600c2585ca7065ef5b1bb/header.jpg?t=1793152078"
     },
     {
       "rank": 183,
@@ -1553,7 +2099,10 @@
       "genres": [
         "2D Platformer"
       ],
-      "positivePercent": 99
+      "positivePercent": 99,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1568400/header.jpg?t=1790792963"
     },
     {
       "rank": 184,
@@ -1562,7 +2111,10 @@
       "genres": [
         "2D Fighter"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2212330/header.jpg?t=1702425086"
     },
     {
       "rank": 185,
@@ -1571,14 +2123,20 @@
       "genres": [
         "Metroidvania"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/387290/header.jpg?t=1701967651"
     },
     {
       "rank": 186,
       "appId": 1055540,
       "title": "A Short Hike",
       "genres": [],
-      "positivePercent": 99
+      "positivePercent": 99,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1055540/header.jpg?t=1777758958"
     },
     {
       "rank": 187,
@@ -1587,7 +2145,10 @@
       "genres": [
         "Action Roguelike"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/774801/header.jpg?t=1793386775"
     },
     {
       "rank": 188,
@@ -1596,21 +2157,30 @@
       "genres": [
         "Souls-like"
       ],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2215430/header.jpg?t=1763409398"
     },
     {
       "rank": 189,
       "appId": 288160,
       "title": "The Room",
       "genres": [],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/288160/header.jpg?t=1646758287"
     },
     {
       "rank": 190,
       "appId": 1211020,
       "title": "Wobbly Life",
       "genres": [],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1211020/86c3e16dfbfec027053c733d929a61ecfd15278a/header.jpg?t=1761037189"
     },
     {
       "rank": 191,
@@ -1619,7 +2189,10 @@
       "genres": [
         "Psychological Horror"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/282140/header.jpg?t=1786607913"
     },
     {
       "rank": 192,
@@ -1628,7 +2201,10 @@
       "genres": [
         "Souls-like"
       ],
-      "positivePercent": 92
+      "positivePercent": 92,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/570940/header.jpg?t=1778518110"
     },
     {
       "rank": 193,
@@ -1637,14 +2213,20 @@
       "genres": [
         "Precision Platformer"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": true,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/386940/header.jpg?t=1765298731"
     },
     {
       "rank": 194,
       "appId": 286160,
       "title": "Tabletop Simulator",
       "genres": [],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/286160/header.jpg?t=1772387518"
     },
     {
       "rank": 195,
@@ -1653,7 +2235,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1250/header.jpg?t=1789667388"
     },
     {
       "rank": 196,
@@ -1662,21 +2247,30 @@
       "genres": [
         "City Builder"
       ],
-      "positivePercent": 93
+      "positivePercent": 93,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/323190/abcd2bf3c275092d637d7dd98e0061dbdd2fd2da/header.jpg?t=1793633192"
     },
     {
       "rank": 197,
       "appId": 219990,
       "title": "Grim Dawn",
       "genres": [],
-      "positivePercent": 93
+      "positivePercent": 93,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/219990/header.jpg?t=1791567021"
     },
     {
       "rank": 198,
       "appId": 774181,
       "title": "Rhythm Doctor",
       "genres": [],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/774181/header.jpg?t=1793376386"
     },
     {
       "rank": 199,
@@ -1685,14 +2279,20 @@
       "genres": [
         "Dating Sim"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2142790/f65314989c7779a45a674bcc950092eed32c0b0f/header.jpg?t=1785944891"
     },
     {
       "rank": 200,
       "appId": 787860,
       "title": "Farming Simulator 19",
       "genres": [],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/787860/header.jpg?t=1786447399"
     },
     {
       "rank": 201,
@@ -1701,7 +2301,10 @@
       "genres": [
         "Survival Horror"
       ],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/602960/header.jpg?t=1794234112"
     },
     {
       "rank": 202,
@@ -1710,28 +2313,40 @@
       "genres": [
         "Colony Sim"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1206560/header.jpg?t=1727687171"
     },
     {
       "rank": 203,
       "appId": 331470,
       "title": "Everlasting Summer",
       "genres": [],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/331470/header.jpg?t=1741850740"
     },
     {
       "rank": 204,
       "appId": 977950,
       "title": "A Dance of Fire and Ice",
       "genres": [],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/977950/header.jpg?t=1793318010"
     },
     {
       "rank": 205,
       "appId": 501300,
       "title": "What Remains of Edith Finch",
       "genres": [],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/501300/header.jpg?t=1785424558"
     },
     {
       "rank": 206,
@@ -1740,7 +2355,10 @@
       "genres": [
         "Hack and Slash"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1817230/header.jpg?t=1764916407"
     },
     {
       "rank": 207,
@@ -1749,7 +2367,10 @@
       "genres": [
         "Life Sim"
       ],
-      "positivePercent": 99
+      "positivePercent": 99,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4019220/f1cd08127872e60e4c47a4bc3e40d682d94741bf/header.jpg?t=1794041965"
     },
     {
       "rank": 208,
@@ -1758,7 +2379,10 @@
       "genres": [
         "Hack and Slash"
       ],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3489700/header.jpg?t=1776466244"
     },
     {
       "rank": 209,
@@ -1767,14 +2391,20 @@
       "genres": [
         "Top-Down Shooter"
       ],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/274170/header.jpg?t=1782406411"
     },
     {
       "rank": 210,
       "appId": 312530,
       "title": "Duck Game",
       "genres": [],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/312530/header.jpg?t=1719772984"
     },
     {
       "rank": 211,
@@ -1783,14 +2413,20 @@
       "genres": [
         "Metroidvania"
       ],
-      "positivePercent": 90
+      "positivePercent": 90,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1030300/7983574d464e6559ac7e24275727f73a8bcca1f3/header.jpg?t=1776125736"
     },
     {
       "rank": 212,
       "appId": 307690,
       "title": "Sleeping Dogs: Definitive Edition",
       "genres": [],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/307690/header.jpg?t=1766070052"
     },
     {
       "rank": 213,
@@ -1799,7 +2435,10 @@
       "genres": [
         "Dating Sim"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1230140/header.jpg?t=1761759369"
     },
     {
       "rank": 214,
@@ -1808,7 +2447,10 @@
       "genres": [
         "Survival Horror"
       ],
-      "positivePercent": 91
+      "positivePercent": 91,
+      "appType": "game",
+      "multiplayerOnly": true,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/700330/57931a3aa75ae823086fd945d891d6a5c98d6172/header.jpg?t=1794172162"
     },
     {
       "rank": 215,
@@ -1817,7 +2459,10 @@
       "genres": [
         "Open World Survival Craft"
       ],
-      "positivePercent": 92
+      "positivePercent": 92,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/211820/3ec8855d056d8695de0256594f893a9e3cb826e3/header.jpg?t=1782391980"
     },
     {
       "rank": 216,
@@ -1826,7 +2471,10 @@
       "genres": [
         "Detective"
       ],
-      "positivePercent": 93
+      "positivePercent": 93,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/632470/816ea59d6d8ac525f79a07c3a7afa94eddb3437c/header.jpg?t=1780913406"
     },
     {
       "rank": 217,
@@ -1835,7 +2483,10 @@
       "genres": [
         "Psychological Horror"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2124490/header.jpg?t=1744248682"
     },
     {
       "rank": 218,
@@ -1844,7 +2495,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 91
+      "positivePercent": 91,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/782330/feaf8293bcd2d078422faa547bc0d707c08f606e/header.jpg?t=1783432602"
     },
     {
       "rank": 219,
@@ -1853,7 +2507,10 @@
       "genres": [
         "Psychological Horror"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/541570/header.jpg?t=1787576437"
     },
     {
       "rank": 220,
@@ -1862,7 +2519,10 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 90
+      "positivePercent": 90,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/107410/header.jpg?t=1786458620"
     },
     {
       "rank": 221,
@@ -1871,14 +2531,20 @@
       "genres": [
         "FPS"
       ],
-      "positivePercent": 92
+      "positivePercent": 92,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/286690/header.jpg?t=1792681167"
     },
     {
       "rank": 222,
       "appId": 552100,
       "title": "Brick Rigs",
       "genres": [],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/552100/header.jpg?t=1780405668"
     },
     {
       "rank": 223,
@@ -1887,7 +2553,10 @@
       "genres": [
         "Survival Horror"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/871720/header.jpg?t=1568143255"
     },
     {
       "rank": 224,
@@ -1896,14 +2565,20 @@
       "genres": [
         "Psychological Horror"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1388880/2918402fa9090ab9ab944af2469d47d670007387/header.jpg?t=1769459840"
     },
     {
       "rank": 225,
       "appId": 990080,
       "title": "Hogwarts Legacy",
       "genres": [],
-      "positivePercent": 90
+      "positivePercent": 90,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/990080/be2971b1023bccb04f993887d70ef4d2060262cf/header.jpg?t=1790708992"
     },
     {
       "rank": 226,
@@ -1912,14 +2587,20 @@
       "genres": [
         "Detective"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/653530/header.jpg?t=1686697594"
     },
     {
       "rank": 227,
       "appId": 1259420,
       "title": "Days Gone",
       "genres": [],
-      "positivePercent": 93
+      "positivePercent": 93,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1259420/header.jpg?t=1750947718"
     },
     {
       "rank": 228,
@@ -1928,14 +2609,20 @@
       "genres": [
         "Psychological Horror"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1989270/74a54248cfec29144de5e867a333c30e6d62801d/header.jpg?t=1791026492"
     },
     {
       "rank": 229,
       "appId": 1240210,
       "title": "There Is No Game: Wrong Dimension",
       "genres": [],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1240210/header.jpg?t=1728289933"
     },
     {
       "rank": 230,
@@ -1944,7 +2631,10 @@
       "genres": [
         "Survival Horror"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1262350/header.jpg?t=1773697315"
     },
     {
       "rank": 231,
@@ -1953,7 +2643,10 @@
       "genres": [
         "Action Roguelike"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/113200/header.jpg?t=1643480517"
     },
     {
       "rank": 232,
@@ -1962,7 +2655,10 @@
       "genres": [
         "Roguelite"
       ],
-      "positivePercent": 93
+      "positivePercent": 93,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1217060/dd6c1906d262c38c183ccd711f192db187b5103f/header.jpg?t=1792125722"
     },
     {
       "rank": 233,
@@ -1971,7 +2667,10 @@
       "genres": [
         "3D Fighter"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/597170/header.jpg?t=1784069375"
     },
     {
       "rank": 234,
@@ -1980,14 +2679,20 @@
       "genres": [
         "Flight"
       ],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/346010/header.jpg?t=1785839167"
     },
     {
       "rank": 235,
       "appId": 1082430,
       "title": "Before Your Eyes",
       "genres": [],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1082430/header.jpg?t=1791145610"
     },
     {
       "rank": 236,
@@ -1996,7 +2701,10 @@
       "genres": [
         "Detective"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3101040/header.jpg?t=1789891545"
     },
     {
       "rank": 237,
@@ -2005,7 +2713,10 @@
       "genres": [
         "City Builder"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1062090/eeb2babf15cbf4ebc175316a5d3e42a060f3d97c/header.jpg?t=1788438437"
     },
     {
       "rank": 238,
@@ -2014,7 +2725,10 @@
       "genres": [
         "Bullet Hell"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/531510/header.jpg?t=1738790023"
     },
     {
       "rank": 239,
@@ -2023,14 +2737,20 @@
       "genres": [
         "JRPG"
       ],
-      "positivePercent": 94
+      "positivePercent": 94,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2161700/header.jpg?t=1764776430"
     },
     {
       "rank": 240,
       "appId": 252490,
       "title": "Rust",
       "genres": [],
-      "positivePercent": 87
+      "positivePercent": 87,
+      "appType": "game",
+      "multiplayerOnly": true,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/252490/header.jpg?t=1781536981"
     },
     {
       "rank": 241,
@@ -2039,7 +2759,10 @@
       "genres": [
         "City Builder"
       ],
-      "positivePercent": 90
+      "positivePercent": 90,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/255710/header.jpg?t=1791468493"
     },
     {
       "rank": 242,
@@ -2048,7 +2771,10 @@
       "genres": [
         "Dungeon Crawler"
       ],
-      "positivePercent": 92
+      "positivePercent": 92,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/262060/58cc9af814f8767242167a3f8ad013c1ac471074/header.jpg?t=1789168187"
     },
     {
       "rank": 243,
@@ -2057,7 +2783,10 @@
       "genres": [
         "Psychological Horror"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2263010/header.jpg?t=1726861073"
     },
     {
       "rank": 244,
@@ -2066,14 +2795,20 @@
       "genres": [
         "Choose Your Own Adventure"
       ],
-      "positivePercent": 97
+      "positivePercent": 97,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/261030/header.jpg?t=1729703055"
     },
     {
       "rank": 245,
       "appId": 22330,
       "title": "The Elder Scrolls IV: Oblivion® Game of the Year Edition (2009)",
       "genres": [],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/22330/header.jpg?t=1745343031"
     },
     {
       "rank": 246,
@@ -2082,7 +2817,10 @@
       "genres": [
         "Incremental"
       ],
-      "positivePercent": 99
+      "positivePercent": 99,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3862670/e967f8f5201f55f7b098bf3b9a54c8c8f38012b3/header.jpg?t=1790864377"
     },
     {
       "rank": 247,
@@ -2091,14 +2829,20 @@
       "genres": [
         "Sokoban"
       ],
-      "positivePercent": 98
+      "positivePercent": 98,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/736260/header.jpg?t=1760102539"
     },
     {
       "rank": 248,
       "appId": 972660,
       "title": "Spiritfarer®: Farewell Edition",
       "genres": [],
-      "positivePercent": 95
+      "positivePercent": 95,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/972660/header.jpg?t=1752503178"
     },
     {
       "rank": 249,
@@ -2107,14 +2851,20 @@
       "genres": [
         "Detective"
       ],
-      "positivePercent": 96
+      "positivePercent": 96,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/413410/header.jpg?t=1781085607"
     },
     {
       "rank": 250,
       "appId": 282070,
       "title": "This War of Mine",
       "genres": [],
-      "positivePercent": 93
+      "positivePercent": 93,
+      "appType": "game",
+      "multiplayerOnly": false,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/282070/26fb8c9bb7b9e3a17469d8026ee3fa510ee7f8f5/header.jpg?t=1793632890"
     }
   ]
 }

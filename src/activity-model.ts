@@ -1,14 +1,16 @@
 export type ActivityGame={appId:number;title:string;rank:number|null;playersNow:number|null;peakToday:number|null;weeklyChange:number|null;reviewPercent:number|null;reviewCount:number|null;price:string|null;image?:string};
 export type Observation={at:string;counts:Record<string,number>};
-export type ActivityData={sampledAt:string;extendedCapturedAt?:string;games:ActivityGame[];movers:ActivityGame[];releases:ActivityGame[];acclaimed:ActivityGame[];history:Observation[];warnings:string[];stale:boolean};
+export type ActivityData={sampledAt:string;extendedCapturedAt?:string;games:ActivityGame[];movers:ActivityGame[];releases:ActivityGame[];acclaimed:ActivityGame[];history:Observation[];warnings:string[];stale:boolean;online?:{sampledAt:string;samples:[number,number][]}};
 const count=(v:unknown):v is number=>typeof v==='number'&&Number.isSafeInteger(v)&&v>=0;
 export function validateActivity(value:unknown):ActivityData {
   const data=value as ActivityData;
   if(!data||!Number.isFinite(Date.parse(data.sampledAt))||typeof data.stale!=='boolean'||!Array.isArray(data.warnings)||!data.warnings.every(w=>typeof w==='string'))throw new Error('Invalid activity response.');
   if(data.extendedCapturedAt!==undefined&&!Number.isFinite(Date.parse(data.extendedCapturedAt)))throw new Error('Invalid extended ranking timestamp.');
+  if(data.online!==undefined&&(!data.online||typeof data.online!=='object'||!Number.isFinite(Date.parse(data.online.sampledAt))||!Array.isArray(data.online.samples)||data.online.samples.length<2||data.online.samples.length>3000||data.online.samples.some(p=>!Array.isArray(p)||p.length!==2||!count(p[0])||p[0]<1||!count(p[1]))))throw Error('Invalid Steam online history.');
   for(const list of [data.games,data.movers,data.releases,data.acclaimed]){
     if(!Array.isArray(list)||list.length>1000)throw new Error('Invalid activity list.');
     for(const g of list){
+      if(!g||typeof g!=='object')throw new Error('Invalid activity game.');
       if(g.image!==undefined && !/^https:\/\/shared\.(?:akamai|cloudflare|fastly)\.steamstatic\.com\/store_item_assets\//.test(g.image))throw new Error('Invalid Steam artwork URL.');
       if(!g||!count(g.appId)||g.appId<1||typeof g.title!=='string'||g.title.length>300||![g.rank,g.playersNow,g.peakToday,g.reviewCount].every(v=>v===null||count(v))||!(g.reviewPercent===null||(count(g.reviewPercent)&&g.reviewPercent<=100))||!(g.weeklyChange===null||Number.isSafeInteger(g.weeklyChange))||!(g.price===null||typeof g.price==='string'))throw new Error('Invalid activity game.');
     }

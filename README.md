@@ -4,18 +4,20 @@ Too many games, nothing to play. Load a public Steam library, narrow it down, an
 
 ## What it does
 
-- **Public profile lookup:** paste a Steam profile URL, custom handle, or Steam64 ID. No visitor login required.
-- **Backlog roulette:** spin through unfinished games that match your filters, with optional sound and reduced-motion support.
-- **Library management:** keep status and remaining time in view; expand Details & tags for purchase value, tags and source information. Save games to Play Next, and import or export JSON backups.
-- **Filters:** quick choices for Never played, Under 10 hours and Play Next, with genre, review score and more inside Advanced filters.
-- **Steam pulse:** browse 1,000 games in pages of 50, compare activity, and find popular games you already own. Four discovery cards show ten picks each.
+- **Public profile lookup:** paste a Steam profile URL, custom handle, or Steam64 ID. See whose library is loaded and switch profiles without logging in.
+- **Backlog roulette:** spin through eligible unfinished games and see why the pick matches your filters and shortlist.
+- **Exclusions:** leave individual titles, software, demos or multiplayer-only games out of roulette while keeping them in your library. Unknown classifications stay eligible.
+- **Library management:** track status, tags and Play Next, remove games from the local list, and import or export JSON backups. Undo restores recent library changes, including replacement imports and profile switches.
+- **Remembered preferences:** filters, library sorting, exclusions, sound, gaming budget, Steam pulse sorting/page and the last visited page stay saved in this browser.
+- **Steam pulse:** browse 1,000 games in pages of 50, with reported all-time peaks, recent activity sparklines and an online Steam-user chart. Four discovery panels show ten picks each.
+- **Automatic discovery hero:** four fixed cards cycle through the games in Steam’s top 25 most-played ranking. The cards themselves do not move between positions.
 - **Top 250 discovery:** start with six recommendations, or expand the full list. Once a library is loaded, roulette picks only from that library.
 
-Your library and changes stay in your browser. Steam does not provide prices paid or time-to-beat, so those fields stay unknown unless you supply them.
+Loaded libraries and changes stay in your browser. Steam does not provide prices paid or time-to-beat, so those fields stay unknown unless you supply them. Undo keeps up to 20 library changes during the current session. Removing a game here never changes Steam ownership; refreshing a Steam profile can bring it back.
 
 Use **Refresh library** to update Steam playtime. The last sync time stays visible, and saved statuses, tags, priorities and filters are preserved when refreshing the same profile. Results can be up to five minutes old.
 
-Hero motion pauses while you work with the library. Private profiles, empty libraries and failed activity refreshes offer recovery actions without replacing saved data. Bottom pagination brings you back to the ranking heading.
+Private profiles, empty libraries and failed activity refreshes offer recovery actions without replacing saved data. Bottom pagination brings you back to the ranking heading. Hero transitions respect the device’s reduced-motion setting without adding on-screen controls.
 
 ## Run locally
 
@@ -54,11 +56,11 @@ The hosted build in `dist/` loads Steam pulse’s ranking separately when you vi
 
 ## Data sources
 
-- [Steam](https://store.steampowered.com/charts/mostplayed) supplies public libraries, the official top-100 player feed, weekly rankings, store listings, and reviews.
-- [Steam Charts](https://steamcharts.com/top) provides the wider player ranking, captured hourly. Official Steam counts take precedence where available. The combined list is sorted by reported counts; today's peaks are unknown outside Steam's official feed.
+- [Steam](https://store.steampowered.com/charts/mostplayed) supplies public libraries, the official top-100 player feed, weekly rankings, store classifications, listings and reviews. Its [online-user feed](https://store.steampowered.com/stats/userdata.json) supplies the platform chart; that feed does not supply a global in-game total.
+- [Steam Charts](https://steamcharts.com/top) provides the wider player ranking, captured hourly. Official Steam counts take precedence where available. The combined list is sorted by reported counts; today's peaks are unknown outside Steam's official feed. Per-game pages supply all-time records and recent chart samples, checked on demand and cached for an hour. Missing records and insufficient history stay unavailable.
 - [Steam 250](https://steam250.com/top250) supplies the discovery ranking. Its source and snapshot date appear in the app.
 
-Activity history contains only samples this app has recorded for Steam's official top 100. It keeps up to seven days in `.data/activity-history.json`; persist that directory when hosting. Store prices are asking prices, not what a user paid.
+The comparison view’s Observed history contains only samples this app has recorded for Steam's official top 100. It keeps up to seven days in `.data/activity-history.json`; persist that directory when hosting. The small discovery-panel charts use Steam Charts’ own reported recent samples. Store prices are asking prices, not what a user paid.
 
 Refresh bundled snapshots with `pnpm update:top250` or `pnpm update:activity`, then rebuild. Export your library before clearing browser data or moving to another browser.
 

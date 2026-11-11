@@ -2,7 +2,7 @@ import {createSignal,For,onCleanup,Show} from 'solid-js';
 import {statuses,validateLibrary,type Game} from './library';
 import {mergeLibrary,parseImport} from './imports';
 
-export function DataTools(props:{games:Game[];onApply:(games:Game[])=>boolean;readOnly:boolean}) {
+export function DataTools(props:{games:Game[];onApply:(games:Game[])=>boolean;readOnly:boolean;canUndo:boolean;onUndo:()=>void}) {
   const [tab,setTab]=createSignal('custom');
   const [preview,setPreview]=createSignal<Game[]|null>(null);
   const [replace,setReplace]=createSignal(false);
@@ -11,7 +11,7 @@ export function DataTools(props:{games:Game[];onApply:(games:Game[])=>boolean;re
   let revision=0;
   const cancel=()=>{revision++;setPreview(null);setError('');};
   onCleanup(()=>{revision++;});
-  const open=(name:string)=>{cancel();setTab(name);setReplace(false);dialog.showModal();};
+  const open=(name:string)=>{cancel();setTab(name);setReplace(false);const input=dialog.querySelector<HTMLInputElement>('input[type=file]');if(input)input.value='';dialog.showModal();};
   function download() {
     const blob=new Blob([JSON.stringify({version:1,games:props.games},null,2)],{type:'application/json'});
     const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='steam-backlog-library.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
@@ -39,7 +39,7 @@ export function DataTools(props:{games:Game[];onApply:(games:Game[])=>boolean;re
     try{if(props.onApply(replace()?incoming:mergeLibrary(props.games,incoming)))dialog.close();else setError('Could not save. The library was not changed.');}
     catch(e){setError(e instanceof Error?e.message:'Could not apply library.');}
   }
-  return <section class="data-tools" aria-label="Library data tools"><div class="tool-actions"><button disabled={props.readOnly} onClick={()=>open('custom')}>＋ Add game</button><button disabled={props.readOnly} onClick={()=>open('json')}>Import JSON library</button><button disabled={props.games.length===0} onClick={download}>Export library JSON</button></div>
+  return <section class="data-tools" aria-label="Library data tools"><div class="tool-actions"><button disabled={props.readOnly} onClick={()=>open('custom')}>＋ Add game</button><button disabled={props.readOnly} onClick={()=>open('json')}>Import JSON library</button><button disabled={props.games.length===0} onClick={download}>Export library JSON</button><Show when={props.canUndo}><button disabled={props.readOnly} onClick={props.onUndo}>Undo last change</button></Show></div>
     <dialog ref={dialog} class="modal" onClose={cancel} aria-labelledby="data-title"><button class="modal-close" onClick={()=>dialog.close()} aria-label="Close library tools">✕</button><h2 id="data-title">{tab()==='custom'?'Add a game':'Import a library'}</h2>
       <Show when={tab()==='custom'}><form class="data-form" onSubmit={custom}>
         <label>Title<input name="title" required maxlength="300" /></label><label>Steam App ID<input name="appId" type="number" min="1" step="1" required /></label>

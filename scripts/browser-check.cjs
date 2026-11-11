@@ -22,18 +22,18 @@ async function main(){
  await evaluate(`new Promise((resolve,reject)=>{let n=0;const t=setInterval(()=>{if(document.querySelector('.game-card')){clearInterval(t);resolve(true);}else if(++n>100){clearInterval(t);reject(new Error('App did not mount'));}},100);})`);
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),6,'discovery starts with six games');
  assert.equal(await evaluate(`document.querySelector('.advanced-filters').open`),false,'advanced filters start collapsed');
- await evaluate(`document.querySelector('#steam-profile').blur();document.querySelector('#steam-profile').focus()`);await settle();
- assert.equal(await evaluate(`document.querySelector('.deck-pause').textContent`),'Resume motion','library interaction pauses the hero');
- await evaluate(`document.querySelector('.deck-pause').click()`);await settle();
- assert.equal(await evaluate(`document.querySelector('.deck-pause').getAttribute('aria-pressed')`),'false','manual resume restores automatic shuffling');
  assert.equal(await evaluate(`document.querySelectorAll('.quick-filters button').length`),3,'three common filters beside roulette');
  assert.equal(await evaluate(`document.querySelector('#profile-example').textContent.includes('steamcommunity.com/id/')`),true,'profile link example is visible');
  assert.equal(await evaluate(`document.querySelectorAll('.deck-card').length`),4,'four layered hero cards');
  assert.equal(await evaluate(`document.querySelectorAll('.site-header nav a').length`),2,'header has two page links');
  assert.equal(await evaluate(`document.querySelectorAll('.app-sidebar nav a').length`),3,'backlog tools live in the sidebar');
- const beforeShuffle=await evaluate(`document.querySelector('.deck-card').style.getPropertyValue('--depth')`);
- await evaluate(`document.querySelector('[aria-label="Shuffle featured games"]').click()`);await settle();
- assert.notEqual(await evaluate(`document.querySelector('.deck-card').style.getPropertyValue('--depth')`),beforeShuffle,'hero shuffle changes card order');
+ assert.equal(await evaluate(`document.querySelectorAll('.hero-deck button').length`),0,'hero has no shuffle or motion buttons');
+ await evaluate(`document.fonts.ready`);
+ const heroBefore=await evaluate(`[...document.querySelectorAll('.deck-card')].map(e=>({title:e.getAttribute('aria-label'),x:e.getBoundingClientRect().x,y:e.getBoundingClientRect().y}))`);
+ await delay(7800);
+ const heroAfter=await evaluate(`[...document.querySelectorAll('.deck-card')].map(e=>({title:e.getAttribute('aria-label'),x:e.getBoundingClientRect().x,y:e.getBoundingClientRect().y}))`);
+ assert.notDeepEqual(heroAfter.map(g=>g.title),heroBefore.map(g=>g.title),'games inside the cards rotate automatically');
+ assert.deepEqual(heroAfter.map(g=>[g.x,g.y]),heroBefore.map(g=>[g.x,g.y]),'card positions stay fixed');
  await evaluate(`Promise.race([Promise.all([...document.querySelectorAll('.hero-deck img')].map(i=>i.complete?Promise.resolve():new Promise(r=>{i.addEventListener('load',r,{once:true});i.addEventListener('error',r,{once:true});}))),new Promise(r=>setTimeout(r,10000))])`);
  fs.writeFileSync(path.resolve('artifacts/home-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
 
@@ -46,6 +46,9 @@ async function main(){
  assert.equal(await evaluate(`localStorage.getItem('steam-backlog-roulette.library.v1')`),null,'no default saved profile or library');
  await evaluate(`[...document.querySelectorAll('nav a')].find(a=>a.textContent==='Steam pulse').click()`);await delay(400);
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-brief').length`),4,'four distinct Steam discovery cards');
+ assert.equal(await evaluate(`document.querySelectorAll('.online-chart path').length`),1,'real online-user chart is present');
+ assert.ok(await evaluate(`document.querySelectorAll('.game-sparkline').length`)>0,'discovery cards contain real game sparklines');
+ assert.equal(await evaluate(`[...document.querySelectorAll('.pulse-table thead th')].some(e=>e.textContent==='All-time peak')`),true,'ranking includes all-time peaks');
  assert.deepEqual(await evaluate(`[...document.querySelectorAll('.pulse-brief')].map(card=>card.querySelectorAll('li').length)`),[10,10,10,10],'all four cards show ten real entries');
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-table tbody tr').length`),50,'first page contains 50 games from the 1000-game snapshot');
  await evaluate(`document.querySelector('[aria-label="Ranking pages"] [aria-label="Next page"]').click()`);await settle();
@@ -77,6 +80,11 @@ async function main(){
  await evaluate(`document.querySelector('.import-preview button').click()`);await settle();
  const initial=await evaluate(`document.querySelectorAll('.game-card').length`);assert.ok(initial>20,'imported library mounts');
  assert.equal(await evaluate(`[...document.querySelectorAll('.game-details')].every(d=>!d.open)`),true,'secondary card details start collapsed');
+ await evaluate(`(()=>{document.querySelector('.game-details').open=true;const i=document.querySelector('.tag-label input');window.draftTag=i;i.focus();i.value='unsaved draft';i.dispatchEvent(new Event('input',{bubbles:true}));})()`);await settle();
+ await evaluate(`(()=>{const s=document.querySelectorAll('.game-controls select')[1];window.oldSecondStatus=s.value;s.value='Playing';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);await settle();
+ assert.deepEqual(await evaluate(`({connected:window.draftTag.isConnected,value:window.draftTag.value,current:document.querySelector('.tag-label input')===window.draftTag})`),{connected:true,value:'unsaved draft',current:true},'unrelated library updates preserve an unsaved tag draft');
+ await evaluate(`window.draftTag.value='';window.draftTag.dispatchEvent(new Event('input',{bubbles:true}));window.draftTag.blur()`);await settle();
+ await evaluate(`(()=>{const s=document.querySelectorAll('.game-controls select')[1];s.value=window.oldSecondStatus;s.dispatchEvent(new Event('change',{bubbles:true}));})()`);await settle();
  await evaluate(`document.querySelector('.quick-filters button').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.quick-filters button').getAttribute('aria-pressed')`),'true','never-played quick filter activates');
  assert.ok(await evaluate(`document.querySelectorAll('.game-card').length`)<initial,'never-played filter narrows the library');
@@ -87,6 +95,9 @@ async function main(){
  assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth`),true,'desktop no horizontal overflow');
  await evaluate(`(()=>{const s=document.querySelector('.game-controls select');s.value='Completed';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);await settle();
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),initial-1,'status changes active filter');
+ await evaluate(`document.querySelector('.undo-toast button').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),initial,'undo restores the prior status');
+ await evaluate(`(()=>{const s=document.querySelector('.game-controls select');s.value='Completed';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);await settle();
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games[0].status`),'Completed','saved status');
  await evaluate(`(()=>{const s=document.querySelector('.filter-fields select');s.value='all';s.dispatchEvent(new Event('change',{bubbles:true}));const q=document.querySelector('input[type=search]');q.value='Elden Ring';q.dispatchEvent(new Event('input',{bubbles:true}));})()`);await settle();
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),1,'search');
@@ -96,6 +107,14 @@ async function main(){
  assert.equal(await evaluate(`document.querySelector('.value-badge').textContent.startsWith('$')`),true,'known cost per hour retains its currency marker');
  await evaluate(`(()=>{const i=document.querySelector('.tag-label input');i.value='weekend, favorite';i.dispatchEvent(new FocusEvent('blur'));})()`);await settle();
  assert.deepEqual(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games[0].tags`),['weekend','favorite'],'tags save');
+ await evaluate(`document.querySelector('.exclude-game input').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),1,'excluded game remains visible in the library');
+ assert.equal(await evaluate(`document.querySelector('.spin-button').disabled`),true,'manually excluded game leaves the roulette');
+ await evaluate(`document.querySelector('.exclude-game input').click()`);await settle();
+ await evaluate(`document.querySelector('.remove-game').click()`);await settle();
+ assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games.length`),29,'remove changes only the saved list');
+ await evaluate(`document.querySelector('.undo-toast button').click()`);await settle();
+ assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games.length`),30,'undo restores a removed game');
  await call('Page.reload');await delay(700);
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games[0].status`),'Completed','reload persistence');
  await evaluate(`[...document.querySelectorAll('.data-tools>.tool-actions button')].find(b=>b.textContent.includes('Add game')).click()`);await settle();
@@ -127,6 +146,15 @@ async function main(){
  assert.equal(await evaluate(`document.querySelector('.import-preview h3').textContent`),'1 validated games ready','JSON preview');
  await evaluate(`document.querySelector('.import-preview button').click()`);await settle();
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games.length`),32,'JSON merge');
+ await evaluate(`[...document.querySelectorAll('.data-tools>.tool-actions button')].find(b=>b.textContent.includes('Import JSON')).click()`);await settle();
+ const replaceDom=await call('DOM.getDocument'),replaceInput=await call('DOM.querySelector',{nodeId:replaceDom.root.nodeId,selector:'input[type=file]'});
+ await call('DOM.setFileInputFiles',{nodeId:replaceInput.nodeId,files:[importPath]});await settle();
+ await evaluate(`document.querySelector('.import-preview input[type=checkbox]').click()`);await settle();
+ await evaluate(`document.querySelector('.import-preview button').click()`);await settle();
+ assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games.length`),1,'replacement import uses the supplied library');
+ await evaluate(`document.querySelector('.undo-toast button').click()`);await settle();
+ assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games.length`),32,'undo recovers a replaced library');
+
  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await settle();
  assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth`),true,'mobile no horizontal overflow');
  await evaluate(`document.querySelector('#library').scrollIntoView()`);await settle();
@@ -136,7 +164,7 @@ async function main(){
  const {createApp}=await import(pathToFileURL(path.resolve('server/index.mjs')).href);
  let failActivity=false;
  const activityFixture=JSON.parse(fs.readFileSync(path.resolve('src/data/activity.json'),'utf8'));
- appServer=createApp({key:'test-only',activity:async()=>{if(failActivity)throw new Error('offline');return activityFixture;},lookup:async input=>{
+ appServer=createApp({key:'test-only',metadata:async ids=>ids.map(appId=>({appId,appType:'game',multiplayerOnly:appId===730})),hero:async()=>JSON.parse(fs.readFileSync('src/data/hero.json','utf8')),gameHistory:async ids=>ids.map(appId=>({appId,peakAllTime:100000,samples:[[Date.now()-3600000,100],[Date.now(),120]],capturedAt:new Date().toISOString(),unavailable:false})),activity:async()=>{if(failActivity)throw new Error('offline');return activityFixture;},lookup:async input=>{
    if(input==='example-profile')await delay(150);
    if(input==='private-profile')throw new Error('Game details are private.');
    const empty=input==='empty-profile';const other=input==='other-profile';
@@ -149,7 +177,7 @@ async function main(){
  const lookup=async value=>{await evaluate(`(()=>{const input=document.querySelector('#steam-profile');input.value=${JSON.stringify(value)};input.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('.profile-lookup form').requestSubmit();})()`);if(value==='example-profile'){await delay(30);assert.equal(await evaluate(`document.querySelector('.profile-lookup form').getAttribute('aria-busy')`),'true','profile lookup exposes its loading state');assert.match(await evaluate(`document.querySelector('.lookup-progress').textContent`),/Finding profile/);}await delay(500);};
  await lookup('example-profile');
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),2,'profile replaces Top 250 instead of merging');
- assert.equal(await evaluate(`document.querySelector('.profile-summary a').textContent`),'Viewing Profile QA ↗','correct profile identity');
+ assert.equal(await evaluate(`document.querySelector('.profile-summary a').textContent`),'Viewing Profile QA’s library ↗','correct profile identity');
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games[0].playtimeHours`),1.5,'actual Steam minutes mapped to hours');
  assert.equal(await evaluate(`document.querySelectorAll('.leaderboard').length`),0,'unknown prices have no value leaderboard');
  assert.equal(await evaluate(`document.querySelectorAll('.game-progress').length`),0,'unknown completion times are not invented');
@@ -166,6 +194,9 @@ async function main(){
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games[0].playNext`),true,'refresh preserves user priorities');
  assert.equal(await evaluate(`document.querySelector('.quick-filters button').getAttribute('aria-pressed')`),'true','refresh preserves the current filters');
  assert.equal(await evaluate(`document.querySelector('.lookup-success').textContent.includes('2 games loaded')`),true,'refresh confirms the loaded game count');
+ await evaluate(`document.querySelector('.switch-profile').click()`);await settle();
+ assert.equal(await evaluate(`document.activeElement.id`),'steam-profile','switch-profile action focuses the input');
+ assert.equal(await evaluate(`document.querySelector('#steam-profile').value`),'','switch-profile input is ready for another URL');
  await evaluate(`document.querySelector('.filter-panel .filter-heading button').click()`);await settle();
 
  await lookup('private-profile');
@@ -182,6 +213,16 @@ async function main(){
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),0,'empty profile persists across reload');
  await lookup('other-profile');
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),1,'switching profiles replaces previous ownership');
+ await evaluate(`document.querySelector('.undo-toast button').click()`);await settle();
+ assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).profile.name`),'Empty QA','undo restores the prior profile identity');
+ await lookup('other-profile');
+ await evaluate(`document.querySelector('.advanced-filters').open=true;document.querySelector('.roulette-exclusions input').click();const s=document.querySelector('.library-sort select');s.value='title';s.dispatchEvent(new Event('change',{bubbles:true}));`);await settle();
+ assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),1,'category exclusion keeps the game in the library');
+ assert.equal(await evaluate(`document.querySelector('.spin-button').disabled`),true,'verified multiplayer-only games are excluded');
+ await call('Page.reload');await delay(700);
+ assert.equal(await evaluate(`document.querySelector('.library-sort select').value`),'title','library sorting survives reload');
+ assert.equal(await evaluate(`document.querySelector('.roulette-exclusions input').checked`),true,'category exclusion survives reload');
+ await evaluate(`document.querySelector('.advanced-filters').open=true;document.querySelector('.roulette-exclusions input').click()`);await settle();
  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await settle();
  assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth`),true,'profile lookup has no mobile overflow');
  await evaluate('scrollTo(0,0)');await settle();
@@ -190,6 +231,15 @@ async function main(){
  fs.writeFileSync(path.resolve('artifacts/profile-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  await evaluate(`[...document.querySelectorAll('nav a')].find(a=>a.textContent==='Steam pulse').click()`);await delay(500);
  assert.equal(await evaluate('location.pathname'),'/activity','hosted route uses a clean URL');
+ await evaluate(`(()=>{const s=document.querySelector('.pulse-table-filters select');s.value='name';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);await settle();
+ await evaluate(`document.querySelector('[aria-label="Ranking pages"] [aria-label="Page 3"]').click()`);await settle();
+ await call('Page.reload');await delay(700);
+ assert.equal(await evaluate(`document.querySelector('.pulse-table-filters select').value`),'name','Steam pulse sorting survives reload');
+ assert.equal(await evaluate(`document.querySelector('[aria-label="Ranking pages"] [aria-current=page]').textContent`),'3','Steam pulse page survives reload');
+ await call('Page.navigate',{url:'http://127.0.0.1:'+appServer.address().port+'/'});await delay(700);
+ assert.equal(await evaluate('location.pathname'),'/activity','opening the root restores the last visited page');
+ await evaluate(`(()=>{const s=document.querySelector('.pulse-table-filters select');s.value='players';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);await settle();
+
  assert.equal(await evaluate(`performance.getEntriesByType('resource').some(r=>r.name.includes('/assets/activity-')&&r.name.endsWith('.js'))`),true,'Steam pulse data downloads only after opening its page');
  await call('Page.reload');await delay(700);
  assert.equal(await evaluate('document.title'),'Steam pulse · Steam Backlog','direct /activity reload renders the correct page');

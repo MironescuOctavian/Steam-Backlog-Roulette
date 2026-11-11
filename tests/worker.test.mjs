@@ -7,6 +7,8 @@ test('Worker routes static assets and validates API requests without credentials
   assert.equal(await (await worker.fetch(new Request('https://app.test/activity'),env)).text(),'/activity');
   assert.equal((await worker.fetch(new Request('https://app.test/api/activity',{method:'POST'}),env)).status,405);
   assert.equal((await worker.fetch(new Request('https://app.test/api/missing'),env)).status,404);
+  assert.equal((await worker.fetch(new Request('https://app.test/api/steam/metadata?ids=bad'),env)).status,400);
+  assert.equal((await worker.fetch(new Request('https://app.test/api/game-history?ids=1,2,3,4,5,6,7,8,9'),env)).status,400);
   assert.equal((await worker.fetch(new Request('https://app.test/api/steam/profile?profile=https://evil.test'),env)).status,400);
   const missing=await worker.fetch(new Request('https://app.test/api/steam/profile?profile=76561198000000001'),env);
   assert.equal(missing.status,503);assert.match((await missing.json()).error,/not configured/);

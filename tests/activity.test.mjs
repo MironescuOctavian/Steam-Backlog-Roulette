@@ -21,6 +21,7 @@ function feeds(at){return async input=>{
   if(url.pathname.includes('GetGamesByConcurrentPlayers'))data={response:{last_update:at/1000,ranks:[{appid:70,rank:1,concurrent_in_game:100,peak_in_game:200}]}};
   else if(url.pathname.includes('GetMostPlayedGames'))data={response:{ranks:[{appid:70,rank:2,last_week_rank:6}]}};
   else if(url.pathname.includes('featuredcategories'))data={new_releases:{items:[{type:0,id:220,name:'Half-Life 2',final_price:999,currency:'USD'}]}};
+  else if(url.pathname.includes('userdata.json'))data=[{label:'Steam users logged in',data:[[at-300000,100],[at,200]]}];
   else data={response:{store_items:[{success:1,appid:70,name:'Half-Life',reviews:{summary_filtered:{percent_positive:96,review_count:1000}}},{success:1,appid:220,name:'Half-Life 2',reviews:{summary_filtered:{percent_positive:98,review_count:800}}}]}};
   return {ok:true,json:async()=>data};
 };}
@@ -28,13 +29,17 @@ test('real snapshot contains observed counts and releases, not generated history
   assert.equal(validateActivity(snapshot).games.length,1000);assert.equal(snapshot.history.length,1);
   assert.ok(snapshot.games.every(g=>Number.isInteger(g.playersNow)&&g.playersNow>=0));
 });
+test('malformed online history and missing game records are rejected before display',()=>{
+  assert.throws(()=>validateActivity({...snapshot,online:{sampledAt:snapshot.sampledAt,samples:[]}}),/online history/);
+  assert.throws(()=>validateActivity({...snapshot,games:[null]}),/Invalid activity game/);
+});
 test('activity joins public feeds, distinguishes current counts, rank movement and prices, and caches requests',async()=>{
   let now=Date.parse('2026-11-11T08:00:00Z');let calls=0;
   const service=createActivityService({extended:async()=>({ranks:[],capturedAt:new Date().toISOString()}),now:()=>now,historyFile:null,request:async input=>{calls++;return feeds(now)(input);}});
   const data=await service();assert.equal(data.games[0].title,'Half-Life');assert.equal(data.games[0].playersNow,100);assert.equal(data.games[0].peakToday,200);
   assert.equal(data.movers[0].weeklyChange,4);assert.equal(data.releases[0].price,'$9.99');assert.equal(data.releases[0].playersNow,null);assert.equal(data.acclaimed[0].reviewPercent,98);
   const total=calls;await Promise.all([service(),service()]);assert.equal(calls,total);
-  now+=300001;await Promise.all([service(),service()]);assert.equal(calls,total+3,'concurrent refreshes share one upstream collection');
+  now+=300001;await Promise.all([service(),service()]);assert.equal(calls,total+4,'concurrent refreshes share one upstream collection');
 });
 test('history records only actual distinct observations and keeps the prior snapshot when Steam fails',async()=>{
   const directory=await fs.mkdtemp(path.join(os.tmpdir(),'activity-history-test-'));
