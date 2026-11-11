@@ -3,7 +3,7 @@
 Verified on Windows with Node 26.13.0 and headless Chrome on November 12, 2026.
 
 - TypeScript check and production build pass.
-- 42 unit tests cover validation, persistence, exclusions, recommendation reasons, sorting/preferences, imports, profile lookup, metadata/hero caching, rankings, unknown data, reel selection, activity aggregation, per-game history parsing, failure backoff, portable observation history, Worker API routing, pagination chart gaps and nearest recorded tooltip samples.
+- 45 unit tests cover validation, persistence, exclusions, recommendation reasons, sorting/preferences, imports, profile lookup, metadata/hero caching, rankings, unknown data, reel selection, activity aggregation, per-game history parsing, failure backoff, portable observation history, Worker API routing, pagination chart gaps and nearest recorded tooltip samples.
 - Built single-file HTML loads directly through `file://`.
 - Browser checks verify a fresh 250-game discovery pool with no default profile or personal statistics. Imported/profile libraries replace it. They also cover status updates, search, Play Next, tags, reload persistence, custom games, JSON preview/merge, both roulette modes, and winning-card alignment.
 - Hosted browser checks use explicit mocked Steam responses to verify profile resolution UI, accurate minute-to-hour conversion, private lookup failure preservation, empty-library persistence, switching profiles, and absence of invented completion times/value figures.
@@ -31,3 +31,5 @@ Live Steam access still requires a server API key. No default profile or account
 Sidebar links now lead to Backlog, Roulette and a dedicated Top 250 page. Browser checks verify its six-card preview, expansion to 250 games and no saved-library mutation. Footer layout checks cover three destination cards and desktop/mobile overflow.
 
 A mocked 5,000-game Steam profile verifies that only 24 library cards mount, page two starts at game 25, searching finds game 5,000 and resets pagination, and roulette retains every eligible game. Avatar dimensions and profile text width are checked on desktop and mobile. Sidebar borders and centered Steam pulse numeric columns are also checked. Filtering and sorting are cached; Steam classification enrichment saves one combined library update rather than rewriting it for each batch.
+
+Deploy-script checks verify that a build-time Steam key is supplied only through a temporary JSON secrets file, unrelated secrets are excluded, existing runtime secrets are preserved when no key is supplied, and temporary files are removed after success or process-start failure. Deployment dry runs pass with and without a dummy build key; no live deployment was performed.

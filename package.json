@@ -10,7 +10,7 @@
     "update:activity": "node scripts/update-activity.mjs",
     "build": "node scripts/build.mjs",
     "build:cloudflare": "node scripts/build.mjs --cloudflare-only",
-    "deploy": "cf deploy --prebuilt",
+    "deploy": "node scripts/deploy.mjs",
     "upload:version": "cf workers versions create --prebuilt",
     "preview": "vp preview",
     "typecheck": "tsc --noEmit",
