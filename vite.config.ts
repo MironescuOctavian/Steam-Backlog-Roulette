@@ -13,6 +13,7 @@ export default defineConfig({
     fileRoutes({types:"src/file-routes.d.ts",codeSplitting:false}),
     i18n(),
     ui({
+      fonts:{fonts:{sans:[{name:'Noto Sans',weights:[400,500,600,700],subsets:['latin','latin-ext']}],serif:[],mono:[]}},
       colors: {
         primary: {
           light: {

@@ -42,7 +42,7 @@ export function createApp({key=process.env.STEAM_API_KEY,lookup=fetchPublicProfi
         if(error.code==='ENOENT'&&!path.extname(requested)&&req.headers.accept?.includes('text/html')){file=path.join(root,'index.html');content=await fs.readFile(file);}
         else throw error;
       }
-      const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.woff2':'font/woff2'}[path.extname(file)]??'application/octet-stream';
+      const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.woff2':'font/woff2','.webp':'image/webp','.svg':'image/svg+xml'}[path.extname(file)]??'application/octet-stream';
       res.writeHead(200,{'Content-Type':mime,'Cache-Control':'no-cache'});res.end(req.method==='HEAD'?undefined:content);
     }catch{send(404,{error:'Not found.'});}
   });

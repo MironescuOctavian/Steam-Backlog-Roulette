@@ -11,7 +11,7 @@ import {catalogSource,catalogUpdatedAt} from '../../catalog';
 import {useLibrary} from '../../library-state';
 
 export default function BacklogPage(){
-  const {library,games,loaded,profile,activity,saveMessage,saveFailed,filters,setFilters,worstValue,setWorstValue,weeklyHours,setWeeklyHours,soundEnabled,setSoundEnabled,activeGames,stats,filtered,genres,changeFilter,backlog,hoursLeft,applyLibrary,updateGame}=useLibrary();
+  const {library,games,loaded,profile,saveMessage,saveFailed,filters,setFilters,worstValue,setWorstValue,weeklyHours,setWeeklyHours,soundEnabled,setSoundEnabled,activeGames,stats,filtered,genres,changeFilter,backlog,hoursLeft,applyLibrary,updateGame}=useLibrary();
   const pulseHref=useHref(()=>'/activity');
   const [expanded,setExpanded]=createSignal(false);
   const visibleGames=()=>loaded()||expanded()?filtered():filtered().slice(0,6);
@@ -32,31 +32,36 @@ export default function BacklogPage(){
           <div class="hero-copy">
             <p class="eyebrow"><span class="status-dot" /> YOUR LIBRARY. YOUR NEXT ADVENTURE.</p>
             <h1 id="hero-title">Less deciding.<br /><span>More playing.</span></h1>
-            <p class="hero-description">Look up any public Steam profile. We’ll pick from that library—or explore the Top 250 before loading one.</p>
-            <ProfileLookup profile={profile()} games={games()} disabled={Boolean(library.warning)} onLoad={(next,p)=>{if(!applyLibrary(next,p))return false;setFilters({...defaultFilters});return true;}} />
+            <p class="hero-description">Your next game is already waiting. Load your Steam library and let’s find it.</p>
+            <ProfileLookup profile={profile()} games={games()} disabled={Boolean(library.warning)} onLoad={(next,p)=>{const sameProfile=profile()?.steamId===p.steamId;if(!applyLibrary(next,p))return false;if(!sameProfile)setFilters({...defaultFilters});return true;}} />
             <Show when={library.warning}><p class="storage-warning" role="alert">{library.warning}</p></Show>
           </div>
           <HeroDeck />
         </section>
 
         <DataTools games={games()} onApply={next=>{if(!applyLibrary(next,null))return false;setFilters({...defaultFilters});return true;}} readOnly={Boolean(library.warning)} />
-          <section class="filter-panel" aria-label="What should I play tonight?">
+          <section id="roulette" class="filter-panel" aria-label="What should I play tonight?">
             <div class="filter-heading"><h3>What should I play tonight?</h3><button onClick={() => setFilters({...defaultFilters})}>Reset filters</button></div>
-            <div class="filter-fields">
-              <label>{loaded()?'Search this library':'Search Top 250'}<input type="search" placeholder="Find a game…" value={filters().search} onInput={e => changeFilter({search:e.currentTarget.value})} /></label>
+            <div class="roulette-search"><label>{loaded()?'Search this library':'Search Top 250'}<input type="search" placeholder="Find a game…" value={filters().search} onInput={e => changeFilter({search:e.currentTarget.value})} /></label></div>
+            <div class="quick-filters pills" aria-label="Quick roulette filters">
+              <button disabled={!loaded()} aria-pressed={filters().state==='never'?'true':'false'} onClick={()=>changeFilter({state:filters().state==='never'?'backlog':'never'})}>Never played</button>
+              <button aria-pressed={filters().time==='quick'?'true':'false'} onClick={()=>changeFilter({time:filters().time==='quick'?'all':'quick',maxHours:200})}>Under 10 hours</button>
+              <button disabled={!loaded()} aria-pressed={filters().state==='next'?'true':'false'} onClick={()=>changeFilter({state:filters().state==='next'?'backlog':'next'})}>Play Next</button>
+            </div>
+            <details class="advanced-filters"><summary>Advanced filters <span>Genre, reviews & playtime</span></summary><div class="filter-fields">
               <Show when={loaded()}><label>Playtime state<select value={filters().state} onChange={e => changeFilter({state:e.currentTarget.value})}><option value="backlog">All backlog</option><option value="never">Never played (0 hours)</option><option value="under2">Under 2 hours</option><option value="next">Play Next</option><option value="all">All library, including finished</option></select></label></Show>
               <label>Minimum review score: {filters().score || "Any"}<input type="range" min="0" max="100" step="5" value={filters().score} onInput={e => changeFilter({score:Number(e.currentTarget.value)})} /></label>
               <label>Maximum remaining: {filters().maxHours===200?'Any':filters().maxHours+'h'}<input type="range" min="0" max="200" step="1" value={filters().maxHours} onInput={e => changeFilter({maxHours:Number(e.currentTarget.value)})} /></label>
             </div>
             <div class="pills" aria-label="Remaining time presets"><For each={[["all","Any length"],["quick","Quick · under 10h"],["medium","Medium · 10–30h"],["epic","Epic · 50h+"]]}>{item => <button aria-pressed={filters().time === item[0] ? "true" : "false"} onClick={() => changeFilter({time:item[0]!})}>{item[1]}</button>}</For></div>
             <div class="pills" aria-label="Genres"><button aria-pressed={!filters().genre ? "true" : "false"} onClick={() => changeFilter({genre:""})}>All genres</button><For each={genres()}>{genre => <button aria-pressed={filters().genre === genre ? "true" : "false"} onClick={() => changeFilter({genre})}>{genre}</button>}</For></div>
-            <p class="demo-note">Time filters exclude unknown completion times. Review score uses Steam positive reviews where available, otherwise Metacritic. <strong aria-live="polite">{filtered().length} matching games</strong></p>
+            </details><p class="demo-note">Time filters exclude unknown completion times. Review score uses Steam positive reviews where available, otherwise Metacritic. <strong aria-live="polite">{filtered().length} matching games</strong></p>
           </section>
-        <div id="roulette"><p class="pool-label">{loaded()?`Picking only from ${profile()?.name ? profile()!.name+"’s" : 'your loaded'} library. The Top 250 is no longer in this pool.`:'Discover from 250 top-rated games. No profile is loaded.'}</p><label class="sound-toggle"><input type="checkbox" checked={soundEnabled()} onChange={e=>setSoundEnabled(e.currentTarget.checked)} /> Roulette sound</label><For each={[loaded()?`personal:${profile()?.steamId??'local'}`:'catalog']}>{()=> <Roulette discovery={!loaded()} games={filtered()} onWinner={celebrate} onStart={()=>{if(soundEnabled())void sound.start();}} onTick={()=>{if(soundEnabled())sound.tick();}} />}</For></div>
+        <div class="roulette-area"><p class="pool-label">{loaded()?`Picking only from ${profile()?.name ? profile()!.name+"’s" : 'your loaded'} library. The Top 250 is no longer in this pool.`:'Discover from 250 top-rated games. No profile is loaded.'}</p><label class="sound-toggle"><input type="checkbox" checked={soundEnabled()} onChange={e=>setSoundEnabled(e.currentTarget.checked)} /> Roulette sound</label><For each={[loaded()?`personal:${profile()?.steamId??'local'}`:'catalog']}>{()=> <Roulette discovery={!loaded()} games={filtered()} onWinner={celebrate} onStart={()=>{if(soundEnabled())void sound.start();}} onTick={()=>{if(soundEnabled())sound.tick();}} />}</For></div>
 
         <Show when={loaded()}>
         <section id="insights" class="insights-section" aria-labelledby="insights-title">
-          <div class="section-heading"><div><p class="eyebrow">A LITTLE PERSPECTIVE</p><h2 id="insights-title">Your backlog, at a glance.</h2></div><span class="section-note">Entire library · Updates as you play</span></div>
+          <div class="section-heading"><div><p class="eyebrow">A LITTLE PERSPECTIVE</p><h2 id="insights-title">Your backlog, at a glance.</h2></div><span class="section-note">{profile()?`Last synced ${new Date(profile()!.updatedAt).toLocaleString()}`:'Imported library · Saved on this device'}</span></div>
           <div class="kpi-grid">
             <article class="kpi"><span class="i-lucide-library kpi-icon" aria-hidden="true" /><h3>Games in backlog</h3><p>{backlog().length}<small>excludes completed and dropped</small></p></article>
             <article class="kpi"><span class="i-lucide-clock-3 kpi-icon" aria-hidden="true" /><h3>Known remaining hours</h3><p>{stats().unknownTimes===backlog().length&&backlog().length>0?'—':`~${Math.round(hoursLeft()).toLocaleString()}`}<small>{stats().unknownTimes} games have unknown completion times</small></p></article>
@@ -74,7 +79,7 @@ export default function BacklogPage(){
         </section>
         </Show>
 
-        <aside class="pulse-home-teaser"><div><p class="eyebrow">A LITTLE INSPIRATION · YOUR BACKLOG STILL COMES FIRST</p><h2>What’s being played on Steam?</h2><p>{loaded()?`${activity().games.filter(g=>games().some(saved=>saved.appId===g.appId&&saved.status!=='Completed'&&saved.status!=='Dropped')).length} unfinished games from this library appear in the captured top 1,000.`:'Explore the crowd, then come back to pick your next game.'} Snapshot {new Date(activity().sampledAt).toLocaleString()}.</p></div><a href={pulseHref()}>Explore Steam pulse →</a></aside>
+        <aside class="pulse-home-teaser"><div><p class="eyebrow">A LITTLE INSPIRATION · YOUR BACKLOG STILL COMES FIRST</p><h2>What’s being played on Steam?</h2><p>Explore 1,000 popular games and see which ones are already in your library. Rankings load when you open Steam pulse.</p></div><a href={pulseHref()}>Explore Steam pulse →</a></aside>
         <section id="library" class="library-section" aria-labelledby="library-title">
           <div class="section-heading"><div><p class="eyebrow">LESS COLLECTING. MORE COMPLETING.</p><h2 id="library-title">{loaded()?'Your loaded library':'Explore the Top 250'}</h2></div><span class="section-note">{activeGames().length} games · {loaded()?'Saved on this device':'Top-rated discovery'}</span></div>
           <Show when={!loaded()}><p class="demo-note">Ranking: <a href={catalogSource} target="_blank" rel="noopener noreferrer">Steam 250 ↗</a> · Snapshot {new Date(catalogUpdatedAt).toLocaleDateString()}. Based on Steam player reviews; not an official Valve ranking. These are recommendations, not games you own.</p></Show>
