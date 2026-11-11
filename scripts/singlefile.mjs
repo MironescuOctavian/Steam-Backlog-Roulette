@@ -23,7 +23,6 @@ function inlineModule(url){
   });
 }
 html=html.replace(/<script type="module"[^>]*src="([^"]+)"[^>]*><\/script>/g,(_,url)=>`<script type="module">${inlineModule(url).replaceAll('</script','<\\/script')}</script>`);
-html=html.replaceAll('/steam.svg',`data:image/svg+xml;base64,${readAsset('/steam.svg').toString('base64')}`);
 html=html.replaceAll('/brand-mark.webp',`data:image/webp;base64,${readAsset('/brand-mark.webp').toString('base64')}`);
 assert.ok(!/(?:src|href)="\/assets\//.test(html),'All local entry assets must be inlined');
 assert.ok(!/url\(['"]?\/assets\//.test(html),'All fonts must be inlined');
