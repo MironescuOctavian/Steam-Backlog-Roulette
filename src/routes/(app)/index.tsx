@@ -12,6 +12,8 @@ import {useLibrary} from '../../library-state';
 export default function BacklogPage(){
   const {library,games,loaded,profile,activity,saveMessage,saveFailed,filters,setFilters,worstValue,setWorstValue,weeklyHours,setWeeklyHours,soundEnabled,setSoundEnabled,activeGames,stats,filtered,genres,changeFilter,backlog,hoursLeft,applyLibrary,updateGame}=useLibrary();
   const pulseHref=useHref(()=>'/activity');
+  const [expanded,setExpanded]=createSignal(false);
+  const visibleGames=()=>loaded()||expanded()?filtered():filtered().slice(0,6);
   const [winner, setWinner] = createSignal<Game | null>(null);
   const sound=createRouletteSound();
   let winnerDialog!: HTMLDialogElement;
@@ -76,15 +78,15 @@ export default function BacklogPage(){
         </section>
         </Show>
 
-        <aside class="pulse-home-teaser"><div><p class="eyebrow">A LITTLE INSPIRATION · YOUR BACKLOG STILL COMES FIRST</p><h2>What’s being played on Steam?</h2><p>{loaded()?`${activity().games.filter(g=>games().some(saved=>saved.appId===g.appId&&saved.status!=='Completed'&&saved.status!=='Dropped')).length} unfinished games from this library appear in the captured top 100.`:'Explore the crowd, then come back to pick your next game.'} Snapshot {new Date(activity().sampledAt).toLocaleString()}.</p></div><a href={pulseHref()}>Explore Steam pulse →</a></aside>
+        <aside class="pulse-home-teaser"><div><p class="eyebrow">A LITTLE INSPIRATION · YOUR BACKLOG STILL COMES FIRST</p><h2>What’s being played on Steam?</h2><p>{loaded()?`${activity().games.filter(g=>games().some(saved=>saved.appId===g.appId&&saved.status!=='Completed'&&saved.status!=='Dropped')).length} unfinished games from this library appear in the captured top 1,000.`:'Explore the crowd, then come back to pick your next game.'} Snapshot {new Date(activity().sampledAt).toLocaleString()}.</p></div><a href={pulseHref()}>Explore Steam pulse →</a></aside>
         <section id="library" class="library-section" aria-labelledby="library-title">
           <div class="section-heading"><div><p class="eyebrow">LESS COLLECTING. MORE COMPLETING.</p><h2 id="library-title">{loaded()?'Your loaded library':'Explore the Top 250'}</h2></div><span class="section-note">{activeGames().length} games · {loaded()?'Saved on this device':'Top-rated discovery'}</span></div>
           <Show when={!loaded()}><p class="demo-note">Ranking: <a href={catalogSource} target="_blank" rel="noopener noreferrer">Steam 250 ↗</a> · Snapshot {new Date(catalogUpdatedAt).toLocaleDateString()}. Based on Steam player reviews; not an official Valve ranking. These are recommendations, not games you own.</p></Show>
           <Show when={loaded()}><p class="demo-note">Playtime comes from the loaded library. Prices paid and completion times are unknown unless supplied; unknown values are excluded from planning and value calculations.</p></Show>
           <p class={["save-message", {"save-error": saveFailed()}]} role="status" aria-live="polite">{saveMessage()}</p>
 
-          <ul class="game-grid" aria-label="Game library">
-            <For each={filtered()}>{game => <li class="game-card">
+          <ul class="game-grid" id="library-grid" aria-label="Game library">
+            <For each={visibleGames()}>{game => <li class="game-card">
               <div class="game-cover">
                 <span class="cover-fallback" aria-hidden="true">{game.title}</span>
                 <img src={coverUrl(game.appId)} alt="" loading="lazy" width="460" height="215" onError={event => { event.currentTarget.style.visibility = "hidden"; }} />
@@ -116,6 +118,7 @@ export default function BacklogPage(){
               </div>
             </li>}</For>
           </ul>
+          <Show when={!loaded()&&filtered().length>6}><div class="discovery-expand"><button type="button" aria-controls="library-grid" aria-expanded={expanded()?'true':'false'} onClick={()=>{const collapse=expanded();setExpanded(!collapse);if(collapse)document.getElementById('library')?.scrollIntoView();}}>{expanded()?'Show fewer games':`Show all ${filtered().length} games`}</button><span>Showing {visibleGames().length} of {filtered().length} matches · roulette uses every matching game</span></div></Show>
           <Show when={activeGames().length > 0 && filtered().length === 0}><div class="library-empty"><h3>No games match these filters.</h3><button onClick={() => setFilters({...defaultFilters})}>Reset filters</button></div></Show>
           <Show when={loaded()&&games().length === 0}><div class="library-empty"><h3>This library is empty.</h3><p>There are no games to spin. Look up another profile or import a library.</p></div></Show>
         </section>

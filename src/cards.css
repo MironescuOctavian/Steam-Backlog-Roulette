@@ -28,3 +28,4 @@
 @media(max-width:950px) { .game-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; } }
 @media(max-width:580px) { .game-grid { grid-template-columns:minmax(0,1fr); } }
 @media(prefers-reduced-motion:reduce) { .game-card { transition:none; } }
+.discovery-expand{display:flex;align-items:center;justify-content:center;gap:15px;flex-wrap:wrap;margin-top:22px}.discovery-expand button{border:1px solid #ffbf0055;border-radius:6px;background:#30291b;color:#ffdd70;padding:12px 20px;font:inherit;font-size:13px;cursor:pointer}.discovery-expand span{color:#aaa393;font-size:11px}

@@ -19,12 +19,18 @@ async function main(){
  const url=pathToFileURL(path.resolve('dist/index.html')).href;
  await call('Page.navigate',{url});
  await evaluate(`new Promise((resolve,reject)=>{let n=0;const t=setInterval(()=>{if(document.querySelector('.game-card')){clearInterval(t);resolve(true);}else if(++n>100){clearInterval(t);reject(new Error('App did not mount'));}},100);})`);
- assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),250,'discovery shows exactly 250 games');
+ assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),6,'discovery starts with six games');
+ assert.equal(await evaluate(`document.querySelector('.roulette-panel .section-note').textContent`),'250 eligible games','collapsed grid does not restrict roulette candidates');
+ await evaluate(`document.querySelector('.discovery-expand button').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),250,'discovery expands to all matching games');
+ await evaluate(`document.querySelector('.discovery-expand button').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),6,'discovery collapses back to six games');
  assert.equal(await evaluate(`document.querySelectorAll('.kpi,.game-hours,.game-controls,.tag-label').length`),0,'no fabricated personal stats before lookup');
  assert.equal(await evaluate(`localStorage.getItem('steam-backlog-roulette.library.v1')`),null,'no default saved profile or library');
  await evaluate(`[...document.querySelectorAll('nav a')].find(a=>a.textContent==='Steam pulse').click()`);await delay(400);
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-brief').length`),4,'four distinct Steam discovery cards');
- assert.equal(await evaluate(`document.querySelectorAll('.pulse-table tbody tr').length`),100,'real top-100 snapshot in standalone activity page');
+ assert.deepEqual(await evaluate(`[...document.querySelectorAll('.pulse-brief')].map(card=>card.querySelectorAll('li').length)`),[10,10,10,10],'all four cards show ten real entries');
+ assert.equal(await evaluate(`document.querySelectorAll('.pulse-table tbody tr').length`),1000,'real 1000-game snapshot in standalone activity page');
  assert.equal(await evaluate(`document.querySelector('.owned-filter input').disabled`),true,'no personal ownership invented before lookup');
  await evaluate(`[...document.querySelectorAll('nav a')].find(a=>a.textContent==='Backlog').click()`);await settle();
  const seedPath=path.join(profile,'test-library.json');
@@ -139,7 +145,7 @@ async function main(){
  assert.equal(await evaluate(`document.querySelector('.play-next').getAttribute('aria-pressed')`),'true','priority retained after page navigation');
  assert.deepEqual(exceptions,[],'no runtime exceptions');
  assert.deepEqual(consoleErrors,[],'no console errors');
- console.log('PASS: backlog/profile flows, roulette, and imports; Steam pulse navigation, four discovery cards, top-100 table, comparisons, honest history state, owned filter, Play Next persistence, return-to-backlog actions, desktop/mobile layout. Runtime exceptions and console errors: 0.');
+ console.log('PASS: backlog/profile flows, roulette, and imports; Steam pulse navigation, four ten-item cards, 1,000-game table, comparisons, honest history state, owned filter, Play Next persistence, return-to-backlog actions, desktop/mobile layout. Runtime exceptions and console errors: 0.');
  await call('Browser.close');
 }
 main().catch(e=>{console.error(e);process.exitCode=1;}).finally(async()=>{appServer?.closeAllConnections();appServer?.close();ws?.close();chrome.kill();await delay(1000);const resolved=path.resolve(profile);const temp=path.resolve(require('node:os').tmpdir())+path.sep;if(resolved.startsWith(temp)&&path.basename(resolved).startsWith('backlog-qa-')){try{fs.rmSync(resolved,{recursive:true,force:true});}catch{console.warn('Temporary Chrome profile could not be removed:',resolved);}}});

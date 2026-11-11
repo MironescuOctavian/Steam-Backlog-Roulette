@@ -17,21 +17,21 @@ function feeds(at){return async input=>{
   return {ok:true,json:async()=>data};
 };}
 test('real snapshot contains observed counts and releases, not generated history',()=>{
-  assert.equal(validateActivity(snapshot).games.length,100);assert.equal(snapshot.history.length,1);
+  assert.equal(validateActivity(snapshot).games.length,1000);assert.equal(snapshot.history.length,1);
   assert.ok(snapshot.games.every(g=>Number.isInteger(g.playersNow)&&g.playersNow>=0));
 });
 test('activity joins public feeds, distinguishes current counts, rank movement and prices, and caches requests',async()=>{
   let now=Date.parse('2026-11-11T08:00:00Z');let calls=0;
-  const service=createActivityService({now:()=>now,historyFile:null,request:async input=>{calls++;return feeds(now)(input);}});
+  const service=createActivityService({extended:async()=>({ranks:[],capturedAt:new Date().toISOString()}),now:()=>now,historyFile:null,request:async input=>{calls++;return feeds(now)(input);}});
   const data=await service();assert.equal(data.games[0].title,'Half-Life');assert.equal(data.games[0].playersNow,100);assert.equal(data.games[0].peakToday,200);
   assert.equal(data.movers[0].weeklyChange,4);assert.equal(data.releases[0].price,'$9.99');assert.equal(data.releases[0].playersNow,null);assert.equal(data.acclaimed[0].reviewPercent,98);
   const total=calls;await Promise.all([service(),service()]);assert.equal(calls,total);
-  now+=300001;await Promise.all([service(),service()]);assert.equal(calls,total*2,'concurrent refreshes share one upstream collection');
+  now+=300001;await Promise.all([service(),service()]);assert.equal(calls,total+3,'concurrent refreshes share one upstream collection');
 });
 test('history records only actual distinct observations and keeps the prior snapshot when Steam fails',async()=>{
   const directory=await fs.mkdtemp(path.join(os.tmpdir(),'activity-history-test-'));
   const historyFile=path.join(directory,'history.json');let now=Date.parse('2026-11-11T08:00:00Z');let fail=false;
-  const service=createActivityService({now:()=>now,historyFile,request:input=>{if(fail)throw new Error('offline');return feeds(now)(input);}});
+  const service=createActivityService({extended:async()=>({ranks:[],capturedAt:new Date().toISOString()}),now:()=>now,historyFile,request:input=>{if(fail)throw new Error('offline');return feeds(now)(input);}});
   try{
     assert.equal((await service()).history.length,1);now+=300001;
     assert.equal((await service()).history.length,2);
@@ -54,7 +54,7 @@ test('activity endpoint works without a profile API key and handles failures exp
 });
 test('optional feed failures keep real player counts and show explicit warnings',async()=>{
   const at=Date.parse('2026-11-11T08:00:00Z');
-  const service=createActivityService({historyFile:null,now:()=>at,request:async input=>{
+  const service=createActivityService({extended:async()=>({ranks:[],capturedAt:new Date().toISOString()}),historyFile:null,now:()=>at,request:async input=>{
     if(String(input).includes('GetMostPlayedGames')||String(input).includes('featuredcategories'))return {ok:false};
     return feeds(at)(input);
   }});
