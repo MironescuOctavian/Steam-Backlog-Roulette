@@ -44,7 +44,7 @@ The build produces both the standalone app and Cloudflare Worker output. Use the
 | Version upload | `pnpm run upload:version` |
 | Root directory | `/` |
 
-`cf preview` is not a version-upload command. The scripts above use the prebuilt Worker output. Add `STEAM_API_KEY` as a Worker secret in Cloudflare to enable public-profile lookup. Keep it out of frontend variables and Git. The `HISTORY` KV binding stores observed activity; it is provisioned with the Worker. KV is eventually consistent, so overlapping refreshes may omit a sample. No missing counts are filled in.
+`cf preview` is not a version-upload command. The scripts above use the prebuilt Worker output. Add `STEAM_API_KEY` as a Worker secret in Cloudflare to enable public-profile lookup. Keep it out of frontend variables and Git. The `HISTORY` KV binding stores observed activity and references the existing namespace by ID in `cloudflare.config.ts`. When deploying to another account, replace that ID with a namespace from that account. KV is eventually consistent, so overlapping refreshes may omit a sample. No missing counts are filled in.
 
 Run `pnpm test:worker` after building to check the packaged app in Cloudflare’s local runtime. `pnpm cf deploy --prebuilt --dry-run` validates deployment packaging without publishing. On Workers, review enrichment is limited per refresh to leave room for the 1,000-game ranking requests and history storage; unavailable reviews remain unknown.
 
