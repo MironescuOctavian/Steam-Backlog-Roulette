@@ -5,6 +5,7 @@ export type Game = {
   status: (typeof statuses)[number]; tags: string[]; playNext: boolean;
   metadataSource: "Demo estimates" | "Estimated" | "Custom";
   priceKnown?: boolean;
+  userManaged?: boolean;
 };
 type Row = [number, string, string[], number, number, number, number, Game["status"]];
 const rows: Row[] = [
@@ -64,11 +65,12 @@ export function validateLibrary(value: unknown): Game[] {
       || !(g.metacritic === null || (nonnegative(g.metacritic) && g.metacritic <= 100))
       || !statuses.includes(g.status as Game["status"])
       || !(g.priceKnown === undefined || typeof g.priceKnown === 'boolean')
+      || !(g.userManaged === undefined || typeof g.userManaged === 'boolean')
       || !["Demo estimates","Estimated","Custom"].includes(g.metadataSource as string)) throw new Error("Invalid game data.");
     ids.add(g.appId);
     return {appId:g.appId,title:g.title.trim(),genres:[...g.genres],tags:[...g.tags],playNext:g.playNext,
       playtimeHours:g.playtimeHours,timeToBeatHours:g.timeToBeatHours,pricePaid:g.pricePaid,
-      metacritic:g.metacritic,status:g.status as Game["status"],metadataSource:g.metadataSource as Game["metadataSource"],...(g.priceKnown === undefined ? {} : {priceKnown:g.priceKnown})};
+      metacritic:g.metacritic,status:g.status as Game["status"],metadataSource:g.metadataSource as Game["metadataSource"],...(g.priceKnown === undefined ? {} : {priceKnown:g.priceKnown}),...(g.userManaged === undefined ? {} : {userManaged:g.userManaged})};
   });
 }
 export function saveLibrary(storage: StorageAccess,games: Game[]): void {

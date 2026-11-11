@@ -38,7 +38,7 @@ function App() {
   const stats = () => analytics(games());
   const filtered = () => filterGames(games(), filters());
   const genres = () => [...new Set(games().flatMap(g => g.genres))].sort();
-  const changeFilter = (patch: Partial<Filters>) => setFilters({...filters(), ...patch});
+  const changeFilter = (patch: Partial<Filters>) => setFilters(current => ({...current, ...patch}));
   const backlog = () => games().filter(game => game.status !== "Completed" && game.status !== "Dropped");
   const hoursLeft = () => backlog().reduce((sum, game) => sum + remainingHours(game), 0);
   function applyLibrary(next: Game[]): boolean {
@@ -56,7 +56,7 @@ function App() {
     }
   }
   function updateGame(appId: number, patch: Partial<Pick<Game, "status" | "playNext" | "tags">>): boolean {
-    return applyLibrary(games().map(game => game.appId === appId ? { ...game, ...patch } : game));
+    return applyLibrary(games().map(game => game.appId === appId ? { ...game, ...patch, userManaged:true } : game));
   }
   return (
     <>
@@ -77,7 +77,7 @@ function App() {
       </header>
 
       <main id="main" class="page-wrap">
-        <div class="project-progress"><label for="project-progress">Project progress</label><progress id="project-progress" max="10" value="9">90%</progress><span>9 of 10 stages complete · 90%</span></div>
+        <div class="project-progress"><label for="project-progress">Project progress</label><progress id="project-progress" max="10" value="10">100%</progress><span>10 of 10 stages complete · 100%</span></div>
         <section class="hero" aria-labelledby="hero-title">
           <div class="hero-copy">
             <p class="eyebrow"><span class="status-dot" /> YOUR NEXT ADVENTURE IS ALREADY IN YOUR LIBRARY</p>
@@ -108,7 +108,7 @@ function App() {
           </div>
           <div class="session-plan"><label>My weekly gaming budget<input type="number" min="1" max="168" value={weeklyHours()} onInput={e => {const n=Number(e.currentTarget.value); if(Number.isFinite(n)&&n>=1&&n<=168)setWeeklyHours(n);}} />hours</label><p>At {weeklyHours()}h/week: approximately {Math.ceil(hoursLeft()/weeklyHours()).toLocaleString()} weeks to clear your current backlog. Estimates assume playtime counts toward the main story.</p></div>
           <section class="leaderboard" aria-labelledby="value-title"><div class="filter-heading"><h3 id="value-title">Cost per hour · {worstValue() ? "Worst value" : "Best value"}</h3><button onClick={() => setWorstValue(!worstValue())}>Show {worstValue() ? "best" : "worst"} value</button></div>
-            <p class="demo-note">Unplayed games have no cost/hour yet. Worst value puts these first by purchase price; best value includes played games only.</p>
+            <p class="demo-note">Unknown purchase costs are excluded. Unplayed games have no cost/hour yet; worst value puts them first by purchase price. Best value includes played games only.</p>
             <ol><For each={rankValue(games(),worstValue()).slice(0,8)}>{(game,index) => <li><div class="rank-row"><strong>{game.title}</strong><span>{game.playtimeHours === 0 ? `$${game.pricePaid.toFixed(2)} · Unplayed` : `$${costPerHour(game)!.toFixed(2)}/h`}</span></div><div class="rank-meter" aria-hidden="true"><span style={{width:`${100-index()*10}%`}} /></div></li>}</For></ol>
             <Show when={rankValue(games(),worstValue()).length===0}><p>No played games to rank yet.</p></Show>
           </section>
@@ -117,7 +117,7 @@ function App() {
         <section id="library" class="library-section" aria-labelledby="library-title">
           <div class="section-heading"><div><p class="eyebrow">LESS COLLECTING. MORE COMPLETING.</p><h2 id="library-title">Your next great game lives here.</h2></div><span class="section-note">{games().length} games · Browser-local library</span></div>
           <Show when={library.warning}><p class="storage-warning" role="alert">{library.warning}</p></Show>
-          <p class="demo-note">Demo prices (USD), playtime, review scores, and completion times are illustrative. Time-to-beat is an estimate, not a session length. Sandbox and replayable games have no fixed finish line.</p>
+          <p class="demo-note">Demo entries use illustrative playtime, USD prices, review scores, and completion times. Imported completion times are estimates (20h fallback for unknown games); Steam purchase costs are unknown. Time-to-beat is not a session length. Sandbox and replayable games have no fixed finish line.</p>
           <p class={["save-message", {"save-error": saveFailed()}]} role="status" aria-live="polite">{saveMessage()}</p>
           <DataTools games={games()} onApply={applyLibrary} readOnly={Boolean(library.warning)} />
           <section class="filter-panel" aria-label="What should I play tonight?">

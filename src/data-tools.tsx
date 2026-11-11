@@ -10,7 +10,8 @@ export function DataTools(props:{games:Game[];onApply:(games:Game[])=>boolean;re
   const [busy,setBusy]=createSignal(false);
   let dialog!:HTMLDialogElement;
   let controller:AbortController|undefined;
-  const cancel=()=>{controller?.abort();controller=undefined;setBusy(false);setPreview(null);setError('');};
+  let revision=0;
+  const cancel=()=>{revision++;controller?.abort();controller=undefined;setBusy(false);setPreview(null);setError('');const key=dialog?.querySelector<HTMLInputElement>('input[name=apiKey]');if(key)key.value='';};
   onCleanup(()=>controller?.abort());
   const open=(name:string)=>{cancel();setTab(name);setReplace(false);dialog.showModal();};
   function download() {
@@ -19,9 +20,10 @@ export function DataTools(props:{games:Game[];onApply:(games:Game[])=>boolean;re
   }
   async function importFile(file:File|undefined) {
     if(!file)return;
+    const current=++revision;
     setError('');setPreview(null);
-    try{if(file.size>5_000_000)throw new Error('File must be smaller than 5 MB.');setPreview(parseImport(await file.text()));}
-    catch(e){setError(e instanceof Error?e.message:'Could not read the file.');}
+    try{if(file.size>5_000_000)throw new Error('File must be smaller than 5 MB.');const games=parseImport(await file.text());if(current===revision && dialog.open)setPreview(games);}
+    catch(e){if(current===revision && dialog.open)setError(e instanceof Error?e.message:'Could not read the file.');}
   }
   async function steam(event:SubmitEvent) {
     event.preventDefault();if(busy())return;

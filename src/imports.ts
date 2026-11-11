@@ -25,7 +25,7 @@ export function parseSteam(data:unknown,existing:Game[]):Game[] {
     const metadata=real??demo.get(g.appid);
     return {appId:g.appid,title:g.name,genres:metadata?.genres??['Unknown'],playtimeHours:Math.round(g.playtime_forever/6)/10,
       timeToBeatHours:metadata?.timeToBeatHours??20,metacritic:metadata?.metacritic??null,pricePaid:real?.pricePaid??0,priceKnown:real ? real.priceKnown!==false : false,
-      status:real?.status??(g.playtime_forever===0?'Unplayed':'Backlog'),tags:old?.tags??[],playNext:old?.playNext??false,metadataSource:real?.metadataSource??'Estimated'};
+      status:(old?.userManaged ? old.status : real?.status)??(g.playtime_forever===0?'Unplayed':'Backlog'),tags:old?.tags??[],playNext:old?.playNext??false,metadataSource:real?.metadataSource??'Estimated',...(old?.userManaged ? {userManaged:true} : {})};
   }));
 }
 export async function fetchSteam(id:string,key:string,proxy:boolean,existing:Game[],signal?:AbortSignal):Promise<Game[]> {

@@ -33,3 +33,8 @@ test('invalid Steam credentials are rejected before a network call',async()=>{
   await assert.rejects(fetchSteam('bad','bad',false,[]),/17-digit/);
   await assert.rejects(fetchSteam('76561198000000000','bad',false,[]),/32-character/);
 });
+test('Steam refresh keeps explicit user edits made to demo games',()=>{
+  const game={...demoLibrary()[0],status:'Dropped',userManaged:true};
+  const [imported]=parseSteam({response:{games:[{appid:game.appId,name:game.title,playtime_forever:120}]}},[game]);
+  assert.equal(imported.status,'Dropped');assert.equal(imported.priceKnown,false);
+});
