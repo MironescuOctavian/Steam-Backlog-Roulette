@@ -1,0 +1,2120 @@
+{
+  "source": "https://steam250.com/top250",
+  "updatedAt": "2026-11-11T07:22:59.301Z",
+  "games": [
+    {
+      "rank": 1,
+      "appId": 413150,
+      "title": "Stardew Valley",
+      "genres": [
+        "Life Sim"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 2,
+      "appId": 105600,
+      "title": "Terraria",
+      "genres": [
+        "Open World Survival Craft"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 3,
+      "appId": 550,
+      "title": "Left 4 Dead 2",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 4,
+      "appId": 4000,
+      "title": "Garry's Mod",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 5,
+      "appId": 227300,
+      "title": "Euro Truck Simulator 2",
+      "genres": [
+        "Immersive Sim"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 6,
+      "appId": 2358720,
+      "title": "Black Myth: Wukong",
+      "genres": [
+        "Souls-like"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 7,
+      "appId": 620,
+      "title": "Portal 2",
+      "genres": [
+        "Puzzle Platformer"
+      ],
+      "positivePercent": 99
+    },
+    {
+      "rank": 8,
+      "appId": 1086940,
+      "title": "Baldur's Gate 3",
+      "genres": [
+        "CRPG"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 9,
+      "appId": 292030,
+      "title": "The Witcher 3: Wild Hunt — Remastered",
+      "genres": [],
+      "positivePercent": 96
+    },
+    {
+      "rank": 10,
+      "appId": 367520,
+      "title": "Hollow Knight",
+      "genres": [
+        "Metroidvania"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 11,
+      "appId": 1966720,
+      "title": "Lethal Company",
+      "genres": [
+        "Survival Horror"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 12,
+      "appId": 284160,
+      "title": "BeamNG.drive",
+      "genres": [],
+      "positivePercent": 97
+    },
+    {
+      "rank": 13,
+      "appId": 1145360,
+      "title": "Hades",
+      "genres": [
+        "Action Roguelike"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 14,
+      "appId": 250900,
+      "title": "The Binding of Isaac: Rebirth",
+      "genres": [
+        "Action Roguelike"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 15,
+      "appId": 960090,
+      "title": "Bloons TD 6",
+      "genres": [],
+      "positivePercent": 97
+    },
+    {
+      "rank": 16,
+      "appId": 3164500,
+      "title": "Schedule I",
+      "genres": [],
+      "positivePercent": 98
+    },
+    {
+      "rank": 17,
+      "appId": 1794680,
+      "title": "Vampire Survivors",
+      "genres": [
+        "Action Roguelike"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 18,
+      "appId": 242760,
+      "title": "The Forest",
+      "genres": [
+        "Open World Survival Craft"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 19,
+      "appId": 264710,
+      "title": "Subnautica",
+      "genres": [
+        "Open World Survival Craft"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 20,
+      "appId": 548430,
+      "title": "Deep Rock Galactic",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 21,
+      "appId": 1118200,
+      "title": "People Playground",
+      "genres": [],
+      "positivePercent": 97
+    },
+    {
+      "rank": 22,
+      "appId": 220,
+      "title": "Half-Life 2",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 23,
+      "appId": 400,
+      "title": "Portal",
+      "genres": [
+        "Puzzle Platformer"
+      ],
+      "positivePercent": 99
+    },
+    {
+      "rank": 24,
+      "appId": 294100,
+      "title": "RimWorld",
+      "genres": [
+        "Colony Sim"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 25,
+      "appId": 2050650,
+      "title": "Resident Evil 4",
+      "genres": [
+        "Survival Horror"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 26,
+      "appId": 739630,
+      "title": "Phasmophobia",
+      "genres": [],
+      "positivePercent": 94
+    },
+    {
+      "rank": 27,
+      "appId": 526870,
+      "title": "Satisfactory",
+      "genres": [],
+      "positivePercent": 97
+    },
+    {
+      "rank": 28,
+      "appId": 3241660,
+      "title": "R.E.P.O.",
+      "genres": [],
+      "positivePercent": 96
+    },
+    {
+      "rank": 29,
+      "appId": 10,
+      "title": "Counter-Strike",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 30,
+      "appId": 391540,
+      "title": "Undertale",
+      "genres": [
+        "Bullet Hell"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 31,
+      "appId": 1229490,
+      "title": "ULTRAKILL",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 32,
+      "appId": 2379780,
+      "title": "Balatro",
+      "genres": [
+        "Roguelike Deckbuilder"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 33,
+      "appId": 1245620,
+      "title": "ELDEN RING",
+      "genres": [
+        "Souls-like"
+      ],
+      "positivePercent": 93
+    },
+    {
+      "rank": 34,
+      "appId": 239140,
+      "title": "Dying Light",
+      "genres": [
+        "Survival Horror"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 35,
+      "appId": 427520,
+      "title": "Factorio",
+      "genres": [],
+      "positivePercent": 97
+    },
+    {
+      "rank": 36,
+      "appId": 322330,
+      "title": "Don't Starve Together",
+      "genres": [
+        "Open World Survival Craft"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 37,
+      "appId": 646570,
+      "title": "Slay the Spire",
+      "genres": [
+        "Roguelike Deckbuilder"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 38,
+      "appId": 883710,
+      "title": "Resident Evil 2",
+      "genres": [
+        "Survival Horror"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 39,
+      "appId": 433340,
+      "title": "Slime Rancher",
+      "genres": [],
+      "positivePercent": 98
+    },
+    {
+      "rank": 40,
+      "appId": 1222140,
+      "title": "Detroit: Become Human",
+      "genres": [],
+      "positivePercent": 96
+    },
+    {
+      "rank": 41,
+      "appId": 2592160,
+      "title": "Dispatch",
+      "genres": [
+        "Choose Your Own Adventure"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 42,
+      "appId": 48700,
+      "title": "Mount & Blade: Warband",
+      "genres": [],
+      "positivePercent": 98
+    },
+    {
+      "rank": 43,
+      "appId": 1623730,
+      "title": "Palworld",
+      "genres": [
+        "Creature Collector"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 44,
+      "appId": 508440,
+      "title": "Totally Accurate Battle Simulator",
+      "genres": [],
+      "positivePercent": 98
+    },
+    {
+      "rank": 45,
+      "appId": 814380,
+      "title": "Sekiro™: Shadows Die Twice - GOTY Edition",
+      "genres": [
+        "Souls-like"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 46,
+      "appId": 3590,
+      "title": "Plants vs. Zombies GOTY Edition",
+      "genres": [],
+      "positivePercent": 98
+    },
+    {
+      "rank": 47,
+      "appId": 1671210,
+      "title": "DELTARUNE",
+      "genres": [
+        "Bullet Hell"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 48,
+      "appId": 203160,
+      "title": "Tomb Raider Game of the Year",
+      "genres": [
+        "Third-Person Shooter"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 49,
+      "appId": 698780,
+      "title": "Doki Doki Literature Club!",
+      "genres": [
+        "Psychological Horror"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 50,
+      "appId": 1332010,
+      "title": "Stray",
+      "genres": [],
+      "positivePercent": 97
+    },
+    {
+      "rank": 51,
+      "appId": 270880,
+      "title": "American Truck Simulator",
+      "genres": [
+        "Immersive Sim"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 52,
+      "appId": 22380,
+      "title": "Fallout: New Vegas",
+      "genres": [],
+      "positivePercent": 96
+    },
+    {
+      "rank": 53,
+      "appId": 588650,
+      "title": "Dead Cells",
+      "genres": [
+        "Metroidvania"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 54,
+      "appId": 1237970,
+      "title": "Titanfall® 2",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 55,
+      "appId": 1174180,
+      "title": "Red Dead Redemption 2",
+      "genres": [],
+      "positivePercent": 93
+    },
+    {
+      "rank": 56,
+      "appId": 2527500,
+      "title": "MiSide",
+      "genres": [
+        "Psychological Horror"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 57,
+      "appId": 374320,
+      "title": "DARK SOULS™ III",
+      "genres": [
+        "Souls-like"
+      ],
+      "positivePercent": 94
+    },
+    {
+      "rank": 58,
+      "appId": 504230,
+      "title": "Celeste",
+      "genres": [
+        "Precision Platformer"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 59,
+      "appId": 268910,
+      "title": "Cuphead",
+      "genres": [
+        "Bullet Hell"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 60,
+      "appId": 1426210,
+      "title": "It Takes Two",
+      "genres": [],
+      "positivePercent": 95
+    },
+    {
+      "rank": 61,
+      "appId": 3527290,
+      "title": "PEAK",
+      "genres": [
+        "Action Roguelike"
+      ],
+      "positivePercent": 94
+    },
+    {
+      "rank": 62,
+      "appId": 1289310,
+      "title": "Helltaker",
+      "genres": [
+        "Dating Sim"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 63,
+      "appId": 892970,
+      "title": "Valheim",
+      "genres": [
+        "Open World Survival Craft"
+      ],
+      "positivePercent": 93
+    },
+    {
+      "rank": 64,
+      "appId": 546560,
+      "title": "Half-Life: Alyx",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 65,
+      "appId": 108600,
+      "title": "Project Zomboid",
+      "genres": [
+        "Open World Survival Craft"
+      ],
+      "positivePercent": 94
+    },
+    {
+      "rank": 66,
+      "appId": 240,
+      "title": "Counter-Strike: Source",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 67,
+      "appId": 1903340,
+      "title": "Clair Obscur: Expedition 33",
+      "genres": [
+        "JRPG"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 68,
+      "appId": 322170,
+      "title": "Geometry Dash",
+      "genres": [
+        "Precision Platformer"
+      ],
+      "positivePercent": 93
+    },
+    {
+      "rank": 69,
+      "appId": 72850,
+      "title": "The Elder Scrolls V: Skyrim",
+      "genres": [],
+      "positivePercent": 95
+    },
+    {
+      "rank": 70,
+      "appId": 1092790,
+      "title": "Inscryption",
+      "genres": [
+        "Card Battler"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 71,
+      "appId": 70,
+      "title": "Half-Life",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 72,
+      "appId": 319630,
+      "title": "Life is Strange - Episode 1",
+      "genres": [],
+      "positivePercent": 96
+    },
+    {
+      "rank": 73,
+      "appId": 1868140,
+      "title": "DAVE THE DIVER",
+      "genres": [
+        "Roguelite"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 74,
+      "appId": 223470,
+      "title": "POSTAL 2",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 75,
+      "appId": 379720,
+      "title": "DOOM",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 76,
+      "appId": 440,
+      "title": "Team Fortress 2",
+      "genres": [
+        "Hero Shooter"
+      ],
+      "positivePercent": 91
+    },
+    {
+      "rank": 77,
+      "appId": 3764200,
+      "title": "Resident Evil Requiem",
+      "genres": [
+        "Survival Horror"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 78,
+      "appId": 8930,
+      "title": "Sid Meier's Civilization® V",
+      "genres": [],
+      "positivePercent": 96
+    },
+    {
+      "rank": 79,
+      "appId": 457140,
+      "title": "Oxygen Not Included",
+      "genres": [
+        "Colony Sim"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 80,
+      "appId": 435150,
+      "title": "Divinity: Original Sin 2 - Definitive Edition",
+      "genres": [
+        "Tactical RPG"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 81,
+      "appId": 1593500,
+      "title": "God of War",
+      "genres": [
+        "Hack and Slash"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 82,
+      "appId": 1057090,
+      "title": "Ori and the Will of the Wisps",
+      "genres": [
+        "Metroidvania"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 83,
+      "appId": 945360,
+      "title": "Among Us",
+      "genres": [
+        "Social Deduction"
+      ],
+      "positivePercent": 92
+    },
+    {
+      "rank": 84,
+      "appId": 601150,
+      "title": "Devil May Cry 5",
+      "genres": [
+        "Hack and Slash"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 85,
+      "appId": 2001120,
+      "title": "Split Fiction",
+      "genres": [
+        "3D Platformer"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 86,
+      "appId": 632360,
+      "title": "Risk of Rain 2",
+      "genres": [
+        "Third-Person Shooter"
+      ],
+      "positivePercent": 94
+    },
+    {
+      "rank": 87,
+      "appId": 219150,
+      "title": "Hotline Miami",
+      "genres": [
+        "Top-Down Shooter"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 88,
+      "appId": 238320,
+      "title": "Outlast",
+      "genres": [],
+      "positivePercent": 96
+    },
+    {
+      "rank": 89,
+      "appId": 1687950,
+      "title": "Persona 5 Royal",
+      "genres": [
+        "JRPG"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 90,
+      "appId": 204360,
+      "title": "Castle Crashers®",
+      "genres": [
+        "Beat 'em up"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 91,
+      "appId": 205100,
+      "title": "Dishonored",
+      "genres": [],
+      "positivePercent": 98
+    },
+    {
+      "rank": 92,
+      "appId": 1817070,
+      "title": "Marvel’s Spider-Man Remastered",
+      "genres": [],
+      "positivePercent": 96
+    },
+    {
+      "rank": 93,
+      "appId": 2231450,
+      "title": "Pizza Tower",
+      "genres": [
+        "2D Platformer"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 94,
+      "appId": 1366540,
+      "title": "Dyson Sphere Program",
+      "genres": [],
+      "positivePercent": 97
+    },
+    {
+      "rank": 95,
+      "appId": 477160,
+      "title": "Human Fall Flat",
+      "genres": [
+        "Puzzle Platformer"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 96,
+      "appId": 1196590,
+      "title": "Resident Evil Village",
+      "genres": [
+        "Survival Horror"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 97,
+      "appId": 460950,
+      "title": "Katana ZERO",
+      "genres": [
+        "2D Platformer"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 98,
+      "appId": 3419430,
+      "title": "Bongo Cat",
+      "genres": [
+        "Typing"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 99,
+      "appId": 1089980,
+      "title": "The Henry Stickmin Collection",
+      "genres": [
+        "Choose Your Own Adventure"
+      ],
+      "positivePercent": 99
+    },
+    {
+      "rank": 100,
+      "appId": 219740,
+      "title": "Don't Starve",
+      "genres": [
+        "Open World Survival Craft"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 101,
+      "appId": 220200,
+      "title": "Kerbal Space Program",
+      "genres": [
+        "Education"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 102,
+      "appId": 1167630,
+      "title": "Teardown",
+      "genres": [],
+      "positivePercent": 96
+    },
+    {
+      "rank": 103,
+      "appId": 648800,
+      "title": "Raft",
+      "genres": [
+        "Open World Survival Craft"
+      ],
+      "positivePercent": 93
+    },
+    {
+      "rank": 104,
+      "appId": 420530,
+      "title": "OneShot",
+      "genres": [
+        "Psychological Horror"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 105,
+      "appId": 813780,
+      "title": "Age of Empires II: Definitive Edition",
+      "genres": [
+        "City Builder"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 106,
+      "appId": 1313140,
+      "title": "Cult of the Lamb",
+      "genres": [
+        "Action Roguelike"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 107,
+      "appId": 4115450,
+      "title": "Phantom Blade Zero",
+      "genres": [
+        "Hack and Slash"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 108,
+      "appId": 1150690,
+      "title": "OMORI",
+      "genres": [
+        "Psychological Horror"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 109,
+      "appId": 207610,
+      "title": "The Walking Dead",
+      "genres": [],
+      "positivePercent": 97
+    },
+    {
+      "rank": 110,
+      "appId": 1113000,
+      "title": "Persona 4 Golden",
+      "genres": [
+        "JRPG"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 111,
+      "appId": 239030,
+      "title": "Papers, Please",
+      "genres": [],
+      "positivePercent": 97
+    },
+    {
+      "rank": 112,
+      "appId": 213670,
+      "title": "South Park™: The Stick of Truth™",
+      "genres": [],
+      "positivePercent": 98
+    },
+    {
+      "rank": 113,
+      "appId": 1145350,
+      "title": "Hades II",
+      "genres": [
+        "Roguelite"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 114,
+      "appId": 1942280,
+      "title": "Brotato",
+      "genres": [
+        "Bullet Hell"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 115,
+      "appId": 730,
+      "title": "Counter-Strike 2",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 86
+    },
+    {
+      "rank": 116,
+      "appId": 1454400,
+      "title": "Cookie Clicker",
+      "genres": [
+        "Incremental"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 117,
+      "appId": 238460,
+      "title": "BattleBlock Theater®",
+      "genres": [
+        "2D Platformer"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 118,
+      "appId": 3146520,
+      "title": "WEBFISHING",
+      "genres": [
+        "Creature Collector"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 119,
+      "appId": 362890,
+      "title": "Black Mesa",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 120,
+      "appId": 418370,
+      "title": "Resident Evil 7 Biohazard",
+      "genres": [
+        "Survival Horror"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 121,
+      "appId": 233860,
+      "title": "Kenshi",
+      "genres": [
+        "Immersive Sim"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 122,
+      "appId": 304430,
+      "title": "INSIDE",
+      "genres": [
+        "Puzzle Platformer"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 123,
+      "appId": 1920960,
+      "title": "VPet-Simulator",
+      "genres": [],
+      "positivePercent": 98
+    },
+    {
+      "rank": 124,
+      "appId": 489830,
+      "title": "The Elder Scrolls V: Skyrim Special Edition",
+      "genres": [],
+      "positivePercent": 92
+    },
+    {
+      "rank": 125,
+      "appId": 636480,
+      "title": "Ravenfield",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 126,
+      "appId": 35140,
+      "title": "Batman: Arkham Asylum Game of the Year Edition",
+      "genres": [
+        "Beat 'em up"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 127,
+      "appId": 1771300,
+      "title": "Kingdom Come: Deliverance II",
+      "genres": [],
+      "positivePercent": 94
+    },
+    {
+      "rank": 128,
+      "appId": 221380,
+      "title": "Age of Empires II (Retired)",
+      "genres": [],
+      "positivePercent": 96
+    },
+    {
+      "rank": 129,
+      "appId": 683320,
+      "title": "GRIS",
+      "genres": [],
+      "positivePercent": 96
+    },
+    {
+      "rank": 130,
+      "appId": 753640,
+      "title": "Outer Wilds",
+      "genres": [],
+      "positivePercent": 96
+    },
+    {
+      "rank": 131,
+      "appId": 2420510,
+      "title": "HoloCure - Save the Fans!",
+      "genres": [
+        "Bullet Heaven"
+      ],
+      "positivePercent": 99
+    },
+    {
+      "rank": 132,
+      "appId": 2835570,
+      "title": "Buckshot Roulette",
+      "genres": [
+        "Psychological Horror"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 133,
+      "appId": 304930,
+      "title": "Unturned",
+      "genres": [
+        "Looter Shooter"
+      ],
+      "positivePercent": 91
+    },
+    {
+      "rank": 134,
+      "appId": 253230,
+      "title": "A Hat in Time",
+      "genres": [
+        "3D Platformer"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 135,
+      "appId": 206440,
+      "title": "To the Moon",
+      "genres": [],
+      "positivePercent": 96
+    },
+    {
+      "rank": 136,
+      "appId": 235460,
+      "title": "METAL GEAR RISING: REVENGEANCE",
+      "genres": [
+        "Hack and Slash"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 137,
+      "appId": 391220,
+      "title": "Rise of the Tomb Raider™",
+      "genres": [
+        "Third-Person Shooter"
+      ],
+      "positivePercent": 94
+    },
+    {
+      "rank": 138,
+      "appId": 516750,
+      "title": "My Summer Car",
+      "genres": [],
+      "positivePercent": 95
+    },
+    {
+      "rank": 139,
+      "appId": 200260,
+      "title": "Batman: Arkham City - Game of the Year Edition",
+      "genres": [],
+      "positivePercent": 96
+    },
+    {
+      "rank": 140,
+      "appId": 1669980,
+      "title": "Volcano Princess",
+      "genres": [
+        "Life Sim"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 141,
+      "appId": 644560,
+      "title": "Mirror",
+      "genres": [],
+      "positivePercent": 96
+    },
+    {
+      "rank": 142,
+      "appId": 274190,
+      "title": "Broforce",
+      "genres": [
+        "Side Scroller"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 143,
+      "appId": 424840,
+      "title": "Little Nightmares",
+      "genres": [
+        "Puzzle Platformer"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 144,
+      "appId": 2881650,
+      "title": "Content Warning",
+      "genres": [
+        "Action Roguelike"
+      ],
+      "positivePercent": 94
+    },
+    {
+      "rank": 145,
+      "appId": 500,
+      "title": "Left 4 Dead",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 146,
+      "appId": 1284190,
+      "title": "The Planet Crafter",
+      "genres": [
+        "Open World Survival Craft"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 147,
+      "appId": 1625450,
+      "title": "Muck",
+      "genres": [],
+      "positivePercent": 93
+    },
+    {
+      "rank": 148,
+      "appId": 1144400,
+      "title": "Senren＊Banka",
+      "genres": [
+        "Dating Sim"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 149,
+      "appId": 2134320,
+      "title": "ENA: Dream BBQ",
+      "genres": [
+        "3D Platformer"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 150,
+      "appId": 629730,
+      "title": "Blade and Sorcery",
+      "genres": [],
+      "positivePercent": 96
+    },
+    {
+      "rank": 151,
+      "appId": 1288310,
+      "title": "Firework",
+      "genres": [],
+      "positivePercent": 98
+    },
+    {
+      "rank": 152,
+      "appId": 32470,
+      "title": "STAR WARS™ Empire at War - Gold Pack",
+      "genres": [],
+      "positivePercent": 98
+    },
+    {
+      "rank": 153,
+      "appId": 787480,
+      "title": "Phoenix Wright: Ace Attorney Trilogy",
+      "genres": [
+        "Detective"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 154,
+      "appId": 250320,
+      "title": "The Wolf Among Us",
+      "genres": [
+        "Detective"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 155,
+      "appId": 881100,
+      "title": "Noita",
+      "genres": [
+        "Dungeon Crawler"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 156,
+      "appId": 1931770,
+      "title": "Chants of Sennaar",
+      "genres": [
+        "Detective"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 157,
+      "appId": 976730,
+      "title": "Halo: The Master Chief Collection",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 92
+    },
+    {
+      "rank": 158,
+      "appId": 311690,
+      "title": "Enter the Gungeon",
+      "genres": [
+        "Bullet Hell"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 159,
+      "appId": 635260,
+      "title": "CarX Drift Racing Online",
+      "genres": [],
+      "positivePercent": 95
+    },
+    {
+      "rank": 160,
+      "appId": 4001890,
+      "title": "How to Fish",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 161,
+      "appId": 1290000,
+      "title": "PowerWash Simulator",
+      "genres": [
+        "Immersive Sim"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 162,
+      "appId": 1562700,
+      "title": "SANABI",
+      "genres": [
+        "2D Platformer"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 163,
+      "appId": 620980,
+      "title": "Beat Saber",
+      "genres": [],
+      "positivePercent": 95
+    },
+    {
+      "rank": 164,
+      "appId": 8870,
+      "title": "BioShock Infinite",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 93
+    },
+    {
+      "rank": 165,
+      "appId": 3357650,
+      "title": "PRAGMATA",
+      "genres": [
+        "Third-Person Shooter"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 166,
+      "appId": 244210,
+      "title": "Assetto Corsa",
+      "genres": [],
+      "positivePercent": 93
+    },
+    {
+      "rank": 167,
+      "appId": 1040200,
+      "title": "Crime Scene Cleaner",
+      "genres": [
+        "Life Sim"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 168,
+      "appId": 55230,
+      "title": "Saints Row: The Third",
+      "genres": [
+        "Third-Person Shooter"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 169,
+      "appId": 218620,
+      "title": "PAYDAY 2",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 89
+    },
+    {
+      "rank": 170,
+      "appId": 3405340,
+      "title": "Megabonk",
+      "genres": [
+        "Bullet Heaven"
+      ],
+      "positivePercent": 94
+    },
+    {
+      "rank": 171,
+      "appId": 2709570,
+      "title": "Supermarket Together",
+      "genres": [
+        "Life Sim"
+      ],
+      "positivePercent": 94
+    },
+    {
+      "rank": 172,
+      "appId": 1584090,
+      "title": "Touhou Mystia's Izakaya",
+      "genres": [
+        "JRPG"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 173,
+      "appId": 613100,
+      "title": "House Flipper",
+      "genres": [
+        "Immersive Sim"
+      ],
+      "positivePercent": 94
+    },
+    {
+      "rank": 174,
+      "appId": 212680,
+      "title": "FTL: Faster Than Light",
+      "genres": [],
+      "positivePercent": 95
+    },
+    {
+      "rank": 175,
+      "appId": 254700,
+      "title": "Resident Evil 4 (2005)",
+      "genres": [
+        "Survival Horror"
+      ],
+      "positivePercent": 94
+    },
+    {
+      "rank": 176,
+      "appId": 1449690,
+      "title": "The Walking Dead: The Telltale Definitive Series",
+      "genres": [
+        "Choose Your Own Adventure"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 177,
+      "appId": 420,
+      "title": "Half-Life 2: Episode Two",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 178,
+      "appId": 674940,
+      "title": "Stick Fight: The Game",
+      "genres": [
+        "2D Fighter"
+      ],
+      "positivePercent": 93
+    },
+    {
+      "rank": 179,
+      "appId": 427410,
+      "title": "Abiotic Factor",
+      "genres": [
+        "Open World Survival Craft"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 180,
+      "appId": 1562430,
+      "title": "DREDGE",
+      "genres": [
+        "Psychological Horror"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 181,
+      "appId": 447530,
+      "title": "VA-11 Hall-A: Cyberpunk Bartender Action",
+      "genres": [
+        "Life Sim"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 182,
+      "appId": 3070070,
+      "title": "TCG Card Shop Simulator",
+      "genres": [
+        "Collectathon"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 183,
+      "appId": 1568400,
+      "title": "Sheepy: A Short Adventure",
+      "genres": [
+        "2D Platformer"
+      ],
+      "positivePercent": 99
+    },
+    {
+      "rank": 184,
+      "appId": 2212330,
+      "title": "Your Only Move Is HUSTLE",
+      "genres": [
+        "2D Fighter"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 185,
+      "appId": 387290,
+      "title": "Ori and the Blind Forest: Definitive Edition",
+      "genres": [
+        "Metroidvania"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 186,
+      "appId": 1055540,
+      "title": "A Short Hike",
+      "genres": [],
+      "positivePercent": 99
+    },
+    {
+      "rank": 187,
+      "appId": 774801,
+      "title": "Crab Champions",
+      "genres": [
+        "Action Roguelike"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 188,
+      "appId": 2215430,
+      "title": "Ghost of Tsushima DIRECTOR'S CUT",
+      "genres": [
+        "Souls-like"
+      ],
+      "positivePercent": 94
+    },
+    {
+      "rank": 189,
+      "appId": 288160,
+      "title": "The Room",
+      "genres": [],
+      "positivePercent": 98
+    },
+    {
+      "rank": 190,
+      "appId": 1211020,
+      "title": "Wobbly Life",
+      "genres": [],
+      "positivePercent": 97
+    },
+    {
+      "rank": 191,
+      "appId": 282140,
+      "title": "SOMA",
+      "genres": [
+        "Psychological Horror"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 192,
+      "appId": 570940,
+      "title": "DARK SOULS™: REMASTERED",
+      "genres": [
+        "Souls-like"
+      ],
+      "positivePercent": 92
+    },
+    {
+      "rank": 193,
+      "appId": 386940,
+      "title": "Ultimate Chicken Horse",
+      "genres": [
+        "Precision Platformer"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 194,
+      "appId": 286160,
+      "title": "Tabletop Simulator",
+      "genres": [],
+      "positivePercent": 94
+    },
+    {
+      "rank": 195,
+      "appId": 1250,
+      "title": "Killing Floor",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 196,
+      "appId": 323190,
+      "title": "Frostpunk",
+      "genres": [
+        "City Builder"
+      ],
+      "positivePercent": 93
+    },
+    {
+      "rank": 197,
+      "appId": 219990,
+      "title": "Grim Dawn",
+      "genres": [],
+      "positivePercent": 93
+    },
+    {
+      "rank": 198,
+      "appId": 774181,
+      "title": "Rhythm Doctor",
+      "genres": [],
+      "positivePercent": 98
+    },
+    {
+      "rank": 199,
+      "appId": 2142790,
+      "title": "Fields of Mistria",
+      "genres": [
+        "Dating Sim"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 200,
+      "appId": 787860,
+      "title": "Farming Simulator 19",
+      "genres": [],
+      "positivePercent": 94
+    },
+    {
+      "rank": 201,
+      "appId": 602960,
+      "title": "Barotrauma",
+      "genres": [
+        "Survival Horror"
+      ],
+      "positivePercent": 94
+    },
+    {
+      "rank": 202,
+      "appId": 1206560,
+      "title": "WorldBox - God Simulator",
+      "genres": [
+        "Colony Sim"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 203,
+      "appId": 331470,
+      "title": "Everlasting Summer",
+      "genres": [],
+      "positivePercent": 94
+    },
+    {
+      "rank": 204,
+      "appId": 977950,
+      "title": "A Dance of Fire and Ice",
+      "genres": [],
+      "positivePercent": 94
+    },
+    {
+      "rank": 205,
+      "appId": 501300,
+      "title": "What Remains of Edith Finch",
+      "genres": [],
+      "positivePercent": 96
+    },
+    {
+      "rank": 206,
+      "appId": 1817230,
+      "title": "Hi-Fi RUSH",
+      "genres": [
+        "Hack and Slash"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 207,
+      "appId": 4019220,
+      "title": "Dressmaker",
+      "genres": [
+        "Life Sim"
+      ],
+      "positivePercent": 99
+    },
+    {
+      "rank": 208,
+      "appId": 3489700,
+      "title": "Stellar Blade™",
+      "genres": [
+        "Hack and Slash"
+      ],
+      "positivePercent": 94
+    },
+    {
+      "rank": 209,
+      "appId": 274170,
+      "title": "Hotline Miami 2: Wrong Number",
+      "genres": [
+        "Top-Down Shooter"
+      ],
+      "positivePercent": 94
+    },
+    {
+      "rank": 210,
+      "appId": 312530,
+      "title": "Duck Game",
+      "genres": [],
+      "positivePercent": 97
+    },
+    {
+      "rank": 211,
+      "appId": 1030300,
+      "title": "Hollow Knight: Silksong",
+      "genres": [
+        "Metroidvania"
+      ],
+      "positivePercent": 90
+    },
+    {
+      "rank": 212,
+      "appId": 307690,
+      "title": "Sleeping Dogs: Definitive Edition",
+      "genres": [],
+      "positivePercent": 94
+    },
+    {
+      "rank": 213,
+      "appId": 1230140,
+      "title": "ATRI -My Dear Moments-",
+      "genres": [
+        "Dating Sim"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 214,
+      "appId": 700330,
+      "title": "SCP: Secret Laboratory",
+      "genres": [
+        "Survival Horror"
+      ],
+      "positivePercent": 91
+    },
+    {
+      "rank": 215,
+      "appId": 211820,
+      "title": "Starbound",
+      "genres": [
+        "Open World Survival Craft"
+      ],
+      "positivePercent": 92
+    },
+    {
+      "rank": 216,
+      "appId": 632470,
+      "title": "Disco Elysium - The Final Cut",
+      "genres": [
+        "Detective"
+      ],
+      "positivePercent": 93
+    },
+    {
+      "rank": 217,
+      "appId": 2124490,
+      "title": "SILENT HILL 2",
+      "genres": [
+        "Psychological Horror"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 218,
+      "appId": 782330,
+      "title": "DOOM Eternal",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 91
+    },
+    {
+      "rank": 219,
+      "appId": 541570,
+      "title": "Sally Face - Episode One",
+      "genres": [
+        "Psychological Horror"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 220,
+      "appId": 107410,
+      "title": "Arma 3",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 90
+    },
+    {
+      "rank": 221,
+      "appId": 286690,
+      "title": "METRO 2033 Redux",
+      "genres": [
+        "FPS"
+      ],
+      "positivePercent": 92
+    },
+    {
+      "rank": 222,
+      "appId": 552100,
+      "title": "Brick Rigs",
+      "genres": [],
+      "positivePercent": 95
+    },
+    {
+      "rank": 223,
+      "appId": 871720,
+      "title": "Ultimate Custom Night",
+      "genres": [
+        "Survival Horror"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 224,
+      "appId": 1388880,
+      "title": "Doki Doki Literature Club Plus!",
+      "genres": [
+        "Psychological Horror"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 225,
+      "appId": 990080,
+      "title": "Hogwarts Legacy",
+      "genres": [],
+      "positivePercent": 90
+    },
+    {
+      "rank": 226,
+      "appId": 653530,
+      "title": "Return of the Obra Dinn",
+      "genres": [
+        "Detective"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 227,
+      "appId": 1259420,
+      "title": "Days Gone",
+      "genres": [],
+      "positivePercent": 93
+    },
+    {
+      "rank": 228,
+      "appId": 1989270,
+      "title": "Slay the Princess — The Pristine Cut",
+      "genres": [
+        "Psychological Horror"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 229,
+      "appId": 1240210,
+      "title": "There Is No Game: Wrong Dimension",
+      "genres": [],
+      "positivePercent": 98
+    },
+    {
+      "rank": 230,
+      "appId": 1262350,
+      "title": "SIGNALIS",
+      "genres": [
+        "Survival Horror"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 231,
+      "appId": 113200,
+      "title": "The Binding of Isaac",
+      "genres": [
+        "Action Roguelike"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 232,
+      "appId": 1217060,
+      "title": "Gunfire Reborn",
+      "genres": [
+        "Roguelite"
+      ],
+      "positivePercent": 93
+    },
+    {
+      "rank": 233,
+      "appId": 597170,
+      "title": "Clone Drone in the Danger Zone",
+      "genres": [
+        "3D Fighter"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 234,
+      "appId": 346010,
+      "title": "Besiege",
+      "genres": [
+        "Flight"
+      ],
+      "positivePercent": 95
+    },
+    {
+      "rank": 235,
+      "appId": 1082430,
+      "title": "Before Your Eyes",
+      "genres": [],
+      "positivePercent": 98
+    },
+    {
+      "rank": 236,
+      "appId": 3101040,
+      "title": "Magical Girl Witch Trials",
+      "genres": [
+        "Detective"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 237,
+      "appId": 1062090,
+      "title": "Timberborn",
+      "genres": [
+        "City Builder"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 238,
+      "appId": 531510,
+      "title": "Just Shapes & Beats",
+      "genres": [
+        "Bullet Hell"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 239,
+      "appId": 2161700,
+      "title": "Persona 3 Reload",
+      "genres": [
+        "JRPG"
+      ],
+      "positivePercent": 94
+    },
+    {
+      "rank": 240,
+      "appId": 252490,
+      "title": "Rust",
+      "genres": [],
+      "positivePercent": 87
+    },
+    {
+      "rank": 241,
+      "appId": 255710,
+      "title": "Cities: Skylines",
+      "genres": [
+        "City Builder"
+      ],
+      "positivePercent": 90
+    },
+    {
+      "rank": 242,
+      "appId": 262060,
+      "title": "Darkest Dungeon®",
+      "genres": [
+        "Dungeon Crawler"
+      ],
+      "positivePercent": 92
+    },
+    {
+      "rank": 243,
+      "appId": 2263010,
+      "title": "Pineapple on pizza",
+      "genres": [
+        "Psychological Horror"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 244,
+      "appId": 261030,
+      "title": "The Walking Dead: Season Two",
+      "genres": [
+        "Choose Your Own Adventure"
+      ],
+      "positivePercent": 97
+    },
+    {
+      "rank": 245,
+      "appId": 22330,
+      "title": "The Elder Scrolls IV: Oblivion® Game of the Year Edition (2009)",
+      "genres": [],
+      "positivePercent": 95
+    },
+    {
+      "rank": 246,
+      "appId": 3862670,
+      "title": "Shelldiver",
+      "genres": [
+        "Incremental"
+      ],
+      "positivePercent": 99
+    },
+    {
+      "rank": 247,
+      "appId": 736260,
+      "title": "Baba Is You",
+      "genres": [
+        "Sokoban"
+      ],
+      "positivePercent": 98
+    },
+    {
+      "rank": 248,
+      "appId": 972660,
+      "title": "Spiritfarer®: Farewell Edition",
+      "genres": [],
+      "positivePercent": 95
+    },
+    {
+      "rank": 249,
+      "appId": 413410,
+      "title": "Danganronpa: Trigger Happy Havoc",
+      "genres": [
+        "Detective"
+      ],
+      "positivePercent": 96
+    },
+    {
+      "rank": 250,
+      "appId": 282070,
+      "title": "This War of Mine",
+      "genres": [],
+      "positivePercent": 93
+    }
+  ]
+}

@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vp dev",
+    "start": "node --env-file-if-exists=.env server/index.mjs",
+    "update:top250": "node scripts/update-top250.mjs",
     "build": "vp build && node scripts/singlefile.mjs",
     "preview": "vp preview",
     "typecheck": "tsc --noEmit",

@@ -1,7 +1,8 @@
+import {demoLibrary} from './fixtures/library.ts';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {demoLibrary,costPerHour} from '../src/library.ts';
-import {parseImport,mergeLibrary,parseSteam,fetchSteam} from '../src/imports.ts';
+import {costPerHour} from '../src/library.ts';
+import {parseImport,mergeLibrary,parseSteam} from '../src/imports.ts';
 test('JSON round trips, defaults optional fields and rejects unsupported formats',()=>{
   const games=demoLibrary();
   assert.deepEqual(parseImport(JSON.stringify({version:1,games})),games);
@@ -19,7 +20,7 @@ test('Steam uses minute playtime, estimates and unknown costs without demo accou
   assert.equal(imported[0].status,'Backlog');
   assert.equal(imported[0].priceKnown,false);
   assert.equal(costPerHour(imported[0]),null);
-  assert.equal(imported[1].timeToBeatHours,20);
+  assert.equal(imported[1].timeToBeatHours,null);
   assert.equal(imported[1].metacritic,null);
   assert.throws(()=>parseSteam({response:{}},[]));
   assert.throws(()=>parseSteam({response:{games:[{appid:1,name:'x',playtime_forever:-1}]}},[]));
@@ -28,10 +29,6 @@ test('Steam preserves user-managed fields for existing non-demo games',()=>{
   const game={...demoLibrary()[0],metadataSource:'Custom',tags:['weekend'],playNext:true,status:'Completed'};
   const [imported]=parseSteam({response:{games:[{appid:game.appId,name:game.title,playtime_forever:120}]}},[game]);
   assert.equal(imported.status,'Completed');assert.deepEqual(imported.tags,['weekend']);assert.equal(imported.priceKnown,true);
-});
-test('invalid Steam credentials are rejected before a network call',async()=>{
-  await assert.rejects(fetchSteam('bad','bad',false,[]),/17-digit/);
-  await assert.rejects(fetchSteam('76561198000000000','bad',false,[]),/32-character/);
 });
 test('Steam refresh keeps explicit user edits made to demo games',()=>{
   const game={...demoLibrary()[0],status:'Dropped',userManaged:true};

@@ -1,6 +1,7 @@
+import {demoLibrary} from './fixtures/library.ts';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {demoLibrary} from '../src/library.ts';
+
 import {buildReel} from '../src/roulette-model.ts';
 test('reel always lands on the selected matching game, including one-game pools',()=>{
   const games=demoLibrary().slice(0,3);

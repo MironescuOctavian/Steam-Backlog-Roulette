@@ -8,9 +8,9 @@ export function filterGames(games: Game[], f: Filters): Game[] {
       && (f.state === 'all' || (g.status !== 'Completed' && g.status !== 'Dropped'
         && (f.state === 'backlog' || (f.state === 'never' && g.playtimeHours === 0) || (f.state === 'under2' && g.playtimeHours < 2) || (f.state === 'next' && g.playNext))))
       && (!f.genre || g.genres.includes(f.genre))
-      && (f.score === 0 || (g.metacritic !== null && g.metacritic >= f.score))
-      && hours <= f.maxHours
-      && (f.time === 'all' || (f.time === 'quick' && hours < 10) || (f.time === 'medium' && hours >= 10 && hours <= 30) || (f.time === 'epic' && hours >= 50));
+      && (f.score === 0 || ((g.steamPositivePercent??g.metacritic) !== null && (g.steamPositivePercent??g.metacritic)! >= f.score))
+      && (f.maxHours === 200 || (hours !== null && hours <= f.maxHours))
+      && (f.time === 'all' || (hours !== null && ((f.time === 'quick' && hours < 10) || (f.time === 'medium' && hours >= 10 && hours <= 30) || (f.time === 'epic' && hours >= 50))));
   });
 }
 export function analytics(games: Game[]) {
@@ -18,7 +18,8 @@ export function analytics(games: Game[]) {
   const backlog = games.filter(g => g.status !== 'Completed' && g.status !== 'Dropped');
   return {
     backlog:backlog.length,
-    remaining:backlog.reduce((sum,g)=>sum+remainingHours(g),0),
+    remaining:backlog.reduce((sum,g)=>sum+(remainingHours(g)??0),0),
+    unknownTimes:backlog.filter(g=>g.timeToBeatHours===null).length,
     unplayedPercent:games.length ? 100*games.filter(g=>g.playtimeHours===0).length/games.length : 0,
     averageCost:played.length ? played.reduce((sum,g)=>sum+costPerHour(g)!,0)/played.length : null,
   };

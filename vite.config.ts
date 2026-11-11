@@ -4,6 +4,7 @@ import { ui } from "@rimelight/ui/plugin";
 import { i18n } from "@rimelight/i18n/plugin";
 
 export default defineConfig({
+  server: { proxy: { "/api": "http://127.0.0.1:8787" } },
   plugins: [
     solid(),
     i18n(),

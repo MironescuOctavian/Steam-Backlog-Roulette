@@ -1,6 +1,7 @@
+import {demoLibrary} from './fixtures/library.ts';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {demoLibrary} from '../src/library.ts';
+
 import {filterGames,defaultFilters,analytics,rankValue} from '../src/planner.ts';
 test('filters compose and preserve time boundaries and unknown scores',()=>{
   const games=demoLibrary();
@@ -14,7 +15,7 @@ test('filters compose and preserve time boundaries and unknown scores',()=>{
   assert.equal(filterGames([g],{...defaultFilters,genre:'Puzzle'}).length,0);
 });
 test('analytics handle empty libraries and value ranking does not mutate the library',()=>{
-  assert.deepEqual(analytics([]),{backlog:0,remaining:0,unplayedPercent:0,averageCost:null});
+  assert.deepEqual(analytics([]),{backlog:0,remaining:0,unknownTimes:0,unplayedPercent:0,averageCost:null});
   const g=demoLibrary()[0];
   const games=[{...g,appId:1,pricePaid:20,playtimeHours:0},{...g,appId:2,pricePaid:10,playtimeHours:10},{...g,appId:3,pricePaid:20,playtimeHours:2}];
   assert.deepEqual(rankValue(games,false).map(g=>g.appId),[2,3]);

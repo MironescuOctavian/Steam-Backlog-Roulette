@@ -3,7 +3,7 @@ import { coverUrl, type Game } from './library';
 import { buildReel } from './roulette-model';
 import './roulette.css';
 
-export function Roulette(props: { games: Game[]; onWinner: (game: Game) => void; onTick?: () => void; onStart?: () => void }) {
+export function Roulette(props: { games: Game[]; discovery?:boolean; onWinner: (game: Game) => void; onTick?: () => void; onStart?: () => void }) {
   const [spinning,setSpinning]=createSignal(false);
   const [cards,setCards]=createSignal<Game[]>([]);
   const [result,setResult]=createSignal('');
@@ -57,7 +57,7 @@ export function Roulette(props: { games: Game[]; onWinner: (game: Game) => void;
       <div class="roulette-pointer" />
       <div class="roulette-track" ref={track}><For each={cards().length ? cards() : pool().slice(0,8)}>{g=><div class="reel-card"><img src={coverUrl(g.appId)} alt="" onError={e=>{e.currentTarget.style.visibility='hidden';}} /><span>{g.title}</span></div>}</For></div>
     </div>
-    <div class="reel-footer"><span>{pool().length ? 'Your filters. Your unfinished games. Equal chances.' : 'No eligible games. Adjust your library filters below.'}</span><button type="button" class="spin-button ready" disabled={spinning() || pool().length===0} onClick={spin}>{spinning() ? 'SPINNING…' : 'SPIN THE ROULETTE'}<span class="i-lucide-shuffle" aria-hidden="true" /></button></div>
+    <div class="reel-footer"><span>{pool().length ? props.discovery?'Top-rated games. Your filters. Equal chances.':'This library. Your filters. Equal chances.' : 'No eligible games. Adjust your filters above.'}</span><button type="button" class="spin-button ready" disabled={spinning() || pool().length===0} onClick={spin}>{spinning() ? 'SPINNING…' : 'SPIN THE ROULETTE'}<span class="i-lucide-shuffle" aria-hidden="true" /></button></div>
     <p class="roulette-result" role="status" aria-live="polite">{result()}</p>
   </section>;
 }

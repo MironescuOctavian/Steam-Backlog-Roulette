@@ -3,3 +3,6 @@ dist/
 .vite/
 *.local
 artifacts/
+.env
+.env.*
+!.env.example
