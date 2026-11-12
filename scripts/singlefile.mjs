@@ -11,7 +11,7 @@ const readAsset=url=>{
 let html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 html=html.replace(/<link rel="stylesheet"[^>]*href="([^"]+)"[^>]*>/g,(_,url)=>{
   const css=readAsset(url).toString().replace(/url\((['"]?)(\/assets\/[^)'"\s]+)\1\)/g,(_match,_quote,asset)=>{
-    const mime=asset.endsWith('.woff2')?'font/woff2':asset.endsWith('.webp')?'image/webp':asset.endsWith('.png')?'image/png':'application/octet-stream';
+    const mime=asset.endsWith('.woff2')?'font/woff2':asset.endsWith('.webp')?'image/webp':asset.endsWith('.png')?'image/png':asset.endsWith('.svg')?'image/svg+xml':'application/octet-stream';
     return `url(data:${mime};base64,${readAsset(asset).toString('base64')})`;
   });
   return `<style>${css.replaceAll('</style','<\\/style')}</style>`;

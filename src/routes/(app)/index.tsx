@@ -1,4 +1,6 @@
 import {GameTags} from '../../game-tags';
+import {GameDetails} from '../../game-details';
+import {usePlayerCounts,PlayerCountBadge} from '../../player-counts';
 import {HeroDeck} from '../../hero-deck';
 import {createEffect,createSignal,For,onCleanup,Show} from 'solid-js';
 import {useHref} from '@solidjs/router';
@@ -25,6 +27,9 @@ export default function BacklogPage(){
   const visibleGames=()=>loaded()?libraryRows().slice((currentLibraryPage()-1)*24,currentLibraryPage()*24):expanded()?libraryRows():libraryRows().slice(0,6);
   function turnLibraryPage(page:number,bottom=false){setLibraryPage(Math.max(1,Math.min(page,libraryPageCount())));if(bottom)requestAnimationFrame(()=>{const title=document.getElementById('library-title');title?.focus({preventScroll:true});title?.scrollIntoView({block:'start',behavior:'instant'});});}
   const libraryPagination=(bottom=false)=><div class="library-pagination"><p role="status">Showing {libraryRows().length?(currentLibraryPage()-1)*24+1:0}–{Math.min(currentLibraryPage()*24,libraryRows().length)} of {libraryRows().length.toLocaleString()} games · roulette uses all matches</p><nav aria-label={bottom?'Bottom library pages':'Library pages'}><button disabled={currentLibraryPage()===1} aria-label="Previous library page" onClick={()=>turnLibraryPage(currentLibraryPage()-1,bottom)}>‹</button><For each={paginationPages(libraryPageCount(),currentLibraryPage())}>{page=>typeof page==='number'?<button aria-label={`Library page ${page}`} aria-current={currentLibraryPage()===page?'page':undefined} onClick={()=>turnLibraryPage(page,bottom)}>{page}</button>:<span aria-hidden="true">…</span>}</For><button disabled={currentLibraryPage()===libraryPageCount()} aria-label="Next library page" onClick={()=>turnLibraryPage(currentLibraryPage()+1,bottom)}>›</button></nav></div>;
+  const counts=usePlayerCounts(()=>visibleGames().map(g=>g.appId));
+  const [detailsId,setDetailsId]=createSignal<number|null>(null);
+  const detailGame=()=>activeGames().find(g=>g.appId===detailsId())??null;
   const [winner, setWinner] = createSignal<Game | null>(null);
   const [spinFilters,setSpinFilters]=createSignal({...filters()});
   const sound=createRouletteSound();
@@ -93,7 +98,7 @@ export default function BacklogPage(){
 
         <aside class="pulse-home-teaser"><div><p class="eyebrow">A LITTLE INSPIRATION · YOUR BACKLOG STILL COMES FIRST</p><h2>What’s being played on Steam?</h2><p>Explore 1,000 popular games and see which ones are already in your library. Rankings load when you open Steam pulse.</p></div><a href={pulseHref()}>Explore Steam pulse →</a></aside>
         <section id="library" class="library-section" aria-labelledby="library-title">
-          <div class="section-heading"><div><p class="eyebrow">LESS COLLECTING. MORE COMPLETING.</p><h2 id="library-title" tabindex={-1}>{loaded()?profile()?profile()!.name+'’s library':'Your local library':'Explore the Top 250'}</h2></div><span class="section-note">{activeGames().length} games · {loaded()?'Saved on this device':'Top-rated discovery'}</span><label class="library-sort">Sort library<select value={preferences().librarySort} onChange={e=>setPreference({librarySort:e.currentTarget.value})}><option value="default">Original order</option><option value="title">Title</option><option value="remaining">Remaining time</option><option value="playtime">Most played</option><option value="priority">Play Next first</option></select></label></div>
+          <div class="section-heading"><div><p class="eyebrow">LESS COLLECTING. MORE COMPLETING.</p><h2 id="library-title" tabindex={-1}>{loaded()?profile()?profile()!.name+'’s library':'Your local library':'Explore the Top 250'}</h2></div><Show when={loaded()}><span class="section-note">{activeGames().length} games · Saved on this device</span></Show><label class="library-sort">Sort library<select value={preferences().librarySort} onChange={e=>setPreference({librarySort:e.currentTarget.value})}><option value="default">Original order</option><option value="title">Title</option><option value="remaining">Remaining time</option><option value="playtime">Most played</option><option value="priority">Play Next first</option></select></label></div>
           <Show when={!loaded()}><p class="demo-note">Ranking: <a href={catalogSource} target="_blank" rel="noopener noreferrer">Steam 250 ↗</a> · Snapshot {new Date(catalogUpdatedAt).toLocaleDateString()}. Based on Steam player reviews; not an official Valve ranking. These are recommendations, not games you own.</p></Show>
           <Show when={loaded()}><p class="demo-note">Playtime comes from the loaded library. Prices paid and completion times are unknown unless supplied; unknown values are excluded from planning and value calculations.</p></Show>
           <p class={["save-message", {"save-error": saveFailed()}]} role="status" aria-live="polite">{saveMessage()}</p>
@@ -108,7 +113,7 @@ export default function BacklogPage(){
               </div>
               <div class="game-content">
                 <div class="game-title-row"><h3>{game().title}</h3></div><Show when={exclusionReason(game(),preferences())}><p class="excluded-label">{exclusionReason(game(),preferences())} · {loaded()?'still in this library':'discovery only'}</p></Show>
-                <p class="game-genres">{game().genres.join(" · ")}</p>
+                <p class="game-genres">{game().genres.join(" · ")}</p><PlayerCountBadge count={counts()[game().appId]} />
                 <Show when={loaded()}>
                 <div class="game-hours"><span>{game().playtimeHours}h played</span><span>{game().timeToBeatHours===null?'Completion time unknown':`~${game().timeToBeatHours}h to beat`}</span></div>
                 <Show when={game().timeToBeatHours!==null}><progress class="game-progress" aria-label={`${game().title}: playtime relative to estimated completion time, not actual completion`} max={Math.max(1, game().timeToBeatHours??1)} value={Math.min(game().playtimeHours, Math.max(1, game().timeToBeatHours??1))} /></Show>
@@ -127,13 +132,8 @@ export default function BacklogPage(){
 
                 </Show>
                 <Show when={!loaded()}><p class="catalog-rank">#{game().rank} in Steam 250</p></Show>
-                <a class="game-store" href={`https://store.steampowered.com/app/${game().appId}/`} target="_blank" rel="noopener noreferrer">View on Steam ↗</a>
-                <details class="game-details"><summary>{loaded()?'Details & tags':'Game details'}</summary><div>
-                  <p class="game-genres">{game().genres.length?game().genres.join(' · '):'Genre not provided'}</p>
-                  <Show when={loaded()}><span class="value-badge">{game().priceKnown===false?'Purchase cost unknown':costPerHour(game())===null?'Cost per hour unavailable until played':'$'+costPerHour(game())!.toFixed(2)+'/h'}</span>
-                    <GameTags game={game()} disabled={Boolean(library.warning)} onSave={tags=>updateGame(game().appId,{tags})} /></Show>
-                  <p class="metadata-label">Source: {game().metadataSource}</p><label class="exclude-game"><input type="checkbox" checked={preferences().excludedIds.includes(game().appId)} onChange={()=>toggleExcluded(game().appId)} /> Exclude from roulette</label><Show when={loaded()}><button class="remove-game" onClick={()=>removeGame(game().appId)}>Remove from this list</button></Show>
-                </div></details>
+                <a class="game-store" href={`https://store.steampowered.com/app/${game().appId}/`} target="_blank" rel="noopener noreferrer">View on Steam</a>
+                <button class="game-details-button" onClick={e=>{e.currentTarget.focus({preventScroll:true});setDetailsId(game().appId);}}>Game details <span aria-hidden="true">＋</span></button>
               </div>
             </li>}</For>
           </ul>
@@ -143,6 +143,7 @@ export default function BacklogPage(){
           <Show when={loaded()&&games().length === 0}><div class="library-empty"><h3>This library has no games.</h3><p>Look up another profile, or add games and import a JSON library using the controls above.</p><button onClick={focusProfile}>Look up another profile</button></div></Show>
         </section>
 
+      <GameDetails game={detailGame()} owned={loaded()} onClose={()=>setDetailsId(null)}><Show when={detailGame()}>{game=><><Show when={loaded()}><GameTags game={game()} disabled={Boolean(library.warning)} onSave={tags=>updateGame(game().appId,{tags})} /><span class="value-badge">{game().priceKnown===false?'Purchase cost unknown':costPerHour(game())===null?'Cost per hour unavailable until played':'$'+costPerHour(game())!.toFixed(2)+'/h'}</span></Show><p class="metadata-label">Source: {game().metadataSource}</p><label class="exclude-game"><input type="checkbox" checked={preferences().excludedIds.includes(game().appId)} onChange={()=>toggleExcluded(game().appId)} /> Exclude from roulette</label><Show when={loaded()}><button class="remove-game" onClick={()=>{removeGame(game().appId);setDetailsId(null);}}>Remove from this list</button></Show></>}</Show></GameDetails>
       <dialog class="modal winner-modal" ref={winnerDialog} onClose={()=>setWinner(null)} aria-labelledby="winner-title">
         <button class="modal-close" onClick={()=>winnerDialog.close()} aria-label="Close winner spotlight">✕</button>
         <Show when={winnerGame()}><div>

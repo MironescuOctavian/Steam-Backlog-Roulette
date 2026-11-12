@@ -3,7 +3,7 @@
 Verified on Windows with Node 26.13.0 and headless Chrome on November 12, 2026.
 
 - TypeScript check and production build pass.
-- 45 unit tests cover validation, persistence, exclusions, recommendation reasons, sorting/preferences, imports, profile lookup, metadata/hero caching, rankings, unknown data, reel selection, activity aggregation, per-game history parsing, failure backoff, portable observation history, Worker API routing, pagination chart gaps and nearest recorded tooltip samples.
+- 48 unit tests cover validation, persistence, exclusions, recommendation reasons, sorting/preferences, imports, profile lookup, metadata/hero caching, rankings, unknown data, reel selection, activity aggregation, per-game history parsing, failure backoff, portable observation history, Worker API routing, pagination chart gaps and nearest recorded tooltip samples.
 - Built single-file HTML loads directly through `file://`.
 - Browser checks verify a fresh 250-game discovery pool with no default profile or personal statistics. Imported/profile libraries replace it. They also cover status updates, search, Play Next, tags, reload persistence, custom games, JSON preview/merge, both roulette modes, and winning-card alignment.
 - Hosted browser checks use explicit mocked Steam responses to verify profile resolution UI, accurate minute-to-hour conversion, private lookup failure preservation, empty-library persistence, switching profiles, and absence of invented completion times/value figures.
@@ -23,12 +23,12 @@ Verified on Windows with Node 26.13.0 and headless Chrome on November 12, 2026.
 - No horizontal page overflow at 1440px or 390px; desktop/mobile screenshots were visually inspected.
 - The ranking updater verified 250 unique Steam IDs with contiguous ranks from the attributed Steam 250 source.
 - Single-file packaging verifies that local JavaScript, stylesheet, and font references are embedded.
-- The background is a 14,948-byte WebP; the generated brand mark is a 14,972-byte WebP. Only the sans-serif font family is shipped. The main JavaScript is about 226 KB (70 KB gzip); activity and history snapshots remain separate deferred chunks. Standalone HTML is about 1.4 MB. These are build artifact sizes, not a network speed benchmark.
+- The background is a 14,948-byte WebP; the generated brand mark is a 14,972-byte WebP. Only the sans-serif font family is shipped. The main JavaScript is about 239 KB (73 KB gzip); activity and history snapshots remain separate deferred chunks. Standalone HTML is about 1.4 MB. These are build artifact sizes, not a network speed benchmark.
 - The build command runs TypeScript validation before packaging either target, so malformed routes fail before deployment output is produced.
 
 Live Steam access still requires a server API key. No default profile or account credential is shipped. Private-profile and network failures are tested with fixtures. No production Cloudflare deployment was performed; real account permissions and Worker secrets remain to be verified there. Audible output and desktop Steam launching require user-side verification. External CDN resources need a network connection; use JSON exports as backups.
 
-Sidebar links now lead to Backlog, Roulette and a dedicated Top 250 page. Browser checks verify its six-card preview, expansion to 250 games and no saved-library mutation. Footer layout checks cover three destination cards and desktop/mobile overflow.
+Sidebar links now lead to Backlog, Roulette and a dedicated Top 250 page. Browser checks verify its six-card preview, expansion to 250 games and no saved-library mutation. Footer destination cards were subsequently removed; source links and author credit remain.
 
 A mocked 5,000-game Steam profile verifies that only 24 library cards mount, page two starts at game 25, searching finds game 5,000 and resets pagination, and roulette retains every eligible game. Avatar dimensions and profile text width are checked on desktop and mobile. Sidebar borders and centered Steam pulse numeric columns are also checked. Filtering and sorting are cached; Steam classification enrichment saves one combined library update rather than rewriting it for each batch.
 
@@ -37,3 +37,5 @@ Deploy-script checks verify that a build-time Steam key is supplied only through
 Cloudflare runtime regression checks now exercise outbound fetches through all Steam endpoints (hero, activity with 1,000 ranks, metadata, game history and profile lookup) using controlled upstream responses. Requests use manual redirect handling because workerd rejects the error redirect mode. Native modal autofocus was removed; dialog focus uses the browser’s showModal behavior.
 
 Steam pulse briefs contain no mini charts. Browser checks verify separate Pulse sidebar destinations (Overview, Briefs, Compare, Top 1,000), section-link active state and restoration of backlog navigation when leaving Pulse. Per-game history requests now cover the visible ranking page rather than all brief entries.
+
+Game-details checks cover Steam store/player-count parsing, zero versus unavailable counts, cache reuse, request-size validation and Node/Cloudflare endpoint behavior. Browser checks cover clickable hero cards, removed footer destinations, native game-detail popups, retained tags/exclusions, Escape closing, desktop/mobile sizing, chart zoom and disabled unsupported ranges. Additional layout checks verify gold store buttons, popup focus restoration and navigator-handle selection. Game motifs and a Steam symbol decorate the background as a small embedded SVG. Store details load on opening; player counts use batches of at most 24 IDs. No long-term platform or global in-game history is fabricated.

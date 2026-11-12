@@ -6,15 +6,20 @@ import {fetchPublicProfile,parseProfileInput} from './steam.mjs';
 import {createActivityService} from './activity.mjs';
 import {createMetadataService,parseMetadataIds} from './metadata.mjs';
 import {createHeroService} from './hero.mjs';
+import {createGameDetailsService,parseGameIds} from './game-details.mjs';
 import {createGameHistoryService,parseHistoryIds} from './game-history.mjs';
 
-export function createApp({key=process.env.STEAM_API_KEY,lookup=fetchPublicProfile,activity=createActivityService(),metadata=createMetadataService(),hero=createHeroService({metadata}),gameHistory=createGameHistoryService(),root=path.resolve('dist')}={}) {
+export function createApp({key=process.env.STEAM_API_KEY,lookup=fetchPublicProfile,activity=createActivityService(),metadata=createMetadataService(),hero=createHeroService({metadata}),gameHistory=createGameHistoryService(),gameDetails=createGameDetailsService(),root=path.resolve('dist')}={}) {
   const cache=new Map();const limits=new Map();
   return http.createServer(async(req,res)=>{
     res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');
     const send=(status,data)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
     try {
       const url=new URL(req.url,'http://localhost');
+      if(url.pathname==='/api/game-details'||url.pathname==='/api/game-players'){
+        if(req.method!=='GET')return send(405,{error:'Use GET.'});let ids;try{ids=parseGameIds(url.searchParams.get('ids'));if(url.pathname==='/api/game-details'&&ids.length!==1)throw Error('Provide one game ID.');}catch(e){return send(400,{error:e.message});}
+        try{return send(200,url.pathname==='/api/game-details'?await gameDetails.game(ids[0]):await gameDetails.players(ids));}catch{return send(503,{error:'Game details are unavailable.'});}
+      }
       if(url.pathname==='/api/game-history'){if(req.method!=='GET')return send(405,{error:'Use GET.'});let ids;try{ids=parseHistoryIds(url.searchParams.get('ids'));}catch(e){return send(400,{error:e.message});}try{return send(200,await gameHistory(ids));}catch{return send(503,{error:'Game history unavailable.'});}}
       if(url.pathname==='/api/hero'){if(req.method!=='GET')return send(405,{error:'Use GET.'});try{return send(200,await hero());}catch{return send(503,{error:'Steam hero is unavailable.'});}}
       if(url.pathname==='/api/steam/metadata'){

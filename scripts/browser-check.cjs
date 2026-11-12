@@ -31,7 +31,9 @@ async function main(){
  assert.equal(await evaluate(`getComputedStyle(document.querySelector('.app-sidebar nav a')).borderTopWidth`),'0px','sidebar links have no border');
  assert.deepEqual(await evaluate(`[...document.querySelectorAll('.sidebar-copy strong')].map(e=>e.textContent)`),['Backlog','Roulette','Top 250'],'sidebar has the requested destinations');
  assert.equal(await evaluate(`document.querySelector('.sidebar-note')`),null,'no discovery note at the bottom of the sidebar');
- assert.equal(await evaluate(`document.querySelectorAll('.footer-destinations>a').length`),3,'footer has three useful destination cards');
+ assert.equal(await evaluate(`document.querySelectorAll('.footer-destinations').length`),0,'footer destination cards are removed');
+ assert.equal(await evaluate(`document.querySelectorAll('a.deck-card[href*="store.steampowered.com/app/"]').length`),4,'entire hero cards link to Steam');
+ assert.equal(await evaluate(`document.querySelectorAll('.deck-card .i-lucide-arrow-up-right').length`),0,'hero link icons are removed');
  assert.equal(await evaluate(`document.querySelector('.brand-icon').getBoundingClientRect().width`),60,'desktop logo is large enough to read');
  assert.equal(await evaluate(`document.querySelectorAll('.hero-deck button').length`),0,'hero has no shuffle or motion buttons');
  await evaluate(`document.fonts.ready`);
@@ -60,6 +62,13 @@ async function main(){
  await evaluate(`[...document.querySelectorAll('nav a')].find(a=>a.textContent==='Steam pulse').click()`);await delay(400);
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-brief').length`),4,'four distinct Steam discovery cards');
  assert.equal(await evaluate(`document.querySelectorAll('.online-chart path').length`),1,'real online-user chart is present');
+ assert.equal(await evaluate(`[...document.querySelectorAll('.chart-ranges button')].find(b=>b.textContent==='1w').disabled`),true,'unavailable historical ranges stay disabled');
+ const fullPath=await evaluate(`document.querySelector('.online-chart path').getAttribute('d')`);
+ await evaluate(`[...document.querySelectorAll('.chart-ranges button')].find(b=>b.textContent==='12h').click()`);await settle();
+ assert.ok((await evaluate(`document.querySelector('.online-chart path').getAttribute('d')`)).length<fullPath.length,'range selection uses fewer actual samples');
+ await evaluate(`[...document.querySelectorAll('.chart-ranges button')].find(b=>b.textContent==='Max').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelectorAll('.chart-navigator input[type=range]').length`),2,'chart has accessible history window handles');
+
  await evaluate(`(()=>{const plot=document.querySelector('.online-series .time-plot');plot.scrollIntoView({block:'center',behavior:'instant'});const r=plot.getBoundingClientRect();plot.dispatchEvent(new PointerEvent('pointermove',{clientX:r.left+r.width*.6,clientY:r.top+r.height*.4,bubbles:true}));})()`);await settle();
  assert.match(await evaluate(`document.querySelector('.online-series .chart-tooltip').textContent`),/UTCOnline: [\d,]+/,'platform hover shows a dated exact online-user value');
  assert.equal(await evaluate(`document.querySelectorAll('.online-series .time-crosshair,.online-series .time-point').length`),2,'hover highlights the recorded point and crosshair');
@@ -114,12 +123,15 @@ async function main(){
  assert.equal(await evaluate(`scrollY`),0,'Top 250 navigation starts at the page heading');
  await evaluate(`document.querySelector('.app-sidebar nav a:first-child').click()`);await settle();
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),initial,'returning to backlog restores the imported library');
- assert.equal(await evaluate(`[...document.querySelectorAll('.game-details')].every(d=>!d.open)`),true,'secondary card details start collapsed');
- await evaluate(`(()=>{document.querySelector('.game-details').open=true;const i=document.querySelector('.tag-label input');window.draftTag=i;i.focus();i.value='unsaved draft';i.dispatchEvent(new Event('input',{bubbles:true}));})()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('.game-details-modal').open`),false,'game details popup starts closed');
+ await evaluate(`document.querySelector('.game-details-button').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('.game-details-modal').open`),true,'details open in a modal');
+ await evaluate(`(()=>{const i=document.querySelector('.tag-label input');window.draftTag=i;i.focus();i.value='unsaved draft';i.dispatchEvent(new Event('input',{bubbles:true}));})()`);await settle();
  await evaluate(`(()=>{const s=document.querySelectorAll('.game-controls select')[1];window.oldSecondStatus=s.value;s.value='Playing';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);await settle();
  assert.deepEqual(await evaluate(`({connected:window.draftTag.isConnected,value:window.draftTag.value,current:document.querySelector('.tag-label input')===window.draftTag})`),{connected:true,value:'unsaved draft',current:true},'unrelated library updates preserve an unsaved tag draft');
  await evaluate(`window.draftTag.value='';window.draftTag.dispatchEvent(new Event('input',{bubbles:true}));window.draftTag.blur()`);await settle();
  await evaluate(`(()=>{const s=document.querySelectorAll('.game-controls select')[1];s.value=window.oldSecondStatus;s.dispatchEvent(new Event('change',{bubbles:true}));})()`);await settle();
+ await evaluate(`document.querySelector('.game-details-modal .modal-close').click()`);await settle();
  await evaluate(`document.querySelector('.quick-filters button').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.quick-filters button').getAttribute('aria-pressed')`),'true','never-played quick filter activates');
  assert.ok(await evaluate(`document.querySelectorAll('.game-card').length`)<initial,'never-played filter narrows the library');
@@ -138,7 +150,7 @@ async function main(){
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),1,'search');
  await evaluate(`document.querySelector('.play-next').click()`);await settle();
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games[0].playNext`),true,'priority save');
- await evaluate(`document.querySelector('.game-details').open=true`);await settle();
+ await evaluate(`document.querySelector('.game-details-button').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.value-badge').textContent.startsWith('$')`),true,'known cost per hour retains its currency marker');
  await evaluate(`(()=>{const i=document.querySelector('.tag-label input');i.value='weekend, favorite';i.dispatchEvent(new FocusEvent('blur'));})()`);await settle();
  assert.deepEqual(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games[0].tags`),['weekend','favorite'],'tags save');
@@ -199,7 +211,7 @@ async function main(){
  const {createApp}=await import(pathToFileURL(path.resolve('server/index.mjs')).href);
  let failActivity=false;
  const activityFixture=JSON.parse(fs.readFileSync(path.resolve('src/data/activity.json'),'utf8'));
- appServer=createApp({key:'test-only',metadata:async ids=>ids.map(appId=>({appId,appType:'game',multiplayerOnly:appId===730})),hero:async()=>JSON.parse(fs.readFileSync('src/data/hero.json','utf8')),gameHistory:async ids=>ids.map(appId=>({appId,peakAllTime:100000,samples:[[Date.now()-3600000,100],[Date.now(),120]],capturedAt:new Date().toISOString(),unavailable:false})),activity:async()=>{if(failActivity)throw new Error('offline');return activityFixture;},lookup:async input=>{
+ appServer=createApp({key:'test-only',gameDetails:{players:async ids=>ids.map(appId=>({appId,playersNow:1234,capturedAt:new Date().toISOString()})),game:async appId=>({appId,playersNow:1234,capturedAt:new Date().toISOString(),description:'A verified fixture description.',developers:['Valve'],publishers:['Valve'],genres:['Action'],platforms:['windows'],releaseDate:'1998',price:'$9.99',available:true})},metadata:async ids=>ids.map(appId=>({appId,appType:'game',multiplayerOnly:appId===730})),hero:async()=>JSON.parse(fs.readFileSync('src/data/hero.json','utf8')),gameHistory:async ids=>ids.map(appId=>({appId,peakAllTime:100000,samples:[[Date.now()-3600000,100],[Date.now(),120]],capturedAt:new Date().toISOString(),unavailable:false})),activity:async()=>{if(failActivity)throw new Error('offline');return activityFixture;},lookup:async input=>{
    if(input==='example-profile')await delay(150);
    if(input==='private-profile')throw new Error('Game details are private.');
    if(input==='large-profile')return {profile:{steamId:'76561198000000004',name:'Large Library QA',avatar:'https://avatars.steamstatic.com/0000000000000000000000000000000000000000_full.jpg',url:'https://steamcommunity.com/profiles/76561198000000004/',updatedAt:new Date().toISOString()},steam:{response:{games:Array.from({length:5000},(_,i)=>({appid:1000000+i,name:'Library QA '+String(i+1).padStart(4,'0'),playtime_forever:0}))}}};
@@ -214,6 +226,17 @@ async function main(){
  await lookup('example-profile');
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),2,'profile replaces Top 250 instead of merging');
  assert.equal(await evaluate(`document.querySelector('.profile-summary a').textContent`),'Viewing Profile QA’s library ↗','correct profile identity');
+ await evaluate(`document.querySelector('.game-details-button').click()`);await settle();
+ assert.match(await evaluate(`document.querySelector('.details-description').textContent`),/verified fixture/,'hosted popup loads real-shaped game details');
+ assert.match(await evaluate(`document.querySelector('.details-stats').textContent`),/1,234/,'popup shows the reported player count');
+ fs.writeFileSync(path.resolve('artifacts/game-details-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
+ await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await settle();
+ assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth`),true,'details popup fits mobile');
+ fs.writeFileSync(path.resolve('artifacts/game-details-mobile.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
+ await call('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});await call('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});await settle();
+ assert.equal(await evaluate(`document.querySelector('.game-details-modal').open`),false,'Escape closes game details');
+ await call('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});await settle();
+
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games[0].playtimeHours`),1.5,'actual Steam minutes mapped to hours');
  assert.equal(await evaluate(`document.querySelectorAll('.leaderboard').length`),0,'unknown prices have no value leaderboard');
  assert.equal(await evaluate(`document.querySelectorAll('.game-progress').length`),0,'unknown completion times are not invented');

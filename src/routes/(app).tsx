@@ -10,7 +10,7 @@ function AppShell(props:RouteSectionProps){
   createEffect(()=>changeRevision(),revision=>{if(!revision)return;setNoticeVisible(true);const timer=setTimeout(()=>setNoticeVisible(false),10000);return ()=>clearTimeout(timer);});
   createEffect(()=>location.pathname+location.hash,route=>{if(/^\/(?:activity|top250)?(?:#(?:main|roulette|library|overview|briefs|comparison|ranking))?$/.test(route)&&route!==preferences().lastRoute)setPreference({lastRoute:route});});
   createEffect(()=>location.pathname,pathname=>{document.title=pathname==='/activity'?'Steam pulse · Steam Backlog':pathname==='/top250'?'Top 250 · Steam Backlog':'Steam Backlog · Time-to-Beat Planner';});
-  const home=useHref(()=>'/#main'),roulette=useHref(()=>'/#roulette'),library=useHref(()=>'/#library'),activity=useHref(()=>'/activity'),discovery=useHref(()=>'/top250');
+  const home=useHref(()=>'/#main'),roulette=useHref(()=>'/#roulette'),activity=useHref(()=>'/activity'),discovery=useHref(()=>'/top250');
   const isPulse=()=>location.pathname==='/activity';
   const pulseLinks=[
     {id:'overview',href:useHref(()=>'/activity#overview'),title:'Overview',detail:'Concurrent Steam users',icon:'i-lucide-activity'},
@@ -37,11 +37,6 @@ function AppShell(props:RouteSectionProps){
     </div>
     <footer class="site-footer">
       <div class="footer-intro"><div><a class="footer-brand" href={home()}><img src="/brand-mark.webp" alt="" width="48" height="48" /><span>Steam Backlog<span class="brand-period">.</span></span></a><p>Good games deserve your time.</p></div><span class="footer-signoff">A little less choosing.<br /><strong>A little more playing.</strong></span></div>
-      <div class="footer-destinations" aria-label="Explore Steam Backlog">
-        <a href={library()}><span class="i-lucide-library" aria-hidden="true" /><span><strong>Make a little progress</strong><small>Return to your library and pick up where you left off.</small></span><b aria-hidden="true">↗</b></a>
-        <a href={roulette()}><span class="i-lucide-shuffle" aria-hidden="true" /><span><strong>Leave it to chance</strong><small>Your filters. Your games. One less decision.</small></span><b aria-hidden="true">↗</b></a>
-        <a href={discovery()}><span class="i-lucide-layout-dashboard" aria-hidden="true" /><span><strong>Find a future favorite</strong><small>Browse 250 games loved by the Steam community.</small></span><b aria-hidden="true">↗</b></a>
-      </div>
       <div class="footer-bottom"><div class="footer-links"><span class="eyebrow">PROJECT & SOURCES</span><a href={activity()}>Steam pulse</a><a href="https://store.steampowered.com/" target="_blank" rel="noopener noreferrer">Steam ↗</a><a href="https://steam250.com/top250" target="_blank" rel="noopener noreferrer">Steam 250 ↗</a><a href="https://github.com/MironescuOctavian/Steam-Backlog-Roulette" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div><a class="footer-credit" href="https://octavianmironescu.com/en/" target="_blank" rel="noopener noreferrer">Built by Mironescu Octavian. ↗</a><small>Independent project. Not affiliated with Valve or Steam.</small></div>
     </footer>
     <Show when={canUndo()&&noticeVisible()}><aside class="undo-toast" aria-label="Recent library change"><span role="status">{saveMessage()}</span><button onClick={undo}>Undo</button><button class="undo-dismiss" aria-label="Dismiss change notice" onClick={()=>setNoticeVisible(false)}>×</button></aside></Show>
