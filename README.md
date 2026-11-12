@@ -8,10 +8,10 @@ Too many games, nothing to play. Load a public Steam library, narrow it down, an
 - **Backlog roulette:** spin through eligible unfinished games and see why the pick matches your filters and shortlist.
 - **Exclusions:** leave individual titles, software, demos or multiplayer-only games out of roulette while keeping them in your library. Unknown classifications stay eligible.
 - **Library management:** browse 24 games per page, track status, tags and Play Next, remove games from the local list, and import or export JSON backups. Search, filters and roulette still use the full library. Undo restores recent library changes, including replacement imports and profile switches.
-- **Remembered preferences:** filters, library sorting, exclusions, sound, gaming budget, Steam pulse sorting/page and the last visited page stay saved in this browser.
-- **Steam pulse:** browse 1,000 games in pages of 50, with reported all-time peaks, per-game research popups and an online Steam-user chart with range controls, a draggable history window and CSV export. Only ranges covered by actual samples are enabled. Four briefs show ten picks each, without mini charts. Its own sidebar links to Overview, Briefs and Top 1,000; backlog navigation stays separate.
+- **Remembered preferences:** filters, library sorting, exclusions, sound, gaming budget, Charts sorting/page and the last visited page stay saved in this browser.
+- **Charts:** browse 1,000 games in pages of 50, with reported all-time peaks, per-game research popups and an online Steam-user chart with range controls, a draggable history window and CSV export. Only ranges covered by actual samples are enabled. Four briefs show ten picks each, without mini charts. Its own sidebar links to Overview, Briefs and Top 1,000; backlog navigation stays separate.
 - **Automatic discovery hero:** four fixed, clickable cards cycle through Steam’s 25 most-played games and open their store pages.
-- **Game details:** open a popup with current player counts, description, developer, release date, platforms and current US store price. Owned games keep tags and roulette exclusions there. Counts are checked in cached batches for displayed cards; richer store details load only when opened. Unknown data stays unavailable.
+- **Game details:** compact, two-column overviews and wider research windows with persistent navigation. Explore player history, monthly averages and peaks, observed prices, and illustrated official updates. Owned games keep tags and roulette exclusions there. Unknown data stays unavailable.
 - **Top 250 discovery:** start with six recommendations, or expand the full list. A dedicated Top 250 page stays available from the sidebar without replacing your library. Once a library is loaded, roulette picks only from that library.
 
 Loaded libraries and changes stay in your browser. Steam does not provide prices paid or time-to-beat, so those fields stay unknown unless you supply them. Undo keeps up to 20 library changes during the current session. Removing a game here never changes Steam ownership; refreshing a Steam profile can bring it back.
@@ -53,7 +53,7 @@ Run `pnpm test:worker` after building to check the packaged app in Cloudflare’
 
 Open **`standalone/index.html`** without installing anything. It includes discovery rankings and supports local JSON libraries. Live profile lookup and activity refreshes need the server. Steam covers and confetti load from CDNs.
 
-The hosted build in `dist/` loads Steam pulse’s ranking separately when you visit that page. The standalone version embeds it so file-based navigation still works.
+The hosted build in `dist/` loads the Charts ranking separately when you visit that page. The standalone version embeds it so file-based navigation still works.
 
 ## Data sources
 
@@ -67,7 +67,7 @@ Refresh bundled snapshots with `pnpm update:top250` or `pnpm update:activity`, t
 
 ## Development
 
-Built with Solid 2, TypeScript, UnoCSS, Rimelight UI, Vite+, and Node. Pages live in `src/routes`: `(app)/index.tsx` for the backlog and `(app)/activity/index.tsx` for Steam pulse, and `(app)/top250/index.tsx` for discovery. `(app).tsx` holds the shared layout.
+Built with Solid 2, TypeScript, UnoCSS, Rimelight UI, Vite+, and Node. Pages live in `src/routes`: `(app)/index.tsx` for the backlog and `(app)/activity/index.tsx` for Charts, and `(app)/top250/index.tsx` for discovery. `(app).tsx` holds the shared layout.
 
 ```sh
 pnpm typecheck

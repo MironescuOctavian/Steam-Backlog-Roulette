@@ -64,7 +64,7 @@ async function main(){
  assert.equal(await evaluate(`document.querySelectorAll('.discovery-grid .game-card').length`),250,'Top 250 can show all ranked games');
  assert.equal(await evaluate(`localStorage.getItem('steam-backlog-roulette.library.v1')`),null,'browsing Top 250 does not create a library');
  await evaluate(`document.querySelector('.app-sidebar nav a:first-child').click()`);await settle();
- await evaluate(`[...document.querySelectorAll('nav a')].find(a=>a.textContent==='Steam pulse').click()`);await delay(400);
+ await evaluate(`[...document.querySelectorAll('nav a')].find(a=>a.textContent==='Charts').click()`);await delay(400);
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-brief').length`),4,'four distinct Steam discovery cards');
  assert.equal(await evaluate(`document.querySelectorAll('.online-chart path').length`),1,'real online-user chart is present');
  assert.equal(await evaluate(`[...document.querySelectorAll('.chart-ranges button')].find(b=>b.textContent==='1w').disabled`),true,'unavailable historical ranges stay disabled');
@@ -84,7 +84,7 @@ async function main(){
  assert.notEqual(await evaluate(`document.querySelector('.online-series .chart-tooltip').textContent`),lastTooltip,'keyboard moves to the previous recorded sample');
  await evaluate(`document.querySelector('.online-series .time-plot').blur()`);await settle();
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-brief .time-chart,.pulse-brief svg').length`),0,'brief cards have no charts');
- assert.deepEqual(await evaluate(`[...document.querySelectorAll('.app-sidebar .sidebar-copy strong')].map(e=>e.textContent)`),['Overview','Briefs','Top 1,000'],'Steam pulse has its own section navigation');
+ assert.deepEqual(await evaluate(`[...document.querySelectorAll('.app-sidebar .sidebar-copy strong')].map(e=>e.textContent)`),['Overview','Briefs','Top 1,000'],'Charts has its own section navigation');
  await evaluate(`document.querySelector('.pulse-sidebar a[href$="#briefs"]').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.pulse-sidebar [aria-current]').textContent.includes('Briefs')`),true,'pulse section links update active state');
  assert.equal(await evaluate(`document.querySelector('#briefs').id`),'briefs','brief section target exists');
@@ -216,7 +216,7 @@ async function main(){
  const {createApp}=await import(pathToFileURL(path.resolve('server/index.mjs')).href);
  let failActivity=false;
  const activityFixture=JSON.parse(fs.readFileSync(path.resolve('src/data/activity.json'),'utf8'));
- appServer=createApp({key:'test-only',gameInsights:async appId=>({appId,capturedAt:new Date().toISOString(),history:Array.from({length:169},(_,i)=>[Date.now()-(168-i)*3600000,100+i]),peakToday:200,peakAllTime:1000,monthly:[{month:'October 2026',average:123.45,gain:5,percent:4.2,peak:200},{month:'October 2025',average:100,gain:0,percent:0,peak:180},{month:'August 2012',average:50,gain:null,percent:null,peak:90}],prices:[{currency:'USD',amount:999,capturedAt:new Date().toISOString()}],currentPrices:[{currency:'USD',amount:999,capturedAt:new Date().toISOString()}],updates:[{title:'Official fixture update',url:'https://store.steampowered.com/news/app/'+appId+'/view/1',date:new Date().toISOString(),summary:'Reported fixes.',patch:true}],warnings:[]}),gameDetails:{players:async ids=>ids.map(appId=>({appId,playersNow:1234,capturedAt:new Date().toISOString()})),game:async appId=>({appId,playersNow:1234,capturedAt:new Date().toISOString(),description:'A verified fixture description.',developers:['Valve'],publishers:['Valve'],genres:['Action'],platforms:['windows'],releaseDate:'1998',price:'$9.99',available:true})},metadata:async ids=>ids.map(appId=>({appId,appType:'game',multiplayerOnly:appId===730})),hero:async()=>JSON.parse(fs.readFileSync('src/data/hero.json','utf8')),gameHistory:async ids=>ids.map(appId=>({appId,peakAllTime:100000,samples:[[Date.now()-3600000,100],[Date.now(),120]],capturedAt:new Date().toISOString(),unavailable:false})),activity:async()=>{if(failActivity)throw new Error('offline');return activityFixture;},lookup:async input=>{
+ appServer=createApp({key:'test-only',gameInsights:async appId=>({appId,capturedAt:new Date().toISOString(),history:Array.from({length:169},(_,i)=>[Date.now()-(168-i)*3600000,100+i]),peakToday:200,peakAllTime:1000,monthly:[{month:'October 2026',average:123.45,gain:5,percent:4.2,peak:200},{month:'October 2025',average:100,gain:0,percent:0,peak:180},{month:'August 2012',average:50,gain:null,percent:null,peak:90}],prices:[{currency:'USD',amount:999,capturedAt:new Date().toISOString()}],currentPrices:[{currency:'USD',amount:999,capturedAt:new Date().toISOString()}],updates:[{title:'Official fixture update',url:'https://store.steampowered.com/news/app/'+appId+'/view/1',date:new Date().toISOString(),summary:'Reported fixes.',image:'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/header.jpg',patch:true}],warnings:[]}),gameDetails:{players:async ids=>ids.map(appId=>({appId,playersNow:1234,capturedAt:new Date().toISOString()})),game:async appId=>({appId,playersNow:1234,capturedAt:new Date().toISOString(),description:'A verified fixture description.',developers:['Valve'],publishers:['Valve'],genres:['Action'],platforms:['windows'],releaseDate:'1998',price:'$9.99',available:true})},metadata:async ids=>ids.map(appId=>({appId,appType:'game',multiplayerOnly:appId===730})),hero:async()=>JSON.parse(fs.readFileSync('src/data/hero.json','utf8')),gameHistory:async ids=>ids.map(appId=>({appId,peakAllTime:100000,samples:[[Date.now()-3600000,100],[Date.now(),120]],capturedAt:new Date().toISOString(),unavailable:false})),activity:async()=>{if(failActivity)throw new Error('offline');return activityFixture;},lookup:async input=>{
    if(input==='example-profile')await delay(150);
    if(input==='private-profile')throw new Error('Game details are private.');
    if(input==='large-profile')return {profile:{steamId:'76561198000000004',name:'Large Library QA',avatar:'https://avatars.steamstatic.com/0000000000000000000000000000000000000000_full.jpg',url:'https://steamcommunity.com/profiles/76561198000000004/',updatedAt:new Date().toISOString()},steam:{response:{games:Array.from({length:5000},(_,i)=>({appid:1000000+i,name:'Library QA '+String(i+1).padStart(4,'0'),playtime_forever:0}))}}};
@@ -226,7 +226,7 @@ async function main(){
  await new Promise(resolve=>appServer.listen(0,'127.0.0.1',resolve));
  await call('Page.navigate',{url:'http://127.0.0.1:'+appServer.address().port});await delay(600);
  assert.equal(await evaluate(`document.querySelectorAll('.kpi').length`),0,'hosted entry has no default profile stats');
- assert.equal(await evaluate(`performance.getEntriesByType('resource').some(r=>r.name.includes('/assets/activity-')&&r.name.endsWith('.js'))`),false,'Steam pulse data is not downloaded on the backlog page');
+ assert.equal(await evaluate(`performance.getEntriesByType('resource').some(r=>r.name.includes('/assets/activity-')&&r.name.endsWith('.js'))`),false,'Charts data is not downloaded on the backlog page');
  const lookup=async value=>{await evaluate(`new Promise((resolve,reject)=>{let n=0;const t=setInterval(()=>{if(document.querySelector('#steam-profile')){clearInterval(t);resolve(true);}else if(++n>100){clearInterval(t);reject(Error('Profile form did not mount at '+location.href));}},100);})`);await evaluate(`(()=>{const input=document.querySelector('#steam-profile');input.value=${JSON.stringify(value)};input.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('.profile-lookup form').requestSubmit();})()`);if(value==='example-profile'){await delay(30);assert.equal(await evaluate(`document.querySelector('.profile-lookup form').getAttribute('aria-busy')`),'true','profile lookup exposes its loading state');assert.match(await evaluate(`document.querySelector('.lookup-progress').textContent`),/Finding profile/);}await delay(500);};
  await lookup('example-profile');
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),2,'profile replaces Top 250 instead of merging');
@@ -293,20 +293,20 @@ async function main(){
  fs.writeFileSync(path.resolve('artifacts/profile-mobile.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  await call('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});await settle();
  fs.writeFileSync(path.resolve('artifacts/profile-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
- await evaluate(`[...document.querySelectorAll('nav a')].find(a=>a.textContent==='Steam pulse').click()`);await delay(500);
+ await evaluate(`[...document.querySelectorAll('nav a')].find(a=>a.textContent==='Charts').click()`);await delay(500);
  assert.equal(await evaluate('location.pathname'),'/activity','hosted route uses a clean URL');
  await evaluate(`(()=>{const s=document.querySelector('.pulse-table-filters select');s.value='name';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);await settle();
  await evaluate(`document.querySelector('[aria-label="Ranking pages"] [aria-label="Page 3"]').click()`);await settle();
  await call('Page.reload');await delay(700);
- assert.equal(await evaluate(`document.querySelector('.pulse-table-filters select').value`),'name','Steam pulse sorting survives reload');
- assert.equal(await evaluate(`document.querySelector('[aria-label="Ranking pages"] [aria-current=page]').textContent`),'3','Steam pulse page survives reload');
+ assert.equal(await evaluate(`document.querySelector('.pulse-table-filters select').value`),'name','Charts sorting survives reload');
+ assert.equal(await evaluate(`document.querySelector('[aria-label="Ranking pages"] [aria-current=page]').textContent`),'3','Charts page survives reload');
  await call('Page.navigate',{url:'http://127.0.0.1:'+appServer.address().port+'/'});await delay(700);
  assert.equal(await evaluate('location.pathname'),'/activity','opening the root restores the last visited page');
  await evaluate(`(()=>{const s=document.querySelector('.pulse-table-filters select');s.value='players';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);await settle();
 
- assert.equal(await evaluate(`performance.getEntriesByType('resource').some(r=>r.name.includes('/assets/activity-')&&r.name.endsWith('.js'))`),true,'Steam pulse data downloads only after opening its page');
+ assert.equal(await evaluate(`performance.getEntriesByType('resource').some(r=>r.name.includes('/assets/activity-')&&r.name.endsWith('.js'))`),true,'Charts data downloads only after opening its page');
  await call('Page.reload');await delay(700);
- assert.equal(await evaluate('document.title'),'Steam pulse · Steam Backlog','direct /activity reload renders the correct page');
+ assert.equal(await evaluate('document.title'),'Charts · Steam Backlog','direct /activity reload renders the correct page');
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-brief').length`),4,'hosted activity cards mount');
  failActivity=true;
  await evaluate(`document.querySelector('.activity-toolbar>button').click()`);await delay(300);
@@ -336,6 +336,8 @@ async function main(){
  assert.match(await evaluate(`document.querySelector('.game-insights').textContent`),/Lowest observed/,'price view explains observed history');
  await evaluate(`[...document.querySelectorAll('.details-tabs button')].find(b=>b.textContent==='Updates').click()`);await settle();
  assert.match(await evaluate(`document.querySelector('.game-updates').textContent`),/Official fixture update/,'updates view shows official posts');
+ assert.equal(await evaluate(`document.querySelectorAll('.game-updates .update-art img').length`),1,'official updates include source artwork');
+ assert.equal(await evaluate(`getComputedStyle(document.querySelector('.game-updates .update-copy')).display`),'block','announcement headline and excerpt stack beside artwork');
  fs.writeFileSync(path.resolve('artifacts/game-updates-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  await evaluate(`[...document.querySelectorAll('.details-tabs button')].find(b=>b.textContent==='Players').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.game-insights .chart-ranges button[aria-pressed=true]').textContent`),'Max','chart selection survives research tab changes');
@@ -351,7 +353,7 @@ async function main(){
  fs.writeFileSync(path.resolve('artifacts/activity-mobile.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  await evaluate(`document.querySelector('.pulse-owned-actions .pulse-link').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.game-title-row h3').textContent`),'Counter-Strike 2','activity action opens the owned game in backlog');
- assert.equal(await evaluate(`document.querySelector('[aria-label="Backlog navigation"]')!==null`),true,'backlog navigation returns when leaving Steam pulse');
+ assert.equal(await evaluate(`document.querySelector('[aria-label="Backlog navigation"]')!==null`),true,'backlog navigation returns when leaving Charts');
  assert.equal(await evaluate(`document.querySelector('.play-next').getAttribute('aria-pressed')`),'true','priority retained after page navigation');
  await call('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});await settle();
  const largeStarted=Date.now();await lookup('large-profile');
@@ -376,7 +378,7 @@ async function main(){
  console.log('5,000-game profile checked in '+(Date.now()-largeStarted)+'ms including interaction waits; at most 24 library cards mounted.');
  assert.deepEqual(exceptions,[],'no runtime exceptions');
  assert.deepEqual(consoleErrors,[],'no console errors');
- console.log('PASS: backlog/profile flows, roulette, and imports; Steam pulse navigation, four ten-item cards, 50-game pagination across the 1,000-game ranking, per-game history and research popups, owned filter, Play Next persistence, return-to-backlog actions, desktop/mobile layout. Runtime exceptions and console errors: 0.');
+ console.log('PASS: backlog/profile flows, roulette, and imports; Charts navigation, four ten-item cards, 50-game pagination across the 1,000-game ranking, per-game history and research popups, owned filter, Play Next persistence, return-to-backlog actions, desktop/mobile layout. Runtime exceptions and console errors: 0.');
  await call('Browser.close');
 }
 main().catch(e=>{console.error(e);console.error(JSON.stringify({exceptions,consoleErrors}));process.exitCode=1;}).finally(async()=>{appServer?.closeAllConnections();appServer?.close();ws?.close();chrome.kill();await delay(1000);const resolved=path.resolve(profile);const temp=path.resolve(require('node:os').tmpdir())+path.sep;if(resolved.startsWith(temp)&&path.basename(resolved).startsWith('backlog-qa-')){try{fs.rmSync(resolved,{recursive:true,force:true});}catch{console.warn('Temporary Chrome profile could not be removed:',resolved);}}});

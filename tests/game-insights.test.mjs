@@ -11,11 +11,12 @@ test('insights preserve reported history, official news and observed prices with
   const service=createGameInsightsService({now:()=>at,priceDirectory:null,storage:{get:async()=>stored,put:async(_key,value)=>{stored=JSON.parse(value);}},request:async(input,options)=>{
     calls++;assert.equal(options.redirect,'manual');const u=new URL(input);
     if(u.pathname.endsWith('chart-data.json'))return Response.json([[at-3600000,100],[at,200]]);
-    if(u.pathname.includes('GetNewsForApp'))return Response.json({appnews:{newsitems:[{title:'Update',url:'https://store.steampowered.com/news/app/70/view/1',date:Math.floor(at/1000),contents:'<b>Fixes</b>',tags:['patchnotes']},{title:'Unsafe',url:'javascript:bad',date:Math.floor(at/1000)}]}});
+    if(u.pathname.includes('GetNewsForApp'))return Response.json({appnews:{newsitems:[{title:'Update',url:'https://store.steampowered.com/news/app/70/view/1',date:Math.floor(at/1000),contents:'[img]{STEAM_CLAN_IMAGE}/1/update.jpg[/img]<b>Fixes</b>',tags:['patchnotes']},{title:'Unsafe',url:'javascript:bad',date:Math.floor(at/1000)}]}});
     if(u.pathname.includes('appdetails'))return Response.json({70:{success:true,data:{price_overview:{currency:u.searchParams.get('cc')==='de'?'EUR':u.searchParams.get('cc')==='gb'?'GBP':'USD',final:amount}}}});
     return new Response(html);
   }});
-  const first=validateInsights(await service(70));assert.equal(first.peakToday,900);assert.equal(first.peakAllTime,1200);assert.equal(first.history.length,2);assert.equal(first.updates.length,1);assert.equal(first.updates[0].patch,true);assert.equal(first.prices.length,3);assert.equal(first.prices[0].amount,999);
+  const first=validateInsights(await service(70));assert.equal(first.peakToday,900);assert.equal(first.peakAllTime,1200);assert.equal(first.history.length,2);assert.equal(first.updates.length,1);assert.equal(first.updates[0].patch,true);assert.equal(first.updates[0].image,'https://clan.akamai.steamstatic.com/images/1/update.jpg');assert.equal(first.updates[0].summary,'Fixes');assert.equal(first.prices.length,3);assert.equal(first.prices[0].amount,999);
+  assert.throws(()=>validateInsights({...first,updates:[{...first.updates[0],image:'https://evil.test/tracker'}]}));
   const initial=calls;await service(70);assert.equal(calls,initial);
   at+=86400000;amount=499;const second=await service(70);assert.equal(second.prices.length,6);assert.equal(Math.min(...second.prices.filter(p=>p.currency==='USD').map(p=>p.amount)),499);
   assert.throws(()=>validateInsights({...second,updates:[{...second.updates[0],url:'https://evil.test'}]}));

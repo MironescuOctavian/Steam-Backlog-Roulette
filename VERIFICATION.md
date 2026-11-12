@@ -1,9 +1,11 @@
 # Verification
 
+Current chart checks distinguish recent observations from calendar-month averages and peaks. Year/Max ranges use the monthly table, Max includes the earliest available month, axes retain the selected domain, and tooltips identify monthly measurements. Platform ranges without sufficient records remain disabled with visible coverage text. Browser checks also cover chart-range retention across research tabs, wider bounded-height windows, compact card-anchored discovery overviews, and trusted-source announcement artwork. Desktop/mobile discovery popup geometry and keyboard dismissal pass. The Charts rename preserves `/activity` URLs.
+
 Verified on Windows with Node 26.13.0 and headless Chrome on November 12, 2026.
 
 - TypeScript check and production build pass.
-- 52 unit tests cover validation, persistence, exclusions, recommendation reasons, sorting/preferences, imports, profile lookup, metadata/hero caching, rankings, unknown data, reel selection, activity aggregation, per-game history parsing, failure backoff, portable observation history, Worker API routing, pagination chart gaps and nearest recorded tooltip samples.
+- 56 unit tests cover validation, persistence, exclusions, recommendation reasons, sorting/preferences, imports, profile lookup, metadata/hero caching, rankings, unknown data, reel selection, activity aggregation, per-game history parsing, failure backoff, portable observation history, Worker API routing, pagination chart gaps, chart ranges, monthly measurements, announcement images and nearest recorded tooltip samples.
 - Built single-file HTML loads directly through `file://`.
 - Browser checks verify a fresh 250-game discovery pool with no default profile or personal statistics. Imported/profile libraries replace it. They also cover status updates, search, Play Next, tags, reload persistence, custom games, JSON preview/merge, both roulette modes, and winning-card alignment.
 - Hosted browser checks use explicit mocked Steam responses to verify profile resolution UI, accurate minute-to-hour conversion, private lookup failure preservation, empty-library persistence, switching profiles, and absence of invented completion times/value figures.

@@ -1,7 +1,8 @@
+import {extractNewsImage} from '../src/steam-news-image.ts';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {parseGameHistory} from './game-history.mjs';
-const plain=value=>String(value??'').replace(/<[^>]*>/g,'').replace(/\[[^\]]*\]/g,'').replaceAll('&amp;','&').replaceAll('&quot;','"').replaceAll('&#39;',"'").trim();
+const plain=value=>String(value??'').replace(/\[img\][\s\S]*?\[\/img\]/gi,'').replace(/<[^>]*>/g,'').replace(/\[[^\]]*\]/g,'').replaceAll('&amp;','&').replaceAll('&quot;','"').replaceAll('&#39;',"'").trim();
 const numeric=value=>{const text=plain(value).replaceAll(',','').replace('%','');return /^[-+]?\d+(?:\.\d+)?$/.test(text)?Number(text):null;};
 export function parseMonthlyPlayers(html){
   const rows=[];
@@ -37,7 +38,7 @@ export function createGameInsightsService({request=fetch,now=()=>Date.now(),stor
       for(const quote of current){const prior=observations.filter(p=>p.currency===quote.currency).at(-1);if(!prior||prior.amount!==quote.amount||prior.capturedAt.slice(0,10)!==quote.capturedAt.slice(0,10))observations=[...observations,quote];}
       observations=observations.slice(-1200);if(prices.size>=100)prices.clear();prices.set(appId,observations);
       if(writable&&current.length){try{if(storage)await storage.put('price-observations:'+appId,JSON.stringify(observations));else if(priceDirectory){await fs.mkdir(priceDirectory,{recursive:true});const file=path.join(priceDirectory,appId+'.json');await fs.writeFile(file+'.tmp',JSON.stringify(observations));await fs.rename(file+'.tmp',file);}}catch{warnings.push('New price observations could not be saved.');}}
-      const updates=(Array.isArray(news.appnews?.newsitems)?news.appnews.newsitems:[]).filter(n=>{try{const u=new URL(n.url);return u.protocol==='https:'&&['store.steampowered.com','steamcommunity.com','steamstore-a.akamaihd.net'].includes(u.hostname)&&Number.isSafeInteger(n.date)&&n.date>0&&typeof n.title==='string';}catch{return false;}}).slice(0,8).map(n=>({title:plain(n.title).slice(0,300),url:n.url,date:new Date(n.date*1000).toISOString(),summary:plain(n.contents).slice(0,1800),patch: Array.isArray(n.tags)&&n.tags.includes('patchnotes')}));
+      const updates=(Array.isArray(news.appnews?.newsitems)?news.appnews.newsitems:[]).filter(n=>{try{const u=new URL(n.url);return u.protocol==='https:'&&['store.steampowered.com','steamcommunity.com','steamstore-a.akamaihd.net'].includes(u.hostname)&&Number.isSafeInteger(n.date)&&n.date>0&&typeof n.title==='string';}catch{return false;}}).slice(0,8).map(n=>({title:plain(n.title).slice(0,300),url:n.url,date:new Date(n.date*1000).toISOString(),summary:plain(n.contents).slice(0,1800),...(extractNewsImage(n.contents)?{image:extractNewsImage(n.contents)}:{}),patch: Array.isArray(n.tags)&&n.tags.includes('patchnotes')}));
       const data={appId,capturedAt:new Date(now()).toISOString(),history,peakToday:Number.isSafeInteger(peakToday)?peakToday:null,peakAllTime,monthly:parseMonthlyPlayers(html),prices:observations,currentPrices:current,updates,warnings};
       if(cache.size>=100)cache.clear();cache.set(appId,data);return data;
     })().finally(()=>pending.delete(appId));pending.set(appId,task);return task;
