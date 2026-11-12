@@ -33,7 +33,7 @@ async function upstream(request){
   throw Error('Unexpected upstream path: '+url.pathname);
 }
 const runtime=new Miniflare({workers:[{config:{
-  name:'steam-backlog-roulette',compatibilityDate:'2026-10-01',compatibilityFlags:['nodejs_compat'],
+  name:'steam-next',compatibilityDate:'2026-10-01',compatibilityFlags:['nodejs_compat'],
   manifest:{mainModule:'index.js',modulesRoot:path.join(root,'bundle'),modules:{'index.js':{type:'esm',contents:fs.readFileSync(path.join(root,'bundle/index.js'),'utf8')}}},
   env:{ASSETS:{type:'assets'},HISTORY:{type:'kv'},STEAM_API_KEY:{type:'text',value:'test-only'}},
   assets:{directory:path.join(root,'assets'),hasUserWorker:true,notFoundHandling:'single-page-application',runWorkerFirst:['/api/*']},
@@ -42,6 +42,7 @@ try{
   const home=await runtime.dispatchFetch('https://app.test/');assert.equal(home.status,200);assert.match(await home.text(),/id="app"/);
   const activity=await runtime.dispatchFetch('https://app.test/activity',{headers:{Accept:'text/html'}});assert.equal(activity.status,200);assert.match(await activity.text(),/id="app"/);
   const discovery=await runtime.dispatchFetch('https://app.test/top250',{headers:{Accept:'text/html'}});assert.equal(discovery.status,200);assert.match(await discovery.text(),/id="app"/);
+  const news=await runtime.dispatchFetch('https://app.test/news',{headers:{Accept:'text/html'}});assert.equal(news.status,200);assert.match(await news.text(),/id="app"/);
   assert.equal((await runtime.dispatchFetch('https://app.test/api/activity',{method:'POST'})).status,405);
   const hero=await runtime.dispatchFetch('https://app.test/api/hero');assert.equal(hero.status,200);assert.equal((await hero.json()).games.length,25);
   const counts=await runtime.dispatchFetch('https://app.test/api/activity');assert.equal(counts.status,200);assert.equal((await counts.json()).games.length,1000);

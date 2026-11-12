@@ -15,6 +15,7 @@ Too many games, nothing to play. Load a public Steam library, narrow it down, an
 - **Backlog discovery hero:** four clearly labeled sample backlog picks illustrate unplayed games to rediscover. Try a spin jumps directly to roulette; loading a library replaces the introduction with a compact workspace.
 - **Game details:** compact, two-column overviews and wider research windows with persistent navigation. Explore player history, monthly averages and peaks, observed prices, and illustrated official updates. Owned games keep tags and roulette exclusions there. Unknown data stays unavailable.
 - **Top 250 discovery:** start with six recommendations, or expand the full list. A dedicated Top 250 page stays available from the sidebar without replacing your library. Once a library is loaded, roulette picks only from that library.
+- **Developer update pictures:** Updates displays the included Steam-hosted images from full official posts, with repeated images removed. A separate News page is available from the header and is intentionally empty for now.
 
 Loaded libraries and changes stay in your browser. Steam does not provide prices paid or time-to-beat, so those fields stay unknown unless you supply them. Undo keeps up to 20 library changes during the current session. Removing a game here never changes Steam ownership; refreshing a Steam profile can bring it back.
 
