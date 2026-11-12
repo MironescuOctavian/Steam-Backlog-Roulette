@@ -2,7 +2,16 @@ import {demoLibrary} from './fixtures/library.ts';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 
-import {buildReel,rouletteCandidates,rememberPick} from '../src/roulette-model.ts';
+import {buildReel,rouletteCandidates,rememberPick,tomorrowSkips,nextMidnight} from '../src/roulette-model.ts';
+test('tomorrow skips reject corrupt and expired entries and end at local midnight',()=>{
+  const now=new Date(2026,10,13,22,30),at=nextMidnight(now);
+  assert.equal(new Date(at).getHours(),0);
+  assert.equal(new Date(at).getDate(),14);
+  const valid={appId:620,at};
+  assert.deepEqual(tomorrowSkips([valid,null,{appId:-1,at},{appId:2,at:now.getTime()},{appId:3,at:at+86400000}],now.getTime()),[valid]);
+  assert.deepEqual(tomorrowSkips([valid],at),[]);
+  assert.deepEqual(tomorrowSkips({}),[]);
+});
 import {filterGames,defaultFilters} from '../src/planner.ts';
 import {validatePreferences,defaultPreferences} from '../src/preferences.ts';
 test('reel always lands on the selected matching game, including one-game pools',()=>{

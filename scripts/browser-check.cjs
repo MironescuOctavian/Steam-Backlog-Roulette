@@ -26,7 +26,7 @@ async function main(){
  assert.equal(await evaluate(`document.querySelector('.library-tools-menu').open`),true,'library tools expand with a native keyboard-accessible control');
  await evaluate(`document.querySelector('.library-tools-menu summary').click()`);
  assert.equal(await evaluate(`document.querySelector('.advanced-filters').open`),false,'advanced filters start collapsed');
- assert.equal(await evaluate(`document.querySelectorAll('.quick-filters button').length`),3,'three common filters beside roulette');
+ assert.equal(await evaluate(`document.querySelectorAll('.roulette-modes button').length`),4,'four shared roulette modes');
  assert.equal(await evaluate(`document.querySelector('#profile-example').textContent.includes('steamcommunity.com/id/')`),true,'profile link example is visible');
  assert.equal(await evaluate(`document.querySelectorAll('.deck-card').length`),4,'four layered hero cards');
  assert.equal(await evaluate(`document.querySelectorAll('.site-header nav a').length`),2,'header has two page links');
@@ -45,7 +45,7 @@ async function main(){
  const heroBefore=await evaluate(`[...document.querySelectorAll('.deck-card')].map(e=>({title:e.getAttribute('aria-label'),x:e.getBoundingClientRect().x,y:e.getBoundingClientRect().y}))`);
  await delay(7800);
  const heroAfter=await evaluate(`[...document.querySelectorAll('.deck-card')].map(e=>({title:e.getAttribute('aria-label'),x:e.getBoundingClientRect().x,y:e.getBoundingClientRect().y}))`);
- assert.notDeepEqual(heroAfter.map(g=>g.title),heroBefore.map(g=>g.title),'games inside the cards rotate automatically');
+ assert.deepEqual(heroAfter.map(g=>g.title),heroBefore.map(g=>g.title),'sample backlog examples stay stable');
  assert.deepEqual(heroAfter.map(g=>[g.x,g.y]),heroBefore.map(g=>[g.x,g.y]),'card positions stay fixed');
  await evaluate(`Promise.race([Promise.all([...document.querySelectorAll('.hero-deck img')].map(i=>i.complete?Promise.resolve():new Promise(r=>{i.addEventListener('load',r,{once:true});i.addEventListener('error',r,{once:true});}))),new Promise(r=>setTimeout(r,10000))])`);
  fs.writeFileSync(path.resolve('artifacts/home-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
@@ -164,10 +164,10 @@ async function main(){
  await evaluate(`window.draftTag.value='';window.draftTag.dispatchEvent(new Event('input',{bubbles:true}));window.draftTag.blur()`);await settle();
  await evaluate(`(()=>{const s=document.querySelectorAll('.game-controls select')[1];s.value=window.oldSecondStatus;s.dispatchEvent(new Event('change',{bubbles:true}));})()`);await settle();
  await evaluate(`document.querySelector('.game-details-modal .modal-close').click()`);await settle();
- await evaluate(`document.querySelector('.quick-filters button').click()`);await settle();
- assert.equal(await evaluate(`document.querySelector('.quick-filters button').getAttribute('aria-pressed')`),'true','never-played quick filter activates');
+ await evaluate(`document.querySelectorAll('.roulette-modes button')[1].click()`);await settle();
+ assert.equal(await evaluate(`document.querySelectorAll('.roulette-modes button')[1].getAttribute('aria-pressed')`),'true','never-played quick filter activates');
  assert.ok(await evaluate(`document.querySelectorAll('.game-card').length`)<initial,'never-played filter narrows the library');
- await evaluate(`document.querySelector('.quick-filters button').click();document.querySelectorAll('.quick-filters button')[1].click()`);await settle();
+ await evaluate(`document.querySelector('.roulette-modes button').click();document.querySelector('.advanced-filters').open=true;document.querySelector('[aria-label="Remaining time presets"] button:nth-child(2)').click()`);await settle();
  assert.ok(await evaluate(`document.querySelectorAll('.game-card').length`)<initial,'under-ten-hours filter narrows the library');
  await evaluate(`document.querySelector('.filter-panel .filter-heading button').click()`);await settle();
  assert.equal(await evaluate(`document.querySelectorAll('.catalog-rank').length`),0,'Top 250 removed after library import');
@@ -222,8 +222,15 @@ async function main(){
  assert.equal(await evaluate(`localStorage.getItem('steam-backlog-roulette.library.v1')`),beforeSkip,'temporary skips do not change the saved library');
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog.preferences.v1')).excludedIds.includes(70)`),false,'temporary skips do not become permanent exclusions');
  await evaluate(`document.getElementById('restore-skipped').click()`);await settle();
- await evaluate(`document.querySelector('.spin-button').click()`);await delay(700);
- assert.equal(await evaluate(`document.querySelector('.winner-modal').open`),true,'restoring skipped games makes them eligible again');
+ await evaluate(`document.querySelector('.instant-pick').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('.winner-modal').open`),true,'instant pick opens a result without waiting for animation');
+ await evaluate(`document.querySelectorAll('.winner-skip')[1].click()`);await settle();
+ assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steamnext.skips.personal:local'))[0].appId`),70,'tomorrow skip persists for the local library');
+ await call('Page.reload');await delay(1200);
+ assert.equal(await evaluate(`document.querySelector('.spin-button').disabled`),true,'tomorrow skip survives reload');
+ await evaluate(`document.getElementById('restore-skipped').click()`);await settle();
+ await evaluate(`document.querySelector('.instant-pick').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('.winner-modal').open`),true,'restoring saved skips makes the game eligible again');
  await evaluate(`[...document.querySelectorAll('.winner-modal button')].find(b=>b.textContent.includes('Mark currently')).click()`);await settle();
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games.find(g=>g.appId===70).status`),'Playing','winner action saves');
  await evaluate(`document.querySelector('.winner-modal').close()`);await settle();
@@ -307,14 +314,14 @@ async function main(){
  for(let i=0;i<2;i++){await evaluate(`(()=>{const s=document.querySelectorAll('.game-controls select')[${i}];s.value='Backlog';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);await settle();}
  await evaluate(`document.querySelector('.filter-panel .filter-heading button').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('#insights .section-note').textContent.startsWith('Last synced')`),true,'backlog shows source sync time');
- await evaluate(`document.querySelector('.play-next').click();document.querySelector('.quick-filters button').click()`);await settle();
+ await evaluate(`document.querySelector('.play-next').click();document.querySelectorAll('.roulette-modes button')[1].click()`);await settle();
  await evaluate(`document.querySelector('.profile-summary button').click()`);await delay(500);
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games[0].playNext`),true,'refresh preserves user priorities');
- assert.equal(await evaluate(`document.querySelector('.quick-filters button').getAttribute('aria-pressed')`),'true','refresh preserves the current filters');
+ assert.equal(await evaluate(`document.querySelectorAll('.roulette-modes button')[1].getAttribute('aria-pressed')`),'true','refresh preserves the current filters');
  assert.equal(await evaluate(`document.querySelector('.lookup-success').textContent.includes('2 games loaded')`),true,'refresh confirms the loaded game count');
  await evaluate(`document.querySelector('.loaded-actions>button').click()`);await settle();
  assert.equal(await evaluate(`document.querySelectorAll('#library-grid>.game-card').length`),1,'homepage Play Next action opens the shortlist');
- assert.equal(await evaluate(`document.querySelector('.quick-filters button:last-child').getAttribute('aria-pressed')`),'true','homepage shortlist action uses the shared filters');
+ assert.equal(await evaluate(`document.querySelectorAll('.roulette-modes button')[3].getAttribute('aria-pressed')`),'true','homepage shortlist action uses the shared filters');
  await evaluate(`document.querySelector('.switch-profile').click()`);await settle();
  assert.equal(await evaluate(`document.activeElement.id`),'steam-profile','switch-profile action focuses the input');
  assert.equal(await evaluate(`document.querySelector('#steam-profile').value`),'','switch-profile input is ready for another URL');

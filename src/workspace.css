@@ -1,4 +1,14 @@
 .hero.hero-loaded{grid-template-columns:1fr;min-height:0;padding:34px 0 24px;gap:0}
+.backlog-page>.hero:not(.hero-loaded){padding-block:32px;min-height:0}
+.hero-copy>.loaded-actions{margin-block:18px}
+.roulette-area{scroll-margin-top:90px;margin-block:24px}
+.instant-pick{display:block;margin:12px 0 0 auto;padding:10px 16px;background:transparent;border:1px solid #ffbf0066;border-radius:6px;color:var(--accent);cursor:pointer}
+.instant-pick:disabled{opacity:.5}
+.profile-help{margin-top:14px;color:#b5b5b5;font-size:13px;line-height:1.7}
+.profile-help summary{color:var(--accent);cursor:pointer}
+.profile-help ol{padding-left:20px}
+.profile-help li+li{margin-top:8px}
+.winner-choice{flex-wrap:wrap}
 .hero-loaded .hero-copy{max-width:none;width:100%}
 .hero-loaded h1{font-size:clamp(28px,3vw,40px);letter-spacing:-1px;margin:12px 0}
 .hero-loaded .hero-description{font-size:15px;max-width:none;margin:0 0 20px}

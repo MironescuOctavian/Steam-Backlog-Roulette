@@ -1,6 +1,6 @@
-import {rouletteCandidates,rememberPick,type RecentPick} from './roulette-model';
+import {rouletteCandidates,rememberPick,tomorrowSkips,nextMidnight,type RecentPick} from './roulette-model';
 import {patchGames,moveQueuedGame,pinQueuedGame} from './queue-model';
-import {createContext,createEffect,createMemo,createSignal,useContext,type ParentProps} from 'solid-js';
+import {createContext,createEffect,createMemo,createSignal,onCleanup,useContext,type ParentProps} from 'solid-js';
 import {loadLibrary,remainingHours,saveLibrary,validateLibrary,type Game,type SteamProfile} from './library';
 import {analytics,exclusionReason,filterGames,sortLibrary,type Filters} from './planner';
 import {loadPreferences,preferencesKey,validatePreferences,type Preferences} from './preferences';
@@ -44,11 +44,17 @@ function createLibraryState(){
   const libraryRows=createMemo(()=>sortLibrary(filtered(),preferences().librarySort));
   const eligible=createMemo(()=>filtered().filter(g=>!exclusionReason(g,preferences())));
   const [sessionSkipped,setSessionSkipped]=createSignal<number[]>([]),[recentPicks,setRecentPicks]=createSignal<RecentPick[]>([]);
+  const [savedSkips,setSavedSkips]=createSignal<RecentPick[]>([]);
+  const [skipClock,setSkipClock]=createSignal(Date.now());
+  const skipTimer=setInterval(()=>setSkipClock(Date.now()),1000);
+  onCleanup(()=>clearInterval(skipTimer));
   let rouletteScope='';
-  createEffect(()=>loaded()?'personal:'+(profile()?.steamId??'local'):'discovery',scope=>{if(scope===rouletteScope)return;rouletteScope=scope;setSessionSkipped([]);setRecentPicks([]);});
-  const rouletteGames=createMemo(()=>rouletteCandidates(eligible(),sessionSkipped(),recentPicks()));
-  const skipGame=(id:number)=>{setSessionSkipped(ids=>ids.includes(id)?ids:[...ids,id]);};
-  const restoreSkipped=()=>{setSessionSkipped([]);};
+  createEffect(()=>loaded()?'personal:'+(profile()?.steamId??'local'):'discovery',scope=>{if(scope===rouletteScope)return;rouletteScope=scope;setSessionSkipped([]);setRecentPicks([]);try{setSavedSkips(tomorrowSkips(JSON.parse(storage.getItem('steamnext.skips.'+scope)??'[]')));}catch{setSavedSkips([]);}});
+  const skippedGames=createMemo(()=>[...new Set([...sessionSkipped(),...tomorrowSkips(savedSkips(),skipClock()).map(p=>p.appId)])]);
+  const rouletteGames=createMemo(()=>rouletteCandidates(eligible(),skippedGames(),recentPicks()));
+  function saveSkips(next:RecentPick[]){setSavedSkips(next);try{storage.setItem('steamnext.skips.'+rouletteScope,JSON.stringify(next));}catch{setSaveMessage('Skip works for this visit but could not be saved on this device.');}}
+  const skipGame=(id:number,untilTomorrow=false)=>{if(untilTomorrow)saveSkips([...tomorrowSkips(savedSkips()).filter(p=>p.appId!==id),{appId:id,at:nextMidnight()}]);else setSessionSkipped(ids=>ids.includes(id)?ids:[...ids,id]);};
+  const restoreSkipped=()=>{setSessionSkipped([]);saveSkips([]);};
   const recordPick=(id:number)=>{setRecentPicks(picks=>rememberPick(picks,id));};
   function toggleExcluded(id:number){setPreference({excludedIds:preferences().excludedIds.includes(id)?preferences().excludedIds.filter(n=>n!==id):[...preferences().excludedIds,id]});}
   const genres=()=>[...new Set(activeGames().flatMap(g=>g.genres))].sort();
@@ -90,7 +96,7 @@ function createLibraryState(){
     })();
     return ()=>controller.abort();
   });
-  return {library,games,loaded,profile,activity,setActivity,loadActivity,gameHistory,setGameHistory,saveMessage,saveFailed,changeRevision,filters,setFilters,worstValue,setWorstValue,weeklyHours,setWeeklyHours,soundEnabled,setSoundEnabled,activeGames,stats,filtered,libraryRows,eligible,rouletteGames,sessionSkipped,recentPicks,skipGame,restoreSkipped,recordPick,genres,changeFilter,backlog,hoursLeft,applyLibrary,updateGame,updateGames,moveQueue,pinQueue,undo,canUndo:()=>undoStack().length>0,removeGame,preferences,setPreference,preferenceWarning,toggleExcluded,metadataMessage};
+  return {library,games,loaded,profile,activity,setActivity,loadActivity,gameHistory,setGameHistory,saveMessage,saveFailed,changeRevision,filters,setFilters,worstValue,setWorstValue,weeklyHours,setWeeklyHours,soundEnabled,setSoundEnabled,activeGames,stats,filtered,libraryRows,eligible,rouletteGames,sessionSkipped:skippedGames,recentPicks,skipGame,restoreSkipped,recordPick,genres,changeFilter,backlog,hoursLeft,applyLibrary,updateGame,updateGames,moveQueue,pinQueue,undo,canUndo:()=>undoStack().length>0,removeGame,preferences,setPreference,preferenceWarning,toggleExcluded,metadataMessage};
 }
 const LibraryContext=createContext<ReturnType<typeof createLibraryState>>();
 export function LibraryProvider(props:ParentProps){return <LibraryContext value={createLibraryState()}>{props.children}</LibraryContext>;}

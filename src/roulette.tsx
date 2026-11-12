@@ -15,13 +15,14 @@ export function Roulette(props: { games: Game[]; discovery?:boolean;spinRequest?
   let previousRequest=props.spinRequest??0;
   createEffect(()=>props.spinRequest,request=>{if(request===undefined||request===previousRequest)return;previousRequest=request;void spin();});
   const pool=()=>props.games.filter(g=>g.status!=='Completed' && g.status!=='Dropped');
-  async function spin() {
+  async function spin(instant=false) {
     if(spinning() || pool().length===0)return;
     const reel=buildReel(pool());
     setCards(reel.cards);
     setSpinning(true);
     setResult('Spinning… Your matching games are locked in for this spin.');
     props.onStart?.();
+    if(instant){setResult(`Selected: ${reel.winner.title}`);setSpinning(false);props.onWinner(reel.winner);return;}
     await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
     if(disposed)return;
     const destination=()=>viewport.clientWidth/2-90-reel.winnerIndex*192;
@@ -59,7 +60,8 @@ export function Roulette(props: { games: Game[]; discovery?:boolean;spinRequest?
       <div class="roulette-pointer" />
       <div class="roulette-track" ref={track}><For each={cards().length ? cards() : pool().slice(0,8)}>{g=><div class="reel-card"><img src={coverUrl(g.appId)} alt="" onError={e=>{e.currentTarget.style.visibility='hidden';}} /><span>{g.title}</span></div>}</For></div>
     </div>
-    <div class="reel-footer"><span>{pool().length ? props.discovery?'Top-rated games. Your filters. Equal chances.':'This library. Your filters. Equal chances.' : 'No eligible games. Adjust your filters above.'}</span><button type="button" class="spin-button ready" disabled={spinning() || pool().length===0} onClick={spin}>{spinning() ? 'SPINNING…' : 'SPIN THE ROULETTE'}<span class="i-lucide-shuffle" aria-hidden="true" /></button></div>
+    <div class="reel-footer"><span>{pool().length ? props.discovery?'Top-rated games. Your filters. Equal chances.':'This library. Your filters. Equal chances.' : 'No eligible games. Adjust your filters above.'}</span><button type="button" class="spin-button ready" disabled={spinning() || pool().length===0} onClick={()=>void spin()}>{spinning() ? 'SPINNING…' : 'SPIN THE ROULETTE'}<span class="i-lucide-shuffle" aria-hidden="true" /></button></div>
+    <button type="button" class="instant-pick" disabled={spinning()||pool().length===0} onClick={()=>void spin(true)}>Pick instantly</button>
     <p class="roulette-result" role="status" aria-live="polite">{result()}</p>
   </section>;
 }
