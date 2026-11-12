@@ -57,7 +57,8 @@ async function main(){
  assert.equal(await evaluate(`document.querySelectorAll('.discovery-grid .game-card').length`),6,'Top 250 starts with six cards');
  await evaluate(`document.querySelector('.discovery-grid .game-details-button').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.card-details-modal').open`),true,'Top 250 opens a card-sized popup');
- assert.equal(await evaluate(`(()=>{const c=document.querySelector('.discovery-grid .game-card').getBoundingClientRect(),d=document.querySelector('.card-details-modal').getBoundingClientRect();return d.width>c.width&&d.width<=c.width+81&&Math.abs(d.left+d.width/2-c.left-c.width/2)<2;})()`),true,'popup is slightly wider and centered over its card');
+ fs.writeFileSync(path.resolve('artifacts/discovery-popup-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
+ assert.equal(await evaluate(`(()=>{const c=document.querySelector('.discovery-grid .game-card').getBoundingClientRect(),d=document.querySelector('.card-details-modal').getBoundingClientRect();return d.width>c.width&&d.width<=920&&d.left>=0&&d.right<=innerWidth&&d.left<c.right&&d.right>c.left&&d.height<=innerHeight*.81;})()`),true,'discovery popup expands over its card and stays within the viewport');
  await evaluate(`document.querySelector('.card-details-modal .modal-close').click()`);await settle();
  await evaluate(`document.querySelector('.discovery-expand button').click()`);await settle();
  assert.equal(await evaluate(`document.querySelectorAll('.discovery-grid .game-card').length`),250,'Top 250 can show all ranked games');
@@ -329,11 +330,15 @@ async function main(){
  assert.match(await evaluate(`document.querySelector('.game-insights .chart-coverage').textContent`),/Monthly averages & peaks/);
  await evaluate(`[...document.querySelectorAll('.game-insights .chart-ranges button')].find(b=>b.textContent==='Max').click()`);await settle();
  assert.match(await evaluate(`document.querySelector('.game-insights .navigator-dates').textContent`),/2012/,'Max includes the earliest monthly record');
+ assert.equal(await evaluate(`(()=>{const d=document.querySelector('.game-details-modal').getBoundingClientRect();return d.width>=1000&&d.height<=innerHeight*.81;})()`),true,'research popup is wide and bounded in height');
+ fs.writeFileSync(path.resolve('artifacts/game-players-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  await evaluate(`[...document.querySelectorAll('.details-tabs button')].find(b=>b.textContent==='Prices').click()`);await settle();
  assert.match(await evaluate(`document.querySelector('.game-insights').textContent`),/Lowest observed/,'price view explains observed history');
  await evaluate(`[...document.querySelectorAll('.details-tabs button')].find(b=>b.textContent==='Updates').click()`);await settle();
  assert.match(await evaluate(`document.querySelector('.game-updates').textContent`),/Official fixture update/,'updates view shows official posts');
  fs.writeFileSync(path.resolve('artifacts/game-updates-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
+ await evaluate(`[...document.querySelectorAll('.details-tabs button')].find(b=>b.textContent==='Players').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('.game-insights .chart-ranges button[aria-pressed=true]').textContent`),'Max','chart selection survives research tab changes');
  await evaluate(`document.querySelector('.game-details-modal .modal-close').click()`);await settle();
  await evaluate('scrollTo(0,0)');await settle();
  fs.writeFileSync(path.resolve('artifacts/activity-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
