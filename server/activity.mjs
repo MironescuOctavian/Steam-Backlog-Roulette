@@ -1,25 +1,22 @@
-import {createOnlineHistory} from './online-history.mjs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {validateActivity} from '../src/activity-model.ts';
 import {createExtendedChart} from './extended-chart.mjs';
 import {parseSteamOnline} from './game-history.mjs';
 
-export function createActivityService({request=fetch,historyFile=path.resolve('.data/activity-history.json'),historyStore,onlineStore,onlineFile=historyFile?path.join(path.dirname(historyFile),'steam-online-history.json'):null,metadataBatchLimit=Infinity,now=()=>Date.now(),extended=createExtendedChart({request,now})}={}) {
+export function createActivityService({request=fetch,historyFile=path.resolve('.data/activity-history.json'),historyStore,metadataBatchLimit=Infinity,now=()=>Date.now(),extended=createExtendedChart({request,now})}={}) {
   let cached;let expires=0;let pending;
   const metadata=new Map();
-  const archiveOnline=createOnlineHistory({file:onlineFile,storage:onlineStore,now});
   async function json(url){const response=await request(url,{signal:AbortSignal.timeout(15000),redirect:'manual'});if(!response.ok)throw new Error('Steam feed unavailable.');return response.json();}
   async function collect(){
     const warnings=[];
-    const [live,weekly,featured,wider,onlineFeed]=await Promise.all([
+    const [live,weekly,featured,wider,online]=await Promise.all([
       json('https://api.steampowered.com/ISteamChartsService/GetGamesByConcurrentPlayers/v1/'),
       json('https://api.steampowered.com/ISteamChartsService/GetMostPlayedGames/v1/').catch(()=>{warnings.push('Weekly rank changes are unavailable.');return {}; }),
       json('https://store.steampowered.com/api/featuredcategories/?cc=us&l=english').catch(()=>{warnings.push('New-release lists are unavailable.');return {}; }),
       extended(),
       json('https://store.steampowered.com/stats/userdata.json').then(parseSteamOnline).catch(()=>{warnings.push('Steam online-user history is unavailable.');return undefined;}),
     ]);
-    const archived=await archiveOnline(onlineFeed),online=archived.online;warnings.push(...archived.warnings);
     if(!Array.isArray(live.response?.ranks)||!live.response.ranks.length)throw new Error('Steam player activity is unavailable.');
     if(wider.stale)warnings.push('The extended ranking could not refresh. Its last successful capture is shown.');
     const official=live.response.ranks.slice(0,100);

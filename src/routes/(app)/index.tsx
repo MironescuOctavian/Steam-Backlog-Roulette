@@ -15,6 +15,7 @@ import {Roulette} from '../../roulette';
 import {createRouletteSound} from '../../sound';
 import {DataTools} from '../../data-tools';
 import {ProfileLookup} from '../../profile-lookup';
+import {sampleLibrary} from '../../sample-library';
 import {catalogSource,catalogUpdatedAt} from '../../catalog';
 import {useLibrary} from '../../library-state';
 
@@ -27,6 +28,8 @@ export default function BacklogPage(){
   let selectionScope='';
   createEffect(()=>[profile()?.steamId??'local',games().map(g=>g.appId).join(',')].join('|'),scope=>{if(scope===selectionScope)return;selectionScope=scope;setSelected([]);setSelecting(false);});
   function toggleSelection(id:number){setSelected(ids=>ids.includes(id)?ids.filter(n=>n!==id):[...ids,id]);}
+  let openDataTools:((tab:'custom'|'json')=>void)|undefined;
+  function loadSample(){if(applyLibrary(sampleLibrary(),null))setFilters({...defaultFilters});}
   function focusProfile(){document.querySelector<HTMLButtonElement>('.switch-profile')?.click();requestAnimationFrame(()=>{const input=document.getElementById('steam-profile') as HTMLInputElement|null;input?.focus();input?.select();});}
   const clearedBacklog=()=>loaded()&&backlog().length===0&&games().length>0&&filters().state!=='all';
   const [libraryPage,setLibraryPage]=createSignal(1);
@@ -60,17 +63,16 @@ export default function BacklogPage(){
             <p class="eyebrow"><span class="status-dot" /> YOUR LIBRARY. YOUR NEXT ADVENTURE.</p>
             <h1 id="hero-title"><Show when={loaded()} fallback={<>Less deciding.<br /><span>More playing.</span></>}>Make time <span>for play.</span></Show></h1>
             <p class="hero-description">{loaded()?games().length.toLocaleString()+' games. Your next adventure is already here.':'Your next game is already waiting. Load your Steam library and let’s find it.'}</p>
-            <ProfileLookup profile={profile()} games={games()} disabled={Boolean(library.warning)} onLoad={(next,p)=>{const sameProfile=profile()?.steamId===p.steamId;if(!applyLibrary(next,p))return false;if(!sameProfile)setFilters(current=>({...current,search:''}));return true;}} />
+            <ProfileLookup profile={profile()} games={games()} hasGames={loaded()} disabled={Boolean(library.warning)} onSample={loadSample} onImport={()=>openDataTools?.('json')} onLoad={(next,p)=>{const sameProfile=profile()?.steamId===p.steamId;if(!applyLibrary(next,p))return false;if(!sameProfile)setFilters(current=>({...current,search:''}));return true;}} />
             <Show when={loaded()}><div class="loaded-actions"><a class="pick-tonight" href={rouletteHref()}><span class="i-lucide-shuffle" aria-hidden="true" />Pick for tonight</a><a class="browse-library" href={libraryHref()}><span class="i-lucide-library" aria-hidden="true" />Browse library</a><button onClick={showPlayNext}><span class="i-lucide-list-ordered" aria-hidden="true" />Play Next <span class="action-count">{games().filter(g=>g.playNext&&g.status!=='Completed'&&g.status!=='Dropped').length}</span></button></div></Show>
             <Show when={library.warning}><p class="storage-warning" role="alert">{library.warning}</p></Show>
           </div>
           <Show when={!loaded()}><HeroDeck /></Show>
         </section>
 
-        <DataTools canUndo={canUndo()} onUndo={undo} games={games()} onApply={next=>{if(!applyLibrary(next,null))return false;setFilters(current=>({...current,search:''}));return true;}} readOnly={Boolean(library.warning)} />
           <PlayNextQueue onDetails={setDetailsId} />
           <section id="roulette" class="filter-panel" aria-label="What should I play tonight?">
-            <div class="filter-heading"><h3>What should I play tonight?</h3><button onClick={() => setFilters({...defaultFilters})}>Reset filters</button></div>
+            <div class="filter-heading"><h3>What should I play tonight?</h3><div class="filter-heading-actions"><button onClick={() => setFilters({...defaultFilters})}>Reset filters</button><DataTools canUndo={canUndo()} onUndo={undo} games={games()} onReady={fn=>{openDataTools=fn;}} onApply={next=>{if(!applyLibrary(next,null))return false;setFilters(current=>({...current,search:''}));return true;}} readOnly={Boolean(library.warning)} /></div></div>
             <div class="roulette-search"><label>{loaded()?'Search this library':'Search Top 250'}<input type="search" maxlength="300" placeholder="Find a game…" value={filters().search} onInput={e => changeFilter({search:e.currentTarget.value})} /></label></div>
             <div class="quick-filters pills" aria-label="Quick roulette filters">
               <button disabled={!loaded()} aria-pressed={filters().state==='never'?'true':'false'} onClick={()=>changeFilter({state:filters().state==='never'?'backlog':'never'})}>Never played</button>

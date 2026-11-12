@@ -2,7 +2,7 @@ import {createEffect,createSignal,onCleanup,Show} from 'solid-js';
 import {validateProfile,type SteamProfile,type Game} from './library';
 import {parseSteam} from './imports';
 
-export function ProfileLookup(props:{profile:SteamProfile|null;games:Game[];onLoad:(games:Game[],profile:SteamProfile)=>boolean;disabled:boolean}) {
+export function ProfileLookup(props:{profile:SteamProfile|null;games:Game[];hasGames?:boolean;onLoad:(games:Game[],profile:SteamProfile)=>boolean;onSample?:()=>void;onImport?:()=>void;disabled:boolean}) {
   const [query,setQuery]=createSignal(props.profile?.url??'');
   const [busy,setBusy]=createSignal(false);
   const [error,setError]=createSignal('');
@@ -42,6 +42,7 @@ export function ProfileLookup(props:{profile:SteamProfile|null;games:Game[];onLo
     <form onSubmit={lookup} aria-busy={busy()?'true':'false'}><label for="steam-profile">Steam profile link, custom handle, or Steam64 ID</label><div class="lookup-input"><input id="steam-profile" name="profile" type="text" required maxlength="300" placeholder="steamcommunity.com/id/your-handle" aria-describedby="profile-example profile-privacy" value={query()} onInput={e=>setQuery(e.currentTarget.value)} disabled={busy()||props.disabled} /><button type="submit" disabled={busy()||props.disabled}>{busy()?'Loading library…':'Load my library →'}</button></div></form>
     <p id="profile-example" class="lookup-example">Example: <code>steamcommunity.com/id/your-handle</code></p>
     <p id="profile-privacy" class="lookup-hint">Looking up someone else works too. Profile and Game details must be public.</p>
+    <Show when={!props.hasGames&&(props.onSample||props.onImport)}><div class="lookup-quickstart"><span>No link handy?</span><Show when={props.onSample}><button type="button" class="quickstart-pill" disabled={busy()||props.disabled} onClick={()=>props.onSample?.()}>Try sample library</button></Show><Show when={props.onImport}><button type="button" class="quickstart-pill" disabled={busy()||props.disabled} onClick={()=>props.onImport?.()}>Import JSON</button></Show></div></Show>
     </div>
     <Show when={busy()}><p class="lookup-progress" role="status"><span class="lookup-spinner" aria-hidden="true" />Loading public profile and library from Steam…</p></Show>
     <Show when={!busy()&&success()}><p class={["lookup-success",{"sr-only":Boolean(props.profile)}]} role="status">{success()}</p></Show>

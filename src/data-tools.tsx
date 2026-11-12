@@ -2,7 +2,7 @@ import {createSignal,For,onCleanup,Show} from 'solid-js';
 import {statuses,validateLibrary,type Game} from './library';
 import {mergeLibrary,parseImport} from './imports';
 
-export function DataTools(props:{games:Game[];onApply:(games:Game[])=>boolean;readOnly:boolean;canUndo:boolean;onUndo:()=>void}) {
+export function DataTools(props:{games:Game[];onApply:(games:Game[])=>boolean;readOnly:boolean;canUndo:boolean;onUndo:()=>void;onReady?:(openTab:(tab:'custom'|'json')=>void)=>void}) {
   const [tab,setTab]=createSignal('custom');
   const [preview,setPreview]=createSignal<Game[]|null>(null);
   const [replace,setReplace]=createSignal(false);
@@ -14,6 +14,7 @@ export function DataTools(props:{games:Game[];onApply:(games:Game[])=>boolean;re
   const cancel=()=>{revision++;setPreview(null);setError('');};
   onCleanup(()=>{revision++;});
   const open=(name:string)=>{cancel();closeMenu();setTab(name);setReplace(false);const input=dialog.querySelector<HTMLInputElement>('input[type=file]');if(input)input.value='';dialog.showModal();};
+  props.onReady?.(open);
   function download() {
     closeMenu();
     const blob=new Blob([JSON.stringify({version:1,games:props.games},null,2)],{type:'application/json'});

@@ -2,6 +2,7 @@ import type {RouteSectionProps} from '@solidjs/router';
 import {useHref,useLocation} from '@solidjs/router';
 import {LibraryProvider,useLibrary} from '../library-state';
 import {createEffect,createSignal,For,Show} from 'solid-js';
+import {BrandMark} from '../brand-mark';
 
 function AppShell(props:RouteSectionProps){
   const {preferences,setPreference,preferenceWarning,canUndo,undo,saveMessage,changeRevision,profile,loaded}=useLibrary();
@@ -34,7 +35,7 @@ function AppShell(props:RouteSectionProps){
   return <>
     <a class="skip-link" href={home()}>Skip to content</a>
     <header class="site-header"><div class="header-inner flex items-center justify-between gap-4">
-      <a class="brand flex items-center gap-3" href={home()} aria-label="Steam Backlog home"><span class="brand-emblem"><img class="brand-icon" src="/brand-mark.webp" alt="" /></span><span>Steam Backlog<span class="brand-period">.</span></span></a>
+      <a class="brand flex items-center gap-3" href={home()} aria-label="Steam Backlog home"><span class="brand-emblem"><BrandMark class="brand-icon" /></span><span>Steam Backlog<span class="brand-period">.</span></span></a>
       <nav class="flex items-center gap-3" aria-label="Main navigation"><a href={home()} class={location.pathname==='/'?'nav-active':''}>Backlog</a><a href={activity()} class={location.pathname==='/activity'?'nav-active':''}><span class="i-lucide-activity" aria-hidden="true" />Charts</a></nav>
       <Show when={profile()} fallback={<span class="header-note">{loaded()?'LOCAL LIBRARY':'PUBLIC LIBRARIES · NO LOGIN'}</span>}><a class="header-profile" href={home()} title="View loaded library"><Show when={profile()?.avatar}><img src={profile()?.avatar} alt="" width="32" height="32" /></Show><span><small>VIEWING LIBRARY</small><strong>{profile()?.name}</strong></span></a></Show>
     </div></header>
@@ -48,7 +49,7 @@ function AppShell(props:RouteSectionProps){
       <main id="main" class="page-wrap"><Show when={preferenceWarning()}><p class="storage-warning" role="status">{preferenceWarning()}</p></Show>{props.children}</main>
     </div>
     <footer class="site-footer">
-      <div class="footer-intro"><div><a class="footer-brand" href={home()}><img src="/brand-mark.webp" alt="" width="48" height="48" /><span>Steam Backlog<span class="brand-period">.</span></span></a><p>Good games deserve your time.</p></div><span class="footer-signoff">A little less choosing.<br /><strong>A little more playing.</strong></span></div>
+      <div class="footer-intro"><div><a class="footer-brand" href={home()}><BrandMark class="footer-brand-icon" /><span>Steam Backlog<span class="brand-period">.</span></span></a><p>Good games deserve your time.</p></div><span class="footer-signoff">A little less choosing.<br /><strong>A little more playing.</strong></span></div>
       <div class="footer-bottom"><div class="footer-links"><span class="eyebrow">PROJECT & SOURCES</span><a href={activity()}>Charts</a><a href="https://store.steampowered.com/" target="_blank" rel="noopener noreferrer">Steam ↗</a><a href="https://steam250.com/top250" target="_blank" rel="noopener noreferrer">Steam 250 ↗</a><a href="https://github.com/MironescuOctavian/Steam-Backlog-Roulette" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div><a class="footer-credit" href="https://octavianmironescu.com/en/" target="_blank" rel="noopener noreferrer">Built by Mironescu Octavian. ↗</a><small>Independent project. Not affiliated with Valve or Steam.</small></div>
     </footer>
     <Show when={canUndo()&&noticeVisible()}><aside class="undo-toast" aria-label="Recent library change"><span role="status">{saveMessage()}</span><button onClick={undo}>Undo</button><button class="undo-dismiss" aria-label="Dismiss change notice" onClick={()=>setNoticeVisible(false)}>×</button></aside></Show>
