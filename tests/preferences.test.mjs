@@ -5,6 +5,7 @@ import {exclusionReason,recommendationReasons,sortLibrary,defaultFilters} from '
 import {demoLibrary} from './fixtures/library.ts';
 import {loadLibrary,saveLibrary} from '../src/library.ts';
 test('preferences round trip filters, sorting, exclusions and safe internal routes',()=>{
+  assert.equal(loadPreferences({getItem:()=>null}).value.sound,false,'roulette sound is opt-in');
   const p=validatePreferences({...defaultPreferences,filters:{...defaultFilters,genre:'RPG'},excludedIds:[70,70,220],lastRoute:'/activity',pulsePage:20});
   assert.deepEqual(p.excludedIds,[70,220]);assert.equal(loadPreferences({getItem:()=>JSON.stringify(p)}).value.pulsePage,20);
   assert.equal(validatePreferences({...p,lastRoute:'/top250'}).lastRoute,'/top250');

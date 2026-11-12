@@ -55,6 +55,10 @@ async function main(){
  await evaluate(`document.querySelector('.app-sidebar nav a:last-child').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('#discovery-title').textContent`),'Your next great discovery.','Top 250 opens its own discovery page');
  assert.equal(await evaluate(`document.querySelectorAll('.discovery-grid .game-card').length`),6,'Top 250 starts with six cards');
+ await evaluate(`document.querySelector('.discovery-grid .game-details-button').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('.card-details-modal').open`),true,'Top 250 opens a card-sized popup');
+ assert.equal(await evaluate(`(()=>{const c=document.querySelector('.discovery-grid .game-card').getBoundingClientRect(),d=document.querySelector('.card-details-modal').getBoundingClientRect();return d.width>c.width&&d.width<=c.width+81&&Math.abs(d.left+d.width/2-c.left-c.width/2)<2;})()`),true,'popup is slightly wider and centered over its card');
+ await evaluate(`document.querySelector('.card-details-modal .modal-close').click()`);await settle();
  await evaluate(`document.querySelector('.discovery-expand button').click()`);await settle();
  assert.equal(await evaluate(`document.querySelectorAll('.discovery-grid .game-card').length`),250,'Top 250 can show all ranked games');
  assert.equal(await evaluate(`localStorage.getItem('steam-backlog-roulette.library.v1')`),null,'browsing Top 250 does not create a library');
