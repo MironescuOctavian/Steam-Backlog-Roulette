@@ -7,7 +7,7 @@ export function exclusionReason(g:Game,p:Preferences):string{
   return p.excludedIds.includes(g.appId)?'Manually excluded':p.hideSoftware&&g.appType==='software'?'Software excluded':p.hideDemos&&g.appType==='demo'?'Demos excluded':p.hideMultiplayer&&g.multiplayerOnly===true?'Multiplayer-only excluded':'';
 }
 export function recommendationReasons(g:Game,f:Filters,personal:boolean):string{
-  return [personal?(g.playtimeHours===0?'Unplayed':`${g.playtimeHours}h played`):g.rank?`#${g.rank} in Steam 250`:'Steam discovery',g.playNext?'On your shortlist':'',f.genre&&g.genres.includes(f.genre)?`Matches ${f.genre}`:'',g.timeToBeatHours!==null?`~${Number(remainingHours(g)?.toFixed(1))}h remaining`:''].filter(Boolean).join(' · ');
+  return [personal?(g.playtimeHours===0?'Unplayed':`${g.playtimeHours}h played`):g.rank?`#${g.rank} in Steam 250`:'Steam discovery',g.pinned?'Your current focus':g.playNext?'On your shortlist':'',f.genre&&g.genres.includes(f.genre)?`Matches ${f.genre}`:'',g.timeToBeatHours!==null?`~${Number(remainingHours(g)?.toFixed(1))}h remaining`:''].filter(Boolean).join(' · ');
 }
 export function sortLibrary(games:Game[],sort:string):Game[]{
   return [...games].sort((a,b)=>sort==='title'?a.title.localeCompare(b.title):sort==='playtime'?b.playtimeHours-a.playtimeHours:sort==='remaining'?(remainingHours(a)??Infinity)-(remainingHours(b)??Infinity):sort==='priority'?Number(b.playNext&&unfinished(b))-Number(a.playNext&&unfinished(a))+(a.playNext&&b.playNext&&unfinished(a)&&unfinished(b)?queueCompare(a,b):0):0);
@@ -17,7 +17,7 @@ export function filterGames(games: Game[], f: Filters): Game[] {
     const hours = remainingHours(g);
     return g.title.toLowerCase().includes(f.search.trim().toLowerCase())
       && (f.state === 'all' || (g.status !== 'Completed' && g.status !== 'Dropped'
-        && (f.state === 'backlog' || (f.state === 'never' && g.playtimeHours === 0) || (f.state === 'under2' && g.playtimeHours < 2) || (f.state === 'next' && g.playNext))))
+        && (f.state === 'backlog' || (f.state === 'never' && g.playtimeHours === 0) || (f.state === 'under2' && g.playtimeHours < 2) || (f.state === 'started' && (g.playtimeHours>0||g.status==='Playing')) || (f.state === 'next' && g.playNext))))
       && (!f.genre || g.genres.includes(f.genre))
       && (f.score === 0 || ((g.steamPositivePercent??g.metacritic) !== null && (g.steamPositivePercent??g.metacritic)! >= f.score))
       && (f.maxHours === 200 || (hours !== null && hours <= f.maxHours))

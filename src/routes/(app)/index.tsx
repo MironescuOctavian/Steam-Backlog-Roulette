@@ -1,3 +1,4 @@
+import {RouletteModes,RouletteSession} from '../../roulette-controls';
 import {PlayNextQueue} from '../../play-next';
 import {BulkActions} from '../../bulk-actions';
 import {LibraryViewToggle,LibraryFilterSummary,LibraryFilterRecovery} from '../../library-toolbar';
@@ -18,7 +19,7 @@ import {catalogSource,catalogUpdatedAt} from '../../catalog';
 import {useLibrary} from '../../library-state';
 
 export default function BacklogPage(){
-  const {library,games,loaded,profile,saveMessage,saveFailed,filters,setFilters,worstValue,setWorstValue,weeklyHours,setWeeklyHours,soundEnabled,setSoundEnabled,activeGames,stats,filtered,libraryRows,eligible,preferences,setPreference,toggleExcluded,removeGame,undo,canUndo,metadataMessage,genres,changeFilter,backlog,hoursLeft,applyLibrary,updateGame}=useLibrary();
+  const {library,games,loaded,profile,saveMessage,saveFailed,filters,setFilters,worstValue,setWorstValue,weeklyHours,setWeeklyHours,soundEnabled,setSoundEnabled,activeGames,stats,filtered,libraryRows,rouletteGames,skipGame,recordPick,preferences,setPreference,toggleExcluded,removeGame,undo,canUndo,metadataMessage,genres,changeFilter,backlog,hoursLeft,applyLibrary,updateGame}=useLibrary();
   const pulseHref=useHref(()=>'/activity'),libraryHref=useHref(()=>'/#library'),rouletteHref=useHref(()=>'/#roulette');
   function showPlayNext(){setFilters({...defaultFilters,state:'next'});requestAnimationFrame(()=>{const title=document.getElementById('queue-title');title?.focus({preventScroll:true});title?.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});});}
   const [expanded,setExpanded]=createSignal(false);
@@ -40,11 +41,13 @@ export default function BacklogPage(){
   const detailGame=()=>activeGames().find(g=>g.appId===detailsId())??null;
   const [winner, setWinner] = createSignal<Game | null>(null);
   const [spinFilters,setSpinFilters]=createSignal({...filters()});
+  const [spinRequest,setSpinRequest]=createSignal(0);
+  function reroll(skip=false){const game=winnerGame();if(skip&&game)skipGame(game.appId);winnerDialog.close();setSpinRequest(n=>n+1);requestAnimationFrame(()=>{const button=document.querySelector<HTMLButtonElement>('.spin-button');if(button&&!button.disabled)button.focus({preventScroll:true});else document.getElementById('restore-skipped')?.focus({preventScroll:true});});}
   const sound=createRouletteSound();
   let winnerDialog!: HTMLDialogElement;
   const winnerGame=()=>games().find(g=>g.appId===winner()?.appId) ?? winner();
   function celebrate(game: Game) {
-    setWinner(game);
+    setWinner(game);recordPick(game.appId);
     if(soundEnabled())sound.win();
     if(!matchMedia('(prefers-reduced-motion: reduce)').matches)window.confetti?.({particleCount:100,spread:70,origin:{y:.65},colors:['#ffbf00','#ffdd70','#eeeeee'],disableForReducedMotion:true});
     requestAnimationFrame(()=>{if(!winnerDialog.open)winnerDialog.showModal();});
@@ -75,16 +78,16 @@ export default function BacklogPage(){
               <button disabled={!loaded()} aria-pressed={filters().state==='next'?'true':'false'} onClick={()=>changeFilter({state:filters().state==='next'?'backlog':'next'})}>Play Next</button>
             </div>
             <details class="advanced-filters"><summary>Advanced filters <span>Genre, reviews & playtime</span></summary><div class="filter-fields">
-              <Show when={loaded()}><label>Playtime state<select value={filters().state} onChange={e => changeFilter({state:e.currentTarget.value})}><option value="backlog">All backlog</option><option value="never">Never played (0 hours)</option><option value="under2">Under 2 hours</option><option value="next">Play Next</option><option value="all">All library, including finished</option></select></label></Show>
+              <Show when={loaded()}><label>Playtime state<select value={filters().state} onChange={e => changeFilter({state:e.currentTarget.value})}><option value="backlog">All backlog</option><option value="never">Never played (0 hours)</option><option value="under2">Under 2 hours</option><option value="started">Started · unfinished</option><option value="next">Play Next</option><option value="all">All library, including finished</option></select></label></Show>
               <label>Minimum review score: {filters().score || "Any"}<input type="range" min="0" max="100" step="5" value={filters().score} onInput={e => changeFilter({score:Number(e.currentTarget.value)})} /></label>
               <label>Maximum remaining: {filters().maxHours===200?'Any':filters().maxHours+'h'}<input type="range" min="0" max="200" step="1" value={filters().maxHours} onInput={e => changeFilter({maxHours:Number(e.currentTarget.value)})} /></label>
             </div>
             <div class="pills" aria-label="Remaining time presets"><For each={[["all","Any length"],["quick","Quick · under 10h"],["medium","Medium · 10–30h"],["epic","Epic · 50h+"]]}>{item => <button aria-pressed={filters().time === item[0] ? "true" : "false"} onClick={() => changeFilter({time:item[0]!})}>{item[1]}</button>}</For></div>
             <div class="pills" aria-label="Genres"><button aria-pressed={!filters().genre ? "true" : "false"} onClick={() => changeFilter({genre:""})}>All genres</button><For each={genres()}>{genre => <button aria-pressed={filters().genre === genre ? "true" : "false"} onClick={() => changeFilter({genre})}>{genre}</button>}</For></div>
             <fieldset class="roulette-exclusions"><legend>Keep out of roulette</legend><label><input type="checkbox" checked={preferences().hideMultiplayer} onChange={e=>setPreference({hideMultiplayer:e.currentTarget.checked})} /> Multiplayer-only</label><label><input type="checkbox" checked={preferences().hideSoftware} onChange={e=>setPreference({hideSoftware:e.currentTarget.checked})} /> Software</label><label><input type="checkbox" checked={preferences().hideDemos} onChange={e=>setPreference({hideDemos:e.currentTarget.checked})} /> Demos</label><p>Known classifications only. Unknown games stay eligible. {metadataMessage()}</p></fieldset>
-            </details><p class="demo-note">Time filters exclude unknown completion times. Review score uses Steam positive reviews where available, otherwise Metacritic. <strong aria-live="polite">{filtered().length} matching games · {eligible().filter(g=>g.status!=='Completed'&&g.status!=='Dropped').length} eligible for roulette</strong></p>
+            </details><p class="demo-note">Time filters exclude unknown completion times. Review score uses Steam positive reviews where available, otherwise Metacritic. <strong aria-live="polite">{filtered().length} matching games · {rouletteGames().length} in the current roulette pool</strong></p>
           </section>
-        <div class="roulette-area"><p class="pool-label">{loaded()?`Picking only from ${profile()?.name ? profile()!.name+"’s" : 'your loaded'} library. The Top 250 is no longer in this pool.`:'Discover from 250 top-rated games. No profile is loaded.'}</p><label class="sound-toggle"><input type="checkbox" checked={soundEnabled()} onChange={e=>setSoundEnabled(e.currentTarget.checked)} /> Roulette sound</label><For each={[loaded()?`personal:${profile()?.steamId??'local'}`:'catalog']}>{()=> <Roulette discovery={!loaded()} games={eligible()} onWinner={celebrate} onStart={()=>{setSpinFilters({...filters()});if(soundEnabled())void sound.start();}} onTick={()=>{if(soundEnabled())sound.tick();}} />}</For></div>
+        <div class="roulette-area"><RouletteModes /><p class="pool-label">{loaded()?`Picking only from ${profile()?.name ? profile()!.name+"’s" : 'your loaded'} library. The Top 250 is no longer in this pool.`:'Discover from 250 top-rated games. No profile is loaded.'}</p><label class="sound-toggle"><input type="checkbox" checked={soundEnabled()} onChange={e=>setSoundEnabled(e.currentTarget.checked)} /> Roulette sound</label><For each={[loaded()?`personal:${profile()?.steamId??'local'}`:'catalog']}>{()=> <Roulette discovery={!loaded()} games={rouletteGames()} spinRequest={spinRequest()} onWinner={celebrate} onStart={()=>{setSpinFilters({...filters()});if(soundEnabled())void sound.start();}} onTick={()=>{if(soundEnabled())sound.tick();}} />}</For><RouletteSession onDetails={setDetailsId} /></div>
 
         <Show when={loaded()}>
         <section id="insights" class="insights-section" aria-labelledby="insights-title">
@@ -160,8 +163,8 @@ export default function BacklogPage(){
           <p class="eyebrow">FATE HAS EXCELLENT TASTE</p><h2 id="winner-title">{winnerGame()?.title}</h2>
           <img class="winner-cover" src={coverUrl(winnerGame()?.appId ?? 0)} alt={winnerGame()?.title ?? ""} onError={e=>{e.currentTarget.style.display='none';}} />
           <p class="winner-reason">{winnerGame()?recommendationReasons(winnerGame()!,spinFilters(),loaded()):''}</p><p class="demo-note">{winnerGame()?.genres.join(' · ')} · {winnerGame()?.metadataSource}</p>
+          <div class="winner-choice"><button class="winner-reroll" onClick={()=>reroll()}>Reroll</button><button class="winner-skip" onClick={()=>reroll(true)}>Not tonight</button></div><div class="tool-actions"><Show when={loaded()}><a class="winner-launch" href={`steam://run/${winnerGame()?.appId}`}>Launch in Steam ↗</a></Show><a href={`https://store.steampowered.com/app/${winnerGame()?.appId}/`} target="_blank" rel="noopener noreferrer">Store page ↗</a><Show when={loaded()}><button class="winner-playing" disabled={Boolean(library.warning) || winnerGame()?.status==='Playing'} onClick={()=>{const game=winnerGame();if(game)updateGame(game.appId,{status:'Playing'});}}>Mark currently playing</button><button class="winner-shortlist" disabled={Boolean(library.warning)||Boolean(winnerGame()?.playNext)||winnerGame()?.status==='Completed'||winnerGame()?.status==='Dropped'} onClick={()=>{const game=winnerGame();if(game)updateGame(game.appId,{playNext:true});}}>{winnerGame()?.playNext?'On Play Next':'Add to Play Next'}</button></Show></div>
           <dl class="winner-stats"><Show when={loaded()}><div><dt>Played</dt><dd>{winnerGame()?.playtimeHours}h</dd></div></Show><div><dt>Completion time</dt><dd>{winnerGame()?.timeToBeatHours==null?'Unknown':`~${winnerGame()?.timeToBeatHours}h`}</dd></div><div><dt>Reviews</dt><dd>{winnerGame()?.steamPositivePercent!==undefined?`${winnerGame()?.steamPositivePercent}% positive`:winnerGame()?.metacritic??'Unknown'}</dd></div><Show when={loaded()}><div><dt>Status</dt><dd>{winnerGame()?.status}</dd></div></Show></dl>
-          <div class="tool-actions"><Show when={loaded()}><a href={`steam://run/${winnerGame()?.appId}`}>Launch in Steam ↗</a></Show><a href={`https://store.steampowered.com/app/${winnerGame()?.appId}/`} target="_blank" rel="noopener noreferrer">Store page ↗</a><Show when={loaded()}><button disabled={Boolean(library.warning) || winnerGame()?.status==='Playing'} onClick={()=>{const game=winnerGame();if(game)updateGame(game.appId,{status:'Playing'});}}>Mark currently playing</button></Show></div>
           <p class="demo-note">Launching requires the Steam desktop app. Completion times are estimates.</p>
           <p role="status">{saveMessage()}</p>
         </div></Show>

@@ -147,6 +147,7 @@ async function main(){
  fs.writeFileSync(path.resolve('artifacts/play-next-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await settle();
  assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth`),true,'queue and four sidebar destinations fit mobile');
+ assert.ok(await evaluate(`document.querySelector('.queue-game>span').getBoundingClientRect().width`)>140,'mobile queue gives game titles enough room');
  fs.writeFileSync(path.resolve('artifacts/play-next-mobile.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  await call('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});await settle();
  for(let i=0;i<3;i++){await evaluate(`document.querySelector('.undo-toast button').click()`);await settle();}
@@ -218,6 +219,21 @@ async function main(){
  await evaluate(`document.querySelector('.spin-button').click()`);await delay(700);
  assert.equal(await evaluate(`document.querySelector('.winner-modal').open`),true,'winner dialog');
  assert.equal(await evaluate(`document.querySelector('#winner-title').textContent`),'Half-Life QA','correct winner');
+ fs.writeFileSync(path.resolve('artifacts/roulette-winner-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
+ assert.equal(await evaluate(`document.querySelectorAll('.recent-picks li').length`),1,'winner is remembered for this visit');
+ await evaluate(`document.querySelector('.winner-shortlist').click()`);await settle();
+ assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games.find(g=>g.appId===70).playNext`),true,'winner can be added directly to Play Next');
+ await evaluate(`document.querySelector('.winner-reroll').click()`);await delay(700);
+ assert.equal(await evaluate(`document.querySelector('.winner-modal').open`),true,'reroll starts another spin and opens the result');
+ assert.equal(await evaluate(`document.querySelectorAll('.recent-picks li').length`),1,'reroll history does not duplicate the same game');
+ const beforeSkip=await evaluate(`localStorage.getItem('steam-backlog-roulette.library.v1')`);
+ await evaluate(`document.querySelector('.winner-skip').click()`);await delay(400);
+ assert.equal(await evaluate(`document.querySelector('.spin-button').disabled`),true,'Not tonight can temporarily exhaust a single-game pool');
+ assert.equal(await evaluate(`localStorage.getItem('steam-backlog-roulette.library.v1')`),beforeSkip,'temporary skips do not change the saved library');
+ assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog.preferences.v1')).excludedIds.includes(70)`),false,'temporary skips do not become permanent exclusions');
+ await evaluate(`document.getElementById('restore-skipped').click()`);await settle();
+ await evaluate(`document.querySelector('.spin-button').click()`);await delay(700);
+ assert.equal(await evaluate(`document.querySelector('.winner-modal').open`),true,'restoring skipped games makes them eligible again');
  await evaluate(`[...document.querySelectorAll('.winner-modal button')].find(b=>b.textContent.includes('Mark currently')).click()`);await settle();
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games.find(g=>g.appId===70).status`),'Playing','winner action saves');
  await evaluate(`document.querySelector('.winner-modal').close()`);await settle();
@@ -267,6 +283,11 @@ async function main(){
  await lookup('example-profile');
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),2,'profile replaces Top 250 instead of merging');
  assert.equal(await evaluate(`document.querySelector('.profile-summary a').textContent.trim()`),'Viewing Profile QA’s library','correct profile identity');
+ assert.equal(await evaluate(`document.querySelectorAll('.recent-picks li').length`),0,'changing libraries clears session picks');
+ await evaluate(`document.querySelectorAll('.roulette-modes button')[2].click()`);await settle();
+ assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog.preferences.v1')).filters.state`),'started','continue mode uses the saved shared filter');
+ assert.equal(await evaluate(`document.querySelectorAll('#library-grid>.game-card').length`),1,'continue mode only shows unfinished started games');
+ await evaluate(`document.querySelector('.roulette-modes button').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.profile-editor').hidden`),true,'loaded profile collapses the lookup editor');
  assert.equal(await evaluate(`document.querySelectorAll('.hero-deck').length`),0,'loaded library removes the discovery hero');
  assert.equal(await evaluate(`document.querySelector('.header-profile strong').textContent`),'Profile QA','header identifies the loaded profile');
@@ -415,6 +436,11 @@ async function main(){
  assert.equal(await evaluate(`document.querySelector('#library-grid').classList.contains('list-view')`),true,'compact list view renders the same library');
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog.preferences.v1')).libraryView`),'list','library view is persisted');
  assert.equal(await evaluate(`document.querySelectorAll('#library-grid>.game-card').length`),24,'list view keeps bounded rendering');
+ await evaluate(`document.querySelector('.select-games').click()`);await settle();
+ await evaluate(`document.querySelector('.bulk-selection button').click();document.querySelector('[aria-label="Library pages"] [aria-label="Next library page"]').click()`);await settle();
+ await evaluate(`document.querySelector('.bulk-selection button').click()`);await settle();
+ assert.match(await evaluate(`document.querySelector('.bulk-selection strong').textContent`),/48 selected/,'bulk selection persists across library pages');
+ await evaluate(`document.querySelector('.bulk-selection button:last-child').click();document.querySelector('[aria-label="Library pages"] [aria-label="Previous library page"]').click()`);await settle();
  await evaluate(`document.getElementById('library').scrollIntoView({block:'start',behavior:'instant'})`);await settle();
  fs.writeFileSync(path.resolve('artifacts/library-list-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  assert.equal(await evaluate(`document.querySelector('.roulette-panel .section-note').textContent`),'5000 eligible games','roulette keeps the entire eligible library');

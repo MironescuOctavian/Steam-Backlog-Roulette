@@ -1,3 +1,4 @@
+import {rouletteCandidates,rememberPick,type RecentPick} from './roulette-model';
 import {patchGames,moveQueuedGame,pinQueuedGame} from './queue-model';
 import {createContext,createEffect,createMemo,createSignal,useContext,type ParentProps} from 'solid-js';
 import {loadLibrary,remainingHours,saveLibrary,validateLibrary,type Game,type SteamProfile} from './library';
@@ -42,6 +43,13 @@ function createLibraryState(){
   const filtered=createMemo(()=>filterGames(activeGames(),filters()));
   const libraryRows=createMemo(()=>sortLibrary(filtered(),preferences().librarySort));
   const eligible=createMemo(()=>filtered().filter(g=>!exclusionReason(g,preferences())));
+  const [sessionSkipped,setSessionSkipped]=createSignal<number[]>([]),[recentPicks,setRecentPicks]=createSignal<RecentPick[]>([]);
+  let rouletteScope='';
+  createEffect(()=>loaded()?'personal:'+(profile()?.steamId??'local'):'discovery',scope=>{if(scope===rouletteScope)return;rouletteScope=scope;setSessionSkipped([]);setRecentPicks([]);});
+  const rouletteGames=createMemo(()=>rouletteCandidates(eligible(),sessionSkipped(),recentPicks()));
+  const skipGame=(id:number)=>{setSessionSkipped(ids=>ids.includes(id)?ids:[...ids,id]);};
+  const restoreSkipped=()=>{setSessionSkipped([]);};
+  const recordPick=(id:number)=>{setRecentPicks(picks=>rememberPick(picks,id));};
   function toggleExcluded(id:number){setPreference({excludedIds:preferences().excludedIds.includes(id)?preferences().excludedIds.filter(n=>n!==id):[...preferences().excludedIds,id]});}
   const genres=()=>[...new Set(activeGames().flatMap(g=>g.genres))].sort();
   const changeFilter=(patch:Partial<Filters>)=>setFilters(current=>({...current,...patch}));
@@ -82,7 +90,7 @@ function createLibraryState(){
     })();
     return ()=>controller.abort();
   });
-  return {library,games,loaded,profile,activity,setActivity,loadActivity,gameHistory,setGameHistory,saveMessage,saveFailed,changeRevision,filters,setFilters,worstValue,setWorstValue,weeklyHours,setWeeklyHours,soundEnabled,setSoundEnabled,activeGames,stats,filtered,libraryRows,eligible,genres,changeFilter,backlog,hoursLeft,applyLibrary,updateGame,updateGames,moveQueue,pinQueue,undo,canUndo:()=>undoStack().length>0,removeGame,preferences,setPreference,preferenceWarning,toggleExcluded,metadataMessage};
+  return {library,games,loaded,profile,activity,setActivity,loadActivity,gameHistory,setGameHistory,saveMessage,saveFailed,changeRevision,filters,setFilters,worstValue,setWorstValue,weeklyHours,setWeeklyHours,soundEnabled,setSoundEnabled,activeGames,stats,filtered,libraryRows,eligible,rouletteGames,sessionSkipped,recentPicks,skipGame,restoreSkipped,recordPick,genres,changeFilter,backlog,hoursLeft,applyLibrary,updateGame,updateGames,moveQueue,pinQueue,undo,canUndo:()=>undoStack().length>0,removeGame,preferences,setPreference,preferenceWarning,toggleExcluded,metadataMessage};
 }
 const LibraryContext=createContext<ReturnType<typeof createLibraryState>>();
 export function LibraryProvider(props:ParentProps){return <LibraryContext value={createLibraryState()}>{props.children}</LibraryContext>;}

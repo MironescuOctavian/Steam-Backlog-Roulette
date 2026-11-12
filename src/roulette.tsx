@@ -1,9 +1,9 @@
-import { createSignal, For, onCleanup } from 'solid-js';
+import { createEffect,createSignal, For, onCleanup } from 'solid-js';
 import { coverUrl, type Game } from './library';
 import { buildReel } from './roulette-model';
 import './roulette.css';
 
-export function Roulette(props: { games: Game[]; discovery?:boolean; onWinner: (game: Game) => void; onTick?: () => void; onStart?: () => void }) {
+export function Roulette(props: { games: Game[]; discovery?:boolean;spinRequest?:number; onWinner: (game: Game) => void; onTick?: () => void; onStart?: () => void }) {
   const [spinning,setSpinning]=createSignal(false);
   const [cards,setCards]=createSignal<Game[]>([]);
   const [result,setResult]=createSignal('');
@@ -12,6 +12,8 @@ export function Roulette(props: { games: Game[]; discovery?:boolean; onWinner: (
   let animation: Animation | undefined;
   let frame=0;
   let disposed=false;
+  let previousRequest=props.spinRequest??0;
+  createEffect(()=>props.spinRequest,request=>{if(request===undefined||request===previousRequest)return;previousRequest=request;void spin();});
   const pool=()=>props.games.filter(g=>g.status!=='Completed' && g.status!=='Dropped');
   async function spin() {
     if(spinning() || pool().length===0)return;
