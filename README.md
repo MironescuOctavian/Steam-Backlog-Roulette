@@ -1,4 +1,4 @@
-# Steam Backlog
+# SteamNext
 
 Too many games, nothing to play. Load a public Steam library, narrow it down, and let the roulette pick your next game.
 

@@ -9,7 +9,7 @@ export function deploy(run=spawnSync,env=process.env,args=process.argv.slice(2))
   try{
     const options=['node_modules/cf/bin/cf','deploy','--prebuilt',...args];
     if(env.STEAM_API_KEY?.trim()){
-      directory=mkdtempSync(path.join(tmpdir(),'steam-backlog-secrets-'));
+      directory=mkdtempSync(path.join(tmpdir(),'steamnext-secrets-'));
       file=path.join(directory,'secrets.json');
       writeFileSync(file,JSON.stringify({STEAM_API_KEY:env.STEAM_API_KEY.trim()}),{mode:0o600});
       options.push('--secrets-file',file);

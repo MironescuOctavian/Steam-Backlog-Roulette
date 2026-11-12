@@ -18,7 +18,7 @@ export function DataTools(props:{games:Game[];onApply:(games:Game[])=>boolean;re
   function download() {
     closeMenu();
     const blob=new Blob([JSON.stringify({version:1,games:props.games},null,2)],{type:'application/json'});
-    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='steam-backlog-library.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='steamnext-library.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
   }
   async function importFile(file:File|undefined) {
     if(!file)return;

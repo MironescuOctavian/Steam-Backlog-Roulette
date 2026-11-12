@@ -67,5 +67,5 @@ export function createApp({key=process.env.STEAM_API_KEY,lookup=fetchPublicProfi
 }
 if(process.argv[1] && import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href){
   const port=Number(process.env.PORT??8787);
-  createApp().listen(port,process.env.HOST??'127.0.0.1',()=>console.log(`Backlog Roulette: http://localhost:${port}`));
+  createApp().listen(port,process.env.HOST??'127.0.0.1',()=>console.log(`SteamNext: http://localhost:${port}`));
 }

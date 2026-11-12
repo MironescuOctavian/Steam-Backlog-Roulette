@@ -56,6 +56,9 @@ async function main(){
  await evaluate(`document.querySelector('.discovery-expand button').click()`);await settle();
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),6,'discovery collapses back to six games');
  assert.equal(await evaluate(`document.querySelectorAll('.kpi,.game-hours,.game-controls,.tag-label').length`),0,'no fabricated personal stats before lookup');
+ assert.equal(await evaluate('document.title'),'SteamNext · Time-to-Beat Planner','home page title uses SteamNext');
+ assert.equal(await evaluate(`document.querySelector('.brand').textContent.trim()`),'SteamNext.','header brand lockup shows SteamNext.');
+ assert.equal(await evaluate(`document.querySelector('.footer-brand').textContent.trim()`),'SteamNext.','footer brand lockup shows SteamNext.');
  assert.equal(await evaluate(`localStorage.getItem('steam-backlog-roulette.library.v1')`),null,'no default saved profile or library');
  await evaluate(`document.querySelector('.app-sidebar nav a:last-child').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('#discovery-title').textContent`),'Your next great discovery.','Top 250 opens its own discovery page');
@@ -365,7 +368,7 @@ async function main(){
 
  assert.equal(await evaluate(`performance.getEntriesByType('resource').some(r=>r.name.includes('/assets/activity-')&&r.name.endsWith('.js'))`),true,'Charts data downloads only after opening its page');
  await call('Page.reload');await delay(700);
- assert.equal(await evaluate('document.title'),'Charts · Steam Backlog','direct /activity reload renders the correct page');
+ assert.equal(await evaluate('document.title'),'Charts · SteamNext','direct /activity reload renders the correct page');
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-brief').length`),4,'hosted activity cards mount');
  failActivity=true;
  await evaluate(`document.querySelector('.activity-toolbar>button').click()`);await delay(300);
