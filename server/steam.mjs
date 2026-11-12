@@ -24,7 +24,9 @@ export async function fetchPublicProfile(input,key,request=fetch) {
     url.search=new URLSearchParams({key,...params}).toString();
     let response;
     try{response=await request(url,{signal:AbortSignal.timeout(15000),redirect:'manual'});}catch{throw new Error('Steam is unavailable. Please try again shortly.');}
-    if(!response.ok)throw new Error('Steam could not load this profile. Please try again shortly.');
+    if(response.status===401||response.status===403)throw new Error(`Steam rejected the server's authenticated request (HTTP ${response.status}). The site owner must verify STEAM_API_KEY in Cloudflare Build secrets and redeploy. Your saved library is unchanged.`);
+    if(response.status===429)throw new Error('Steam is rate limiting profile requests. Please wait a minute and retry.');
+    if(!response.ok)throw new Error(`Steam profile service returned HTTP ${response.status??'error'}. Please try again shortly.`);
     try{return await response.json();}catch{throw new Error('Steam returned an unreadable response.');}
   }
   let steamId=identity.steamId;

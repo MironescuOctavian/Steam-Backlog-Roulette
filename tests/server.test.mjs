@@ -26,6 +26,10 @@ test('private profiles, private games and unknown handles produce explicit error
   await assert.rejects(fetchPublicProfile('bad-handle','key',fake(3)),/No profile found/);
   await assert.rejects(fetchPublicProfile(id,'',fake(3)),/not configured/);
 });
+test('Steam authentication failures identify server configuration without exposing credentials',async()=>{
+  for(const status of [401,403])await assert.rejects(fetchPublicProfile(id,'never-return-this-key',async()=>({ok:false,status})),error=>error.message.includes('STEAM_API_KEY')&&error.message.includes(String(status))&&!error.message.includes('never-return-this-key'));
+  await assert.rejects(fetchPublicProfile(id,'key',async()=>({ok:false,status:429})),/rate limiting/);
+});
 test('API caches lookups, rate limits, and does not expose server configuration',async()=>{
   let calls=0;
   const server=createApp({key:'secret-value',lookup:async()=>{calls++;return {profile:{steamId:id},steam:{response:{games:[]}}};}});

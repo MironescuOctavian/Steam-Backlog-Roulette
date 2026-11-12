@@ -9,7 +9,7 @@ export function ProfileLookup(props:{profile:SteamProfile|null;games:Game[];onLo
   const [stage,setStage]=createSignal<'finding'|'loading'>('finding');
   const [success,setSuccess]=createSignal('');
   const privateProfile=()=>/private|Game details/i.test(error());
-  const canRetry=()=>!privateProfile()&&!/not configured|profile URL|custom handle|not found|Display names/i.test(error());
+  const canRetry=()=>!privateProfile()&&!/not configured|authenticated request|profile URL|custom handle|not found|Display names/i.test(error());
   function editProfile(){const input=document.getElementById('steam-profile') as HTMLInputElement|null;input?.focus();input?.select();}
   let controller:AbortController|undefined;
   onCleanup(()=>controller?.abort());
