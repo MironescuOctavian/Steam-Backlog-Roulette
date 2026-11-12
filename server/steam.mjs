@@ -23,7 +23,7 @@ export async function fetchPublicProfile(input,key,request=fetch) {
     const url=new URL('https://api.steampowered.com/'+method+'/'+version+'/');
     url.search=new URLSearchParams({key,...params}).toString();
     let response;
-    try{response=await request(url,{signal:AbortSignal.timeout(15000),redirect:'error'});}catch{throw new Error('Steam is unavailable. Please try again shortly.');}
+    try{response=await request(url,{signal:AbortSignal.timeout(15000),redirect:'manual'});}catch{throw new Error('Steam is unavailable. Please try again shortly.');}
     if(!response.ok)throw new Error('Steam could not load this profile. Please try again shortly.');
     try{return await response.json();}catch{throw new Error('Steam returned an unreadable response.');}
   }

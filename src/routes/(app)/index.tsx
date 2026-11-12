@@ -144,7 +144,7 @@ export default function BacklogPage(){
         </section>
 
       <dialog class="modal winner-modal" ref={winnerDialog} onClose={()=>setWinner(null)} aria-labelledby="winner-title">
-        <button class="modal-close" autofocus onClick={()=>winnerDialog.close()} aria-label="Close winner spotlight">✕</button>
+        <button class="modal-close" onClick={()=>winnerDialog.close()} aria-label="Close winner spotlight">✕</button>
         <Show when={winnerGame()}><div>
           <p class="eyebrow">FATE HAS EXCELLENT TASTE</p><h2 id="winner-title">{winnerGame()?.title}</h2>
           <img class="winner-cover" src={coverUrl(winnerGame()?.appId ?? 0)} alt={winnerGame()?.title ?? ""} onError={e=>{e.currentTarget.style.display='none';}} />

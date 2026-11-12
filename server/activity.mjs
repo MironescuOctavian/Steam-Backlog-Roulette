@@ -7,7 +7,7 @@ import {parseSteamOnline} from './game-history.mjs';
 export function createActivityService({request=fetch,historyFile=path.resolve('.data/activity-history.json'),historyStore,metadataBatchLimit=Infinity,now=()=>Date.now(),extended=createExtendedChart({request,now})}={}) {
   let cached;let expires=0;let pending;
   const metadata=new Map();
-  async function json(url){const response=await request(url,{signal:AbortSignal.timeout(15000),redirect:'error'});if(!response.ok)throw new Error('Steam feed unavailable.');return response.json();}
+  async function json(url){const response=await request(url,{signal:AbortSignal.timeout(15000),redirect:'manual'});if(!response.ok)throw new Error('Steam feed unavailable.');return response.json();}
   async function collect(){
     const warnings=[];
     const [live,weekly,featured,wider,online]=await Promise.all([

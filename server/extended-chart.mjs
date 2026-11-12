@@ -19,7 +19,7 @@ export function createExtendedChart({request=fetch,now=()=>Date.now()}={}){
       const pages=Array.from({length:40},(_,i)=>i+1);const results=[];
       for(let offset=0;offset<pages.length;offset+=4){
         const batch=await Promise.all(pages.slice(offset,offset+4).map(async page=>{
-          const response=await request(`https://steamcharts.com/top/p.${page}`,{signal:AbortSignal.timeout(15000),redirect:'error'});
+          const response=await request(`https://steamcharts.com/top/p.${page}`,{signal:AbortSignal.timeout(15000),redirect:'manual'});
           if(!response.ok)throw new Error('Extended player ranking unavailable.');
           return parseChartPage(await response.text());
         }));results.push(...batch.flat());

@@ -21,7 +21,7 @@ export function createGameHistoryService({request=fetch,now=()=>Date.now(),stora
     const task=(async()=>{
       if(storage){try{const saved=await storage.get('game-history:'+appId,'json');if(saved?.appId===appId&&Date.parse(saved.capturedAt)>now()-3600000&&Array.isArray(saved.samples)&&saved.samples.length<=336){cache.set(appId,{expires:Date.parse(saved.capturedAt)+3600000,data:saved});return saved;}}catch{}}
       let data;
-      try{const [page,chart]=await Promise.all([request('https://steamcharts.com/app/'+appId,{signal:AbortSignal.timeout(15000),redirect:'error'}),request('https://steamcharts.com/app/'+appId+'/chart-data.json',{signal:AbortSignal.timeout(15000),redirect:'error'})]);
+      try{const [page,chart]=await Promise.all([request('https://steamcharts.com/app/'+appId,{signal:AbortSignal.timeout(15000),redirect:'manual'}),request('https://steamcharts.com/app/'+appId+'/chart-data.json',{signal:AbortSignal.timeout(15000),redirect:'manual'})]);
         if(!page.ok||!chart.ok)throw Error('unavailable');data=parseGameHistory(appId,await page.text(),await chart.json(),now());
       }catch{data={appId,peakAllTime:null,samples:[],capturedAt:new Date(now()).toISOString(),unavailable:true};}
       if(cache.size>2000)cache.clear();cache.set(appId,{expires:now()+(data.unavailable?300000:3600000),data});
