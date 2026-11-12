@@ -3,6 +3,8 @@ import {createActivityService} from './activity.mjs';
 import {createMetadataService,parseMetadataIds} from './metadata.mjs';
 import {createHeroService} from './hero.mjs';
 import {createGameDetailsService,parseGameIds} from './game-details.mjs';
+import {createGameInsightsService} from './game-insights.mjs';
+let gameInsights;
 const gameDetails=createGameDetailsService();
 import {createGameHistoryService,parseHistoryIds} from './game-history.mjs';
 const metadata=createMetadataService();
@@ -19,6 +21,9 @@ export default {
     const url=new URL(request.url);
     if(!url.pathname.startsWith('/api/'))return env.ASSETS.fetch(request);
     if(request.method!=='GET')return json(405,{error:'Use GET for this endpoint.'});
+    if(url.pathname==='/api/game-insights'){
+      let ids;try{ids=parseGameIds(url.searchParams.get('ids'));if(ids.length!==1)throw Error('Provide one game ID.');}catch(e){return json(400,{error:e.message});}gameInsights??=createGameInsightsService({storage:env.HISTORY,priceDirectory:null});try{return json(200,await gameInsights(ids[0]));}catch{return json(503,{error:'Game insights unavailable.'});}
+    }
     if(url.pathname==='/api/game-details'||url.pathname==='/api/game-players'){
       let ids;try{ids=parseGameIds(url.searchParams.get('ids'));if(url.pathname==='/api/game-details'&&ids.length!==1)throw Error('Provide one game ID.');}catch(e){return json(400,{error:e.message});}
       try{return json(200,url.pathname==='/api/game-details'?await gameDetails.game(ids[0]):await gameDetails.players(ids));}catch{return json(503,{error:'Game details are unavailable.'});}

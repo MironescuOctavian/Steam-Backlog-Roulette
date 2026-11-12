@@ -15,10 +15,9 @@ function AppShell(props:RouteSectionProps){
   const pulseLinks=[
     {id:'overview',href:useHref(()=>'/activity#overview'),title:'Overview',detail:'Concurrent Steam users',icon:'i-lucide-activity'},
     {id:'briefs',href:useHref(()=>'/activity#briefs'),title:'Briefs',detail:'Four lists worth exploring',icon:'i-lucide-layout-dashboard'},
-    {id:'comparison',href:useHref(()=>'/activity#comparison'),title:'Compare',detail:'Player counts and history',icon:'i-lucide-chart-no-axes-combined'},
     {id:'ranking',href:useHref(()=>'/activity#ranking'),title:'Top 1,000',detail:'The most-played ranking',icon:'i-lucide-library'},
   ];
-  const pulseActive=(id:string)=>(location.hash||'#overview')==='#'+id;
+  const pulseActive=(id:string)=>(['#overview','#briefs','#ranking'].includes(location.hash)?location.hash:'#overview')==='#'+id;
   const active=(page:string)=>page==='top250'?location.pathname==='/top250':location.pathname==='/'&&(page==='roulette'?location.hash==='#roulette':location.hash!=='#roulette');
   return <>
     <a class="skip-link" href={home()}>Skip to content</a>

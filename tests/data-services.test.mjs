@@ -23,6 +23,7 @@ test('history keeps source-reported all-time peak and actual timestamped samples
   const now=Date.parse('2026-11-11T12:00:00Z'),history=parseGameHistory(70,'<span class="num">1,234</span><br>all-time peak',[[now-3600000,10],[now,20],[now-10*86400000,999]],now);
   assert.equal(history.peakAllTime,1234);assert.equal(history.samples.length,2);assert.equal(validateGameHistories([history]).length,1);assert.match(seriesPath(history.samples),/^M/);
   assert.equal(seriesPath([[now,10]]),'');assert.throws(()=>validateGameHistories([{...history,peakAllTime:-1}]));
+  const monthly=[[now-31*86400000,10],[now,20]];assert.equal((seriesPath(monthly).match(/M/g)??[]).length,2);assert.equal((seriesPath(monthly,100,30,35*86400000).match(/L/g)??[]).length,1);
   const online=parseSteamOnline([{label:'Steam users logged in',data:[[now-300000,100],[now,200]]}]);assert.equal(online.samples.at(-1)[1],200);assert.throws(()=>parseSteamOnline([]));
 });
 test('unavailable history stays unknown and is cached without fake points',async()=>{
