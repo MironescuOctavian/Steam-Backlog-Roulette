@@ -6,6 +6,7 @@ import './cards.css';
 import './features.css';
 import './enhancements.css';
 import './workspace.css';
+import './library-manager.css';
 
 const root=document.getElementById('app');
 if(!root)throw new Error('Application root is missing');

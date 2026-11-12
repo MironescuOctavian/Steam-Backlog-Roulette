@@ -21,6 +21,10 @@ async function main(){
  await call('Page.navigate',{url});
  await evaluate(`new Promise((resolve,reject)=>{let n=0;const t=setInterval(()=>{if(document.querySelector('.game-card')){clearInterval(t);resolve(true);}else if(++n>100){clearInterval(t);reject(new Error('App did not mount'));}},100);})`);
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),6,'discovery starts with six games');
+ assert.equal(await evaluate(`document.querySelector('.library-tools-menu').open`),false,'library tools start tucked away');
+ await evaluate(`document.querySelector('.library-tools-menu summary').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('.library-tools-menu').open`),true,'library tools expand with a native keyboard-accessible control');
+ await evaluate(`document.querySelector('.library-tools-menu summary').click()`);
  assert.equal(await evaluate(`document.querySelector('.advanced-filters').open`),false,'advanced filters start collapsed');
  assert.equal(await evaluate(`document.querySelectorAll('.quick-filters button').length`),3,'three common filters beside roulette');
  assert.equal(await evaluate(`document.querySelector('#profile-example').textContent.includes('steamcommunity.com/id/')`),true,'profile link example is visible');
@@ -119,7 +123,7 @@ async function main(){
  const seedPath=path.join(profile,'test-library.json');
  const {demoLibrary}=await import(pathToFileURL(path.resolve('tests/fixtures/library.ts')).href);
  fs.writeFileSync(seedPath,JSON.stringify(demoLibrary()));
- await evaluate(`[...document.querySelectorAll('.data-tools>.tool-actions button')].find(b=>b.textContent.includes('Import JSON')).click()`);await settle();
+ await evaluate(`document.querySelector('.library-tools-menu').open=true;[...document.querySelectorAll('.data-tools .tool-actions button')].find(b=>b.textContent.includes('Import JSON')).click()`);await settle();
  const seedDom=await call('DOM.getDocument');const seedInput=await call('DOM.querySelector',{nodeId:seedDom.root.nodeId,selector:'input[type=file]'});
  await call('DOM.setFileInputFiles',{nodeId:seedInput.nodeId,files:[seedPath]});await settle();
  await evaluate(`document.querySelector('.import-preview button').click()`);await settle();
@@ -172,7 +176,7 @@ async function main(){
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games.length`),30,'undo restores a removed game');
  await call('Page.reload');await delay(700);
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games[0].status`),'Completed','reload persistence');
- await evaluate(`[...document.querySelectorAll('.data-tools>.tool-actions button')].find(b=>b.textContent.includes('Add game')).click()`);await settle();
+ await evaluate(`document.querySelector('.library-tools-menu').open=true;[...document.querySelectorAll('.data-tools .tool-actions button')].find(b=>b.textContent.includes('Add game')).click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.data-tools dialog').open`),true,'custom dialog');
  assert.equal(await evaluate(`(()=>{const r=document.querySelector('.data-tools dialog').getBoundingClientRect();return Math.abs(r.left+r.width/2-document.documentElement.clientWidth/2)<2&&Math.abs(r.top+r.height/2-innerHeight/2)<2;})()`),true,'add-game dialog is centered');
  fs.writeFileSync(path.resolve('artifacts/add-game.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
@@ -195,13 +199,13 @@ async function main(){
  await evaluate(`document.querySelector('.winner-modal').close();document.querySelector('.filter-panel .filter-heading button').click()`);await settle();
  const importPath=path.join(profile,'library.json');
  fs.writeFileSync(importPath,JSON.stringify([{appId:220,title:'Half-Life 2 QA',genres:['Action'],playtimeHours:0,timeToBeatHours:12,metacritic:96,pricePaid:10,status:'Unplayed'}]));
- await evaluate(`[...document.querySelectorAll('.data-tools>.tool-actions button')].find(b=>b.textContent.includes('Import JSON')).click()`);await settle();
+ await evaluate(`document.querySelector('.library-tools-menu').open=true;[...document.querySelectorAll('.data-tools .tool-actions button')].find(b=>b.textContent.includes('Import JSON')).click()`);await settle();
  const dom=await call('DOM.getDocument');const input=await call('DOM.querySelector',{nodeId:dom.root.nodeId,selector:'input[type=file]'});
  await call('DOM.setFileInputFiles',{nodeId:input.nodeId,files:[importPath]});await settle();
  assert.equal(await evaluate(`document.querySelector('.import-preview h3').textContent`),'1 validated games ready','JSON preview');
  await evaluate(`document.querySelector('.import-preview button').click()`);await settle();
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games.length`),32,'JSON merge');
- await evaluate(`[...document.querySelectorAll('.data-tools>.tool-actions button')].find(b=>b.textContent.includes('Import JSON')).click()`);await settle();
+ await evaluate(`document.querySelector('.library-tools-menu').open=true;[...document.querySelectorAll('.data-tools .tool-actions button')].find(b=>b.textContent.includes('Import JSON')).click()`);await settle();
  const replaceDom=await call('DOM.getDocument'),replaceInput=await call('DOM.querySelector',{nodeId:replaceDom.root.nodeId,selector:'input[type=file]'});
  await call('DOM.setFileInputFiles',{nodeId:replaceInput.nodeId,files:[importPath]});await settle();
  await evaluate(`document.querySelector('.import-preview input[type=checkbox]').click()`);await settle();
@@ -378,6 +382,12 @@ async function main(){
  await evaluate(`new Promise((resolve,reject)=>{let n=0;const t=setInterval(()=>{if(document.querySelector('.lookup-success')?.textContent.includes('5000 games')){clearInterval(t);resolve(true);}else if(++n>100){clearInterval(t);reject(Error('Large profile did not finish'));}},100);})`);
  await evaluate(`document.querySelector('.filter-panel .filter-heading button').click()`);await settle();
  assert.equal(await evaluate(`document.querySelectorAll('#library-grid>.game-card').length`),24,'5,000-game profile mounts only 24 game cards');
+ await evaluate(`document.querySelector('.library-view-toggle button:last-child').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('#library-grid').classList.contains('list-view')`),true,'compact list view renders the same library');
+ assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog.preferences.v1')).libraryView`),'list','library view is persisted');
+ assert.equal(await evaluate(`document.querySelectorAll('#library-grid>.game-card').length`),24,'list view keeps bounded rendering');
+ await evaluate(`document.getElementById('library').scrollIntoView({block:'start',behavior:'instant'})`);await settle();
+ fs.writeFileSync(path.resolve('artifacts/library-list-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  assert.equal(await evaluate(`document.querySelector('.roulette-panel .section-note').textContent`),'5000 eligible games','roulette keeps the entire eligible library');
  assert.equal(await evaluate(`document.querySelector('.profile-summary img').getBoundingClientRect().width`),48,'avatar cannot expand to full width');
  assert.ok(await evaluate(`document.querySelector('.profile-summary>div').getBoundingClientRect().width`)>200,'profile identity has readable width');
@@ -387,6 +397,7 @@ async function main(){
  assert.equal(await evaluate(`document.querySelectorAll('#library-grid>.game-card').length`),24,'changing pages keeps the DOM bounded');
  await evaluate(`(()=>{const q=document.querySelector('.roulette-search input');q.value='Library QA 5000';q.dispatchEvent(new Event('input',{bubbles:true}));})()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.game-title-row h3').textContent`),'Library QA 5000','search finds a game outside the mounted page');
+ assert.equal(await evaluate(`document.querySelector('.active-filter-chips button').textContent.includes('Library QA 5000')`),true,'active search is represented by a removable chip');
  assert.equal(await evaluate(`document.querySelector('[aria-label="Library pages"] [aria-current=page]').textContent`),'1','filtering resets the library page');
  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await settle();
  assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth`),true,'large profile has no mobile overflow');
