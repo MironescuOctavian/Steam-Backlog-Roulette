@@ -34,3 +34,5 @@
 }
 
 .pulse-table th:nth-child(n+3),.pulse-table td:nth-child(n+3){text-align:center}.pulse-owned-actions{align-items:center;min-width:140px}.pulse-table thead th{vertical-align:middle}.pulse-brief li strong{line-height:1.6}.pulse-store,.activity-page button.pulse-link{white-space:normal}.pulse-brief li>.pulse-store,.pulse-brief li>.pulse-link{max-width:90px}.chart-tooltip{overflow-wrap:anywhere}
+#overview,#briefs,#comparison,#ranking{scroll-margin-top:105px}
+@media(max-width:650px){.pulse-brief li{grid-template-columns:60px minmax(0,1fr)}#overview,#briefs,#comparison,#ranking{scroll-margin-top:150px}}

@@ -9,7 +9,7 @@ Too many games, nothing to play. Load a public Steam library, narrow it down, an
 - **Exclusions:** leave individual titles, software, demos or multiplayer-only games out of roulette while keeping them in your library. Unknown classifications stay eligible.
 - **Library management:** browse 24 games per page, track status, tags and Play Next, remove games from the local list, and import or export JSON backups. Search, filters and roulette still use the full library. Undo restores recent library changes, including replacement imports and profile switches.
 - **Remembered preferences:** filters, library sorting, exclusions, sound, gaming budget, Steam pulse sorting/page and the last visited page stay saved in this browser.
-- **Steam pulse:** browse 1,000 games in pages of 50, with reported all-time peaks, recent activity sparklines and an online Steam-user chart. Four discovery panels show ten picks each.
+- **Steam pulse:** browse 1,000 games in pages of 50, with reported all-time peaks, comparison charts and an online Steam-user chart. Four briefs show ten picks each, without mini charts. Its own sidebar links to Overview, Briefs, Compare and Top 1,000; backlog navigation stays separate.
 - **Automatic discovery hero:** four fixed cards cycle through the games in Steam’s top 25 most-played ranking. The cards themselves do not move between positions.
 - **Top 250 discovery:** start with six recommendations, or expand the full list. A dedicated Top 250 page stays available from the sidebar without replacing your library. Once a library is loaded, roulette picks only from that library.
 
@@ -60,7 +60,7 @@ The hosted build in `dist/` loads Steam pulse’s ranking separately when you vi
 - [Steam Charts](https://steamcharts.com/top) provides the wider player ranking, captured hourly. Official Steam counts take precedence where available. The combined list is sorted by reported counts; today's peaks are unknown outside Steam's official feed. Per-game pages supply all-time records and recent chart samples, checked on demand and cached for an hour. Missing records and insufficient history stay unavailable.
 - [Steam 250](https://steam250.com/top250) supplies the discovery ranking. Its source and snapshot date appear in the app.
 
-The comparison view’s Observed history contains only samples this app has recorded for Steam's official top 100. It keeps up to seven days in `.data/activity-history.json`; persist that directory when hosting. The small discovery-panel charts use Steam Charts’ own reported recent samples. Store prices are asking prices, not what a user paid.
+The comparison view’s Observed history contains only samples this app has recorded for Steam's official top 100. It keeps up to seven days in `.data/activity-history.json`; persist that directory when hosting. Store prices are asking prices, not what a user paid.
 
 Refresh bundled snapshots with `pnpm update:top250` or `pnpm update:activity`, then rebuild. Export your library before clearing browser data or moving to another browser.
 

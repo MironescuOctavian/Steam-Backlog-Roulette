@@ -53,3 +53,4 @@ body{background:linear-gradient(#181818a8,#181818eb),url('./assets/amber-orbits.
 .hero-description{line-height:1.8}.section-heading{flex-wrap:wrap}.section-heading>div{flex:1 1 240px}.section-heading .section-note{overflow-wrap:anywhere}
 @media(max-width:1050px) and (min-width:651px){.app-layout{grid-template-columns:170px minmax(0,1fr)}}
 @media(max-width:650px){.site-header nav a{font-size:12px;padding-inline:7px}.sidebar-copy strong{font-size:14px}.app-sidebar nav a{padding:10px}.hero h1{font-size:clamp(40px,11vw,50px)}}
+@media(max-width:650px){.pulse-sidebar nav{gap:4px;justify-content:space-between}.pulse-sidebar nav a{padding:11px 8px}.pulse-sidebar .sidebar-copy strong{font-size:13px}.pulse-sidebar nav a>.sidebar-symbol{display:none}}

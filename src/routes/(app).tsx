@@ -1,16 +1,24 @@
 import type {RouteSectionProps} from '@solidjs/router';
 import {useHref,useLocation} from '@solidjs/router';
 import {LibraryProvider,useLibrary} from '../library-state';
-import {createEffect,createSignal,Show} from 'solid-js';
+import {createEffect,createSignal,For,Show} from 'solid-js';
 
 function AppShell(props:RouteSectionProps){
   const {preferences,setPreference,preferenceWarning,canUndo,undo,saveMessage,changeRevision}=useLibrary();
   const location=useLocation();
   const [noticeVisible,setNoticeVisible]=createSignal(false);
   createEffect(()=>changeRevision(),revision=>{if(!revision)return;setNoticeVisible(true);const timer=setTimeout(()=>setNoticeVisible(false),10000);return ()=>clearTimeout(timer);});
-  createEffect(()=>location.pathname+location.hash,route=>{if(/^\/(?:activity|top250)?(?:#(?:main|roulette|library))?$/.test(route)&&route!==preferences().lastRoute)setPreference({lastRoute:route});});
+  createEffect(()=>location.pathname+location.hash,route=>{if(/^\/(?:activity|top250)?(?:#(?:main|roulette|library|overview|briefs|comparison|ranking))?$/.test(route)&&route!==preferences().lastRoute)setPreference({lastRoute:route});});
   createEffect(()=>location.pathname,pathname=>{document.title=pathname==='/activity'?'Steam pulse · Steam Backlog':pathname==='/top250'?'Top 250 · Steam Backlog':'Steam Backlog · Time-to-Beat Planner';});
   const home=useHref(()=>'/#main'),roulette=useHref(()=>'/#roulette'),library=useHref(()=>'/#library'),activity=useHref(()=>'/activity'),discovery=useHref(()=>'/top250');
+  const isPulse=()=>location.pathname==='/activity';
+  const pulseLinks=[
+    {id:'overview',href:useHref(()=>'/activity#overview'),title:'Overview',detail:'Concurrent Steam users',icon:'i-lucide-activity'},
+    {id:'briefs',href:useHref(()=>'/activity#briefs'),title:'Briefs',detail:'Four lists worth exploring',icon:'i-lucide-layout-dashboard'},
+    {id:'comparison',href:useHref(()=>'/activity#comparison'),title:'Compare',detail:'Player counts and history',icon:'i-lucide-chart-no-axes-combined'},
+    {id:'ranking',href:useHref(()=>'/activity#ranking'),title:'Top 1,000',detail:'The most-played ranking',icon:'i-lucide-library'},
+  ];
+  const pulseActive=(id:string)=>(location.hash||'#overview')==='#'+id;
   const active=(page:string)=>page==='top250'?location.pathname==='/top250':location.pathname==='/'&&(page==='roulette'?location.hash==='#roulette':location.hash!=='#roulette');
   return <>
     <a class="skip-link" href={home()}>Skip to content</a>
@@ -20,11 +28,11 @@ function AppShell(props:RouteSectionProps){
       <span class="header-note">PUBLIC LIBRARIES · NO LOGIN</span>
     </div></header>
     <div class="app-layout">
-      <aside class="app-sidebar"><p class="eyebrow">MAKE TIME FOR PLAY</p><nav aria-label="Backlog navigation">
+      <aside class={["app-sidebar",{"pulse-sidebar":isPulse()}]}><p class="eyebrow">{isPulse()?"STEAM PULSE":"MAKE TIME FOR PLAY"}</p><Show when={isPulse()} fallback={<nav aria-label="Backlog navigation">
         <a href={home()} class={active('backlog')?'sidebar-active':''} aria-current={active('backlog')?'page':undefined}><span class="sidebar-symbol i-lucide-layout-dashboard" aria-hidden="true" /><span class="sidebar-copy"><strong>Backlog</strong><small>Your games, your next adventure</small></span><span class="sidebar-number" aria-hidden="true">01</span></a>
         <a href={roulette()} class={active('roulette')?'sidebar-active':''} aria-current={active('roulette')?'location':undefined}><span class="sidebar-symbol i-lucide-shuffle" aria-hidden="true" /><span class="sidebar-copy"><strong>Roulette</strong><small>Let the next game find you</small></span><span class="sidebar-number" aria-hidden="true">02</span></a>
         <a href={discovery()} class={active('top250')?'sidebar-active':''} aria-current={active('top250')?'page':undefined}><span class="sidebar-symbol i-lucide-library" aria-hidden="true" /><span class="sidebar-copy"><strong>Top 250</strong><small>Discover the community favorites</small></span><span class="sidebar-number" aria-hidden="true">03</span></a>
-      </nav></aside>
+      </nav>}><nav aria-label="Steam pulse navigation"><For each={pulseLinks}>{(link,index)=><a href={link.href()} class={pulseActive(link.id)?"sidebar-active":""} aria-current={pulseActive(link.id)?"location":undefined}><span class={"sidebar-symbol "+link.icon} aria-hidden="true" /><span class="sidebar-copy"><strong>{link.title}</strong><small>{link.detail}</small></span><span class="sidebar-number" aria-hidden="true">0{index()+1}</span></a>}</For></nav></Show></aside>
       <main id="main" class="page-wrap"><Show when={preferenceWarning()}><p class="storage-warning" role="status">{preferenceWarning()}</p></Show>{props.children}</main>
     </div>
     <footer class="site-footer">

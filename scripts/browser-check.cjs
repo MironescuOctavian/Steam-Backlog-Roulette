@@ -69,10 +69,11 @@ async function main(){
  await evaluate(`document.querySelector('.online-series .time-plot').dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true}))`);await settle();
  assert.notEqual(await evaluate(`document.querySelector('.online-series .chart-tooltip').textContent`),lastTooltip,'keyboard moves to the previous recorded sample');
  await evaluate(`document.querySelector('.online-series .time-plot').blur()`);await settle();
- await evaluate(`(()=>{const plot=document.querySelector('.is-mini .time-plot');const r=plot.getBoundingClientRect();plot.dispatchEvent(new PointerEvent('pointermove',{clientX:r.left+r.width/2,bubbles:true}));})()`);await settle();
- assert.match(await evaluate(`document.querySelector('.is-mini .chart-tooltip').textContent`),/UTC/,'mini charts expose dated player counts');
- await evaluate(`document.querySelector('.is-mini .time-plot').dispatchEvent(new PointerEvent('pointerleave'))`);await settle();
- assert.ok(await evaluate(`document.querySelectorAll('.game-sparkline').length`)>0,'discovery cards contain real game sparklines');
+ assert.equal(await evaluate(`document.querySelectorAll('.pulse-brief .time-chart,.pulse-brief svg').length`),0,'brief cards have no charts');
+ assert.deepEqual(await evaluate(`[...document.querySelectorAll('.app-sidebar .sidebar-copy strong')].map(e=>e.textContent)`),['Overview','Briefs','Compare','Top 1,000'],'Steam pulse has its own section navigation');
+ await evaluate(`document.querySelector('.pulse-sidebar a[href$="#briefs"]').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('.pulse-sidebar [aria-current]').textContent.includes('Briefs')`),true,'pulse section links update active state');
+ assert.equal(await evaluate(`document.querySelector('#briefs').id`),'briefs','brief section target exists');
  assert.equal(await evaluate(`[...document.querySelectorAll('.pulse-table thead th')].some(e=>e.textContent==='All-time peak')`),true,'ranking includes all-time peaks');
  assert.deepEqual(await evaluate(`[...document.querySelectorAll('.pulse-brief')].map(card=>card.querySelectorAll('li').length)`),[10,10,10,10],'all four cards show ten real entries');
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-table tbody tr').length`),50,'first page contains 50 games from the 1000-game snapshot');
@@ -307,6 +308,7 @@ async function main(){
  fs.writeFileSync(path.resolve('artifacts/activity-mobile.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  await evaluate(`document.querySelector('.pulse-owned-actions .pulse-link').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.game-title-row h3').textContent`),'Counter-Strike 2','activity action opens the owned game in backlog');
+ assert.equal(await evaluate(`document.querySelector('[aria-label="Backlog navigation"]')!==null`),true,'backlog navigation returns when leaving Steam pulse');
  assert.equal(await evaluate(`document.querySelector('.play-next').getAttribute('aria-pressed')`),'true','priority retained after page navigation');
  await call('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});await settle();
  const largeStarted=Date.now();await lookup('large-profile');
