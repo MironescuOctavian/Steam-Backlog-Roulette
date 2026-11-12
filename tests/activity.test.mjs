@@ -4,6 +4,7 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import {createActivityService} from '../server/activity.mjs';
+import {createOnlineHistory,mergeOnlineHistory} from '../server/online-history.mjs';
 import {createApp} from '../server/index.mjs';
 import {validateActivity,sortActivity,historyPath,paginationPages} from '../src/activity-model.ts';
 import snapshot from '../src/data/activity.json' with {type:'json'};
@@ -79,4 +80,26 @@ test('portable history storage preserves samples and limits optional metadata re
   const first=await service();assert.equal(first.games[0].playersNow,100);assert.equal(first.games[0].reviewPercent,null);assert.match(first.warnings.join(' '),/review details/);assert.equal(stored.length,1);
   now+=300001;
   const second=await service();assert.equal(second.history.length,1,'duplicate source timestamps are not invented');
+});
+
+test('online history archives Steam 48h feeds into longer ranges and preserves existing archives on errors',async()=>{
+  const hour=3600000,day=24*hour,now=Date.UTC(2026,10,12,12,0);
+  const saved=[[now-70*day,100],[now-70*day+hour,150],[now-10*day,200],[now-10*day+300000,250],[now-day,300],[now-day+300000,320]];
+  const incoming=[[now-600000,340],[now,360],[now+400000,999]];
+  const merged=mergeOnlineHistory(saved,incoming,now);
+  assert.deepEqual(merged,[[now-70*day+hour,150],[now-10*day+300000,250],[now-day,300],[now-day+300000,320],[now-600000,340],[now,360]],'keeps daily >60d, hourly 2-60d, full <=48h, and drops future timestamps');
+
+  let stored=null;
+  const archive=createOnlineHistory({storage:{read:async()=>stored,write:async next=>{stored=next;}},now:()=>now});
+  const first=await archive({samples:[[now-10*day,110],[now-10*day+hour,120]]});
+  assert.equal(first.warnings.length,0);
+  assert.equal(stored.length,2);
+  const afterOutage=await archive(undefined);
+  assert.equal(afterOutage.online.samples.length,2,'keeps archived online samples when Steam feed fails');
+
+  let badWrite=false;
+  const corrupt=createOnlineHistory({storage:{read:async()=>'corrupt',write:async()=>{badWrite=true;}},now:()=>now});
+  const preserved=await corrupt({samples:[[now-60000,400],[now,410]]});
+  assert.equal(badWrite,false,'unreadable archive is never overwritten');
+  assert.match(preserved.warnings[0],/preserved/);
 });

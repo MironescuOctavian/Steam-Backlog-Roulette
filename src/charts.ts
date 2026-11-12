@@ -12,6 +12,9 @@ export function recentGameSamples(samples:readonly [number,number][]){
 export function chartDate(at:number,span:number){
   return new Date(at).toLocaleString('en-GB',{timeZone:'UTC',...(span>2*365*86400000?{year:'numeric' as const}:span>90*86400000?{month:'short' as const,year:'numeric' as const}:span>3*86400000?{day:'numeric' as const,month:'short' as const}:{day:'numeric' as const,month:'short' as const,hour:'2-digit' as const,minute:'2-digit' as const})});
 }
+export function windowDate(at:number,span:number){
+  return new Date(at).toLocaleString('en-GB',{timeZone:'UTC',day:'numeric',month:'short',year:'numeric',...(span<=3*86400000?{hour:'2-digit' as const,minute:'2-digit' as const}:{})});
+}
 export function nearestSample(samples:readonly (readonly [number,number])[],at:number){
   if(!samples.length)return undefined;
   let low=0,high=samples.length-1;

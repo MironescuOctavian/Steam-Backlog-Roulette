@@ -72,10 +72,15 @@ async function main(){
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-brief').length`),4,'four distinct Steam discovery cards');
  assert.equal(await evaluate(`document.querySelectorAll('.online-chart path').length`),1,'real online-user chart is present');
  assert.equal(await evaluate(`[...document.querySelectorAll('.chart-ranges button')].find(b=>b.textContent==='1w').disabled`),true,'unavailable historical ranges stay disabled');
+ assert.equal(await evaluate(`document.querySelector('.chart-ranges button[aria-pressed=true]').textContent`),'48h','48h feed starts on 48h instead of misleading Max');
+ assert.equal(await evaluate(`[...document.querySelectorAll('.chart-ranges button')].some(b=>b.textContent==='Max')`),false,'Steam overview uses All rather than Max');
+ assert.match(await evaluate(`document.querySelector('.chart-coverage').textContent`),/48 hours/,'overview chart explains Steam 48h feed limit');
  const fullPath=await evaluate(`document.querySelector('.online-chart path').getAttribute('d')`);
  await evaluate(`[...document.querySelectorAll('.chart-ranges button')].find(b=>b.textContent==='12h').click()`);await settle();
  assert.ok((await evaluate(`document.querySelector('.online-chart path').getAttribute('d')`)).length<fullPath.length,'range selection uses fewer actual samples');
- await evaluate(`[...document.querySelectorAll('.chart-ranges button')].find(b=>b.textContent==='Max').click()`);await settle();
+ assert.equal(await evaluate(`(()=>{const d=[...document.querySelectorAll('.navigator-dates span')].map(e=>e.textContent);return d.length===2&&d[0]!==d[1]&&/:[0-9]{2}/.test(d[0]);})()`),true,'short windows display distinct UTC times');
+ await evaluate(`[...document.querySelectorAll('.chart-ranges button')].find(b=>b.textContent==='All').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('.online-chart path').getAttribute('d')`),fullPath,'All restores the full available series');
  assert.equal(await evaluate(`document.querySelectorAll('.chart-navigator input[type=range]').length`),2,'chart has accessible history window handles');
 
  await evaluate(`(()=>{const plot=document.querySelector('.online-series .time-plot');plot.scrollIntoView({block:'center',behavior:'instant'});const r=plot.getBoundingClientRect();plot.dispatchEvent(new PointerEvent('pointermove',{clientX:r.left+r.width*.6,clientY:r.top+r.height*.4,bubbles:true}));})()`);await settle();

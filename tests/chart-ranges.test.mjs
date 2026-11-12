@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {monthlySeries,recentGameSamples,chartDate,seriesPath} from '../src/charts.ts';
+import {monthlySeries,recentGameSamples,chartDate,windowDate,seriesPath} from '../src/charts.ts';
 
 test('long-term charts use named calendar months and separate averages from peaks',()=>{
   const rows=[{month:'October 2026',average:100.5,peak:300},{month:'Last 30 Days',average:111,peak:500},{month:'September 2012',average:10,peak:40},{month:'Invalid 2020',average:0,peak:0}];
@@ -21,4 +21,11 @@ test('chart date labels scale with the selected time range',()=>{
   assert.doesNotMatch(chartDate(at,7*86400000),/:/);
   assert.match(chartDate(at,365*86400000),/Nov 2026/);
   assert.equal(chartDate(at,10*365*86400000),'2026');
+});
+
+test('window date labels include UTC time for short windows and date only for multi-day windows',()=>{
+  const at=Date.UTC(2026,10,12,14,30);
+  assert.match(windowDate(at,48*3600000),/12 Nov 2026, 14:30/);
+  assert.doesNotMatch(windowDate(at,7*86400000),/:/);
+  assert.match(windowDate(at,7*86400000),/12 Nov 2026/);
 });

@@ -6,7 +6,7 @@ export function validateActivity(value:unknown):ActivityData {
   const data=value as ActivityData;
   if(!data||!Number.isFinite(Date.parse(data.sampledAt))||typeof data.stale!=='boolean'||!Array.isArray(data.warnings)||!data.warnings.every(w=>typeof w==='string'))throw new Error('Invalid activity response.');
   if(data.extendedCapturedAt!==undefined&&!Number.isFinite(Date.parse(data.extendedCapturedAt)))throw new Error('Invalid extended ranking timestamp.');
-  if(data.online!==undefined&&(!data.online||typeof data.online!=='object'||!Number.isFinite(Date.parse(data.online.sampledAt))||!Array.isArray(data.online.samples)||data.online.samples.length<2||data.online.samples.length>3000||data.online.samples.some(p=>!Array.isArray(p)||p.length!==2||!count(p[0])||p[0]<1||!count(p[1]))))throw Error('Invalid Steam online history.');
+  if(data.online!==undefined&&(!data.online||typeof data.online!=='object'||!Number.isFinite(Date.parse(data.online.sampledAt))||!Array.isArray(data.online.samples)||data.online.samples.length<2||data.online.samples.length>20000||data.online.samples.some(p=>!Array.isArray(p)||p.length!==2||!count(p[0])||p[0]<1||!count(p[1]))))throw Error('Invalid Steam online history.');
   for(const list of [data.games,data.movers,data.releases,data.acclaimed]){
     if(!Array.isArray(list)||list.length>1000)throw new Error('Invalid activity list.');
     for(const g of list){

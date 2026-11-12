@@ -36,7 +36,7 @@ export default {
     }
     if(url.pathname==='/api/activity'){
       // Stay within the request budget after the 40-page ranking collection and history storage.
-      activity??=createActivityService({historyFile:null,metadataBatchLimit:4,historyStore:env.HISTORY?{read:async()=>await env.HISTORY.get('observations','json')??[],write:history=>env.HISTORY.put('observations',JSON.stringify(history),{expirationTtl:7*86400})}:undefined});
+      activity??=createActivityService({historyFile:null,metadataBatchLimit:2,onlineStore:env.HISTORY?{read:()=>env.HISTORY.get('steam-online-history:v1','json'),write:samples=>env.HISTORY.put('steam-online-history:v1',JSON.stringify(samples))}:undefined,historyStore:env.HISTORY?{read:async()=>await env.HISTORY.get('observations','json')??[],write:history=>env.HISTORY.put('observations',JSON.stringify(history),{expirationTtl:7*86400})}:undefined});
       try{return json(200,await activity());}catch{return json(503,{error:'Steam activity could not be refreshed. Please retry shortly.'});}
     }
     if(url.pathname!=='/api/steam/profile')return json(404,{error:'Endpoint not found.'});
