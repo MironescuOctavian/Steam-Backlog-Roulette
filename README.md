@@ -4,13 +4,13 @@ Too many games, nothing to play. Load a public Steam library, narrow it down, an
 
 ## What it does
 
-- **Public profile lookup:** paste a Steam profile URL, custom handle, or Steam64 ID. See whose library is loaded and switch profiles without logging in.
+- **Public profile lookup:** paste a Steam profile URL, custom handle, or Steam64 ID. Loaded profiles get a compact identity strip with refresh and switch controls, plus direct library, roulette and Play Next actions. No login needed.
 - **Backlog roulette:** spin through eligible unfinished games and see why the pick matches your filters and shortlist.
 - **Exclusions:** leave individual titles, software, demos or multiplayer-only games out of roulette while keeping them in your library. Unknown classifications stay eligible.
 - **Library management:** browse 24 games per page, track status, tags and Play Next, remove games from the local list, and import or export JSON backups. Search, filters and roulette still use the full library. Undo restores recent library changes, including replacement imports and profile switches.
 - **Remembered preferences:** filters, library sorting, exclusions, sound, gaming budget, Charts sorting/page and the last visited page stay saved in this browser.
-- **Charts:** browse 1,000 games in pages of 50, with reported all-time peaks, per-game research popups and an online Steam-user chart with range controls, a draggable history window and CSV export. Only ranges covered by actual samples are enabled. Four briefs show ten picks each, without mini charts. Its own sidebar links to Overview, Briefs and Top 1,000; backlog navigation stays separate.
-- **Automatic discovery hero:** four fixed, clickable cards cycle through Steam’s 25 most-played games and open their store pages.
+- **Charts:** browse 1,000 games in pages of 50, with reported all-time peaks, per-game research popups and an online Steam-user chart with range controls, a draggable history window and CSV export. Only ranges covered by actual samples are enabled. Four briefs show ten picks each, without mini charts. Its own sidebar links to Overview, Highlights and Top 1,000; backlog navigation stays separate.
+- **Automatic discovery hero:** four fixed, clickable cards cycle through Steam’s 25 most-played games on the first visit. Loading a library replaces the introduction with a compact workspace.
 - **Game details:** compact, two-column overviews and wider research windows with persistent navigation. Explore player history, monthly averages and peaks, observed prices, and illustrated official updates. Owned games keep tags and roulette exclusions there. Unknown data stays unavailable.
 - **Top 250 discovery:** start with six recommendations, or expand the full list. A dedicated Top 250 page stays available from the sidebar without replacing your library. Once a library is loaded, roulette picks only from that library.
 

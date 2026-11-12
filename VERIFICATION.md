@@ -1,5 +1,7 @@
 # Verification
 
+Loaded-library workspace checks verify collapsed profile editing, removal of the discovery deck after import, header identity, compact hero sizing, direct Play Next filtering, refresh preserving priorities and filters, profile switching and recovery, and 5,000-game pagination. Sidebar labels are Library/Roulette/Top 250 and Charts Overview/Highlights/Top 1,000. The initial discovery view remains available without a profile.
+
 Current chart checks distinguish recent observations from calendar-month averages and peaks. Year/Max ranges use the monthly table, Max includes the earliest available month, axes retain the selected domain, and tooltips identify monthly measurements. Platform ranges without sufficient records remain disabled with visible coverage text. Browser checks also cover chart-range retention across research tabs, wider bounded-height windows, compact card-anchored discovery overviews, and trusted-source announcement artwork. Desktop/mobile discovery popup geometry and keyboard dismissal pass. The Charts rename preserves `/activity` URLs.
 
 Verified on Windows with Node 26.13.0 and headless Chrome on November 12, 2026.

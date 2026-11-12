@@ -5,6 +5,7 @@ import './styles.css';
 import './cards.css';
 import './features.css';
 import './enhancements.css';
+import './workspace.css';
 
 const root=document.getElementById('app');
 if(!root)throw new Error('Application root is missing');

@@ -16,9 +16,10 @@ import {useLibrary} from '../../library-state';
 
 export default function BacklogPage(){
   const {library,games,loaded,profile,saveMessage,saveFailed,filters,setFilters,worstValue,setWorstValue,weeklyHours,setWeeklyHours,soundEnabled,setSoundEnabled,activeGames,stats,filtered,libraryRows,eligible,preferences,setPreference,toggleExcluded,removeGame,undo,canUndo,metadataMessage,genres,changeFilter,backlog,hoursLeft,applyLibrary,updateGame}=useLibrary();
-  const pulseHref=useHref(()=>'/activity');
+  const pulseHref=useHref(()=>'/activity'),libraryHref=useHref(()=>'/#library'),rouletteHref=useHref(()=>'/#roulette');
+  function showPlayNext(){setFilters({...defaultFilters,state:'next'});requestAnimationFrame(()=>{const title=document.getElementById('library-title');title?.focus({preventScroll:true});title?.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});});}
   const [expanded,setExpanded]=createSignal(false);
-  function focusProfile(){const input=document.getElementById('steam-profile') as HTMLInputElement|null;input?.focus();input?.select();}
+  function focusProfile(){document.querySelector<HTMLButtonElement>('.switch-profile')?.click();requestAnimationFrame(()=>{const input=document.getElementById('steam-profile') as HTMLInputElement|null;input?.focus();input?.select();});}
   const clearedBacklog=()=>loaded()&&backlog().length===0&&games().length>0&&filters().state!=='all';
   const [libraryPage,setLibraryPage]=createSignal(1);
   const libraryPageCount=()=>Math.max(1,Math.ceil(libraryRows().length/24));
@@ -42,17 +43,18 @@ export default function BacklogPage(){
     requestAnimationFrame(()=>{if(!winnerDialog.open)winnerDialog.showModal();});
   }
   onCleanup(()=>sound.close());
-  return <div class="backlog-page">
+  return <div class={["backlog-page",{"library-loaded":loaded()}]}>
 
-        <section class="hero" aria-labelledby="hero-title">
+        <section class={["hero",{"hero-loaded":loaded()}]} aria-labelledby="hero-title">
           <div class="hero-copy">
             <p class="eyebrow"><span class="status-dot" /> YOUR LIBRARY. YOUR NEXT ADVENTURE.</p>
-            <h1 id="hero-title">Less deciding.<br /><span>More playing.</span></h1>
-            <p class="hero-description">Your next game is already waiting. Load your Steam library and let’s find it.</p>
+            <h1 id="hero-title"><Show when={loaded()} fallback={<>Less deciding.<br /><span>More playing.</span></>}>Make time <span>for play.</span></Show></h1>
+            <p class="hero-description">{loaded()?games().length.toLocaleString()+' games. Your next adventure is already here.':'Your next game is already waiting. Load your Steam library and let’s find it.'}</p>
             <ProfileLookup profile={profile()} games={games()} disabled={Boolean(library.warning)} onLoad={(next,p)=>{const sameProfile=profile()?.steamId===p.steamId;if(!applyLibrary(next,p))return false;if(!sameProfile)setFilters(current=>({...current,search:''}));return true;}} />
+            <Show when={loaded()}><div class="loaded-actions"><a class="pick-tonight" href={rouletteHref()}><span class="i-lucide-shuffle" aria-hidden="true" />Pick for tonight</a><a class="browse-library" href={libraryHref()}><span class="i-lucide-library" aria-hidden="true" />Browse library</a><button onClick={showPlayNext}><span class="i-lucide-list-ordered" aria-hidden="true" />Play Next <span class="action-count">{games().filter(g=>g.playNext&&g.status!=='Completed'&&g.status!=='Dropped').length}</span></button></div></Show>
             <Show when={library.warning}><p class="storage-warning" role="alert">{library.warning}</p></Show>
           </div>
-          <HeroDeck />
+          <Show when={!loaded()}><HeroDeck /></Show>
         </section>
 
         <DataTools canUndo={canUndo()} onUndo={undo} games={games()} onApply={next=>{if(!applyLibrary(next,null))return false;setFilters(current=>({...current,search:''}));return true;}} readOnly={Boolean(library.warning)} />
