@@ -11,6 +11,8 @@ export type Game = {
   appType?: 'game'|'software'|'demo'|'other';
   multiplayerOnly?: boolean;
   image?: string;
+  queuePosition?:number;
+  pinned?:boolean;
 };
 export const coverUrl = (appId: number) => `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${appId}/header.jpg`;
 export const remainingHours = (g: Game) => g.status === "Completed" || g.status === "Dropped" ? 0 : g.timeToBeatHours === null ? null : Math.max(0,g.timeToBeatHours-g.playtimeHours);
@@ -22,7 +24,7 @@ const nonnegative = (v: unknown): v is number => typeof v === "number" && Number
 const strings = (v: unknown): v is string[] => Array.isArray(v) && v.length <= 50 && v.every(s => typeof s === "string" && s.length <= 100);
 export function validateLibrary(value: unknown): Game[] {
   if (!Array.isArray(value) || value.length > 20000) throw new Error("Invalid library size.");
-  const ids = new Set<number>();
+  const ids = new Set<number>();let focusCount=0;
   return value.map((item: unknown) => {
     if (!item || typeof item !== "object") throw new Error("Invalid game.");
     const g = item as { [K in keyof Game]: unknown };
@@ -34,14 +36,17 @@ export function validateLibrary(value: unknown): Game[] {
       || !statuses.includes(g.status as Game["status"])
       || !(g.priceKnown === undefined || typeof g.priceKnown === 'boolean')
       || !(g.userManaged === undefined || typeof g.userManaged === 'boolean')
+      || !(g.pinned===undefined||typeof g.pinned==='boolean')
+      || !(g.queuePosition===undefined||nonnegative(g.queuePosition)&&Number.isSafeInteger(g.queuePosition)&&g.queuePosition<=20000)
       || !(g.appType===undefined||['game','software','demo','other'].includes(String(g.appType)))
       || !(g.multiplayerOnly===undefined||typeof g.multiplayerOnly==='boolean')
       || !(g.image===undefined||typeof g.image==='string'&&/^https:\/\/shared\.(?:akamai|cloudflare|fastly)\.steamstatic\.com\/store_item_assets\//.test(g.image))
       || !(g.rank === undefined || (nonnegative(g.rank) && Number.isInteger(g.rank) && g.rank>=1 && g.rank<=250))
       || !(g.steamPositivePercent === undefined || (nonnegative(g.steamPositivePercent) && g.steamPositivePercent<=100))
       || !["Demo estimates","Estimated","Custom","Steam 250 snapshot","Steam"].includes(g.metadataSource as string)) throw new Error("Invalid game data.");
+    if(g.pinned===true&&(!g.playNext||g.status==='Completed'||g.status==='Dropped'||++focusCount>1))throw new Error('Only one unfinished Play Next game can be pinned.');
     ids.add(g.appId);
-    return {appId:g.appId,title:g.title.trim(),genres:[...g.genres],tags:[...g.tags],playNext:g.playNext,...(g.appType===undefined?{}:{appType:g.appType as NonNullable<Game['appType']>}),...(g.multiplayerOnly===undefined?{}:{multiplayerOnly:g.multiplayerOnly}),...(g.image===undefined?{}:{image:g.image as string}),
+    return {...(g.queuePosition===undefined?{}:{queuePosition:g.queuePosition as number}),...(g.pinned===undefined?{}:{pinned:g.pinned as boolean}),appId:g.appId,title:g.title.trim(),genres:[...g.genres],tags:[...g.tags],playNext:g.playNext,...(g.appType===undefined?{}:{appType:g.appType as NonNullable<Game['appType']>}),...(g.multiplayerOnly===undefined?{}:{multiplayerOnly:g.multiplayerOnly}),...(g.image===undefined?{}:{image:g.image as string}),
       playtimeHours:g.playtimeHours,timeToBeatHours:g.timeToBeatHours,pricePaid:g.pricePaid,
       metacritic:g.metacritic,status:g.status as Game["status"],metadataSource:g.metadataSource as Game["metadataSource"],...(g.priceKnown === undefined ? {} : {priceKnown:g.priceKnown}),...(g.userManaged === undefined ? {} : {userManaged:g.userManaged}),...(g.rank === undefined ? {} : {rank:g.rank}),...(g.steamPositivePercent === undefined ? {} : {steamPositivePercent:g.steamPositivePercent})};
   });

@@ -28,6 +28,6 @@ export function parseSteam(data:unknown,existing:Game[]):Game[] {
     const appType=old?.appType??ranked?.appType,multiplayerOnly=old?.multiplayerOnly??ranked?.multiplayerOnly,image=old?.image??ranked?.image;
     return {appId:g.appid,title:g.name,genres:real?.genres??ranked?.genres??['Unknown'],playtimeHours:Math.round(g.playtime_forever/6)/10,
       timeToBeatHours:supplied?.timeToBeatHours??null,metacritic:supplied?.metacritic??null,pricePaid:real?.pricePaid??0,priceKnown:real ? real.priceKnown!==false : false,
-      status:(old?.userManaged ? old.status : real?.status)??(g.playtime_forever===0?'Unplayed':'Backlog'),tags:old?.tags??[],playNext:old?.playNext??false,metadataSource:real?.metadataSource==='Custom'?'Custom':'Steam',...(appType?{appType}:{}),...(multiplayerOnly===undefined?{}:{multiplayerOnly}),...(image?{image}:{}),...(old?.userManaged ? {userManaged:true} : {}),...(ranked ? {rank:ranked.rank,steamPositivePercent:ranked.positivePercent} : {})};
+      status:(old?.userManaged ? old.status : real?.status)??(g.playtime_forever===0?'Unplayed':'Backlog'),tags:old?.tags??[],playNext:old?.playNext??false,...(old?.queuePosition===undefined?{}:{queuePosition:old.queuePosition}),...(old?.pinned===undefined?{}:{pinned:old.pinned}),metadataSource:real?.metadataSource==='Custom'?'Custom':'Steam',...(appType?{appType}:{}),...(multiplayerOnly===undefined?{}:{multiplayerOnly}),...(image?{image}:{}),...(old?.userManaged ? {userManaged:true} : {}),...(ranked ? {rank:ranked.rank,steamPositivePercent:ranked.positivePercent} : {})};
   }));
 }

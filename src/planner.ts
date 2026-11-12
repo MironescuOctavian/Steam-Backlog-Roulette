@@ -1,3 +1,4 @@
+import {queueCompare,unfinished} from './queue-model.ts';
 import { costPerHour, remainingHours, type Game } from './library.ts';
 import type {Preferences} from './preferences.ts';
 export type Filters = { search: string; time: string; state: string; genre: string; score: number; maxHours: number };
@@ -9,7 +10,7 @@ export function recommendationReasons(g:Game,f:Filters,personal:boolean):string{
   return [personal?(g.playtimeHours===0?'Unplayed':`${g.playtimeHours}h played`):g.rank?`#${g.rank} in Steam 250`:'Steam discovery',g.playNext?'On your shortlist':'',f.genre&&g.genres.includes(f.genre)?`Matches ${f.genre}`:'',g.timeToBeatHours!==null?`~${Number(remainingHours(g)?.toFixed(1))}h remaining`:''].filter(Boolean).join(' · ');
 }
 export function sortLibrary(games:Game[],sort:string):Game[]{
-  return [...games].sort((a,b)=>sort==='title'?a.title.localeCompare(b.title):sort==='playtime'?b.playtimeHours-a.playtimeHours:sort==='remaining'?(remainingHours(a)??Infinity)-(remainingHours(b)??Infinity):sort==='priority'?Number(b.playNext)-Number(a.playNext):0);
+  return [...games].sort((a,b)=>sort==='title'?a.title.localeCompare(b.title):sort==='playtime'?b.playtimeHours-a.playtimeHours:sort==='remaining'?(remainingHours(a)??Infinity)-(remainingHours(b)??Infinity):sort==='priority'?Number(b.playNext&&unfinished(b))-Number(a.playNext&&unfinished(a))+(a.playNext&&b.playNext&&unfinished(a)&&unfinished(b)?queueCompare(a,b):0):0);
 }
 export function filterGames(games: Game[], f: Filters): Game[] {
   return games.filter(g => {

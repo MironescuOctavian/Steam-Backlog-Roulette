@@ -1,3 +1,5 @@
+import {PlayNextQueue} from '../../play-next';
+import {BulkActions} from '../../bulk-actions';
 import {LibraryViewToggle,LibraryFilterSummary,LibraryFilterRecovery} from '../../library-toolbar';
 import {GameTags} from '../../game-tags';
 import {GameDetails} from '../../game-details';
@@ -18,8 +20,12 @@ import {useLibrary} from '../../library-state';
 export default function BacklogPage(){
   const {library,games,loaded,profile,saveMessage,saveFailed,filters,setFilters,worstValue,setWorstValue,weeklyHours,setWeeklyHours,soundEnabled,setSoundEnabled,activeGames,stats,filtered,libraryRows,eligible,preferences,setPreference,toggleExcluded,removeGame,undo,canUndo,metadataMessage,genres,changeFilter,backlog,hoursLeft,applyLibrary,updateGame}=useLibrary();
   const pulseHref=useHref(()=>'/activity'),libraryHref=useHref(()=>'/#library'),rouletteHref=useHref(()=>'/#roulette');
-  function showPlayNext(){setFilters({...defaultFilters,state:'next'});requestAnimationFrame(()=>{const title=document.getElementById('library-title');title?.focus({preventScroll:true});title?.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});});}
+  function showPlayNext(){setFilters({...defaultFilters,state:'next'});requestAnimationFrame(()=>{const title=document.getElementById('queue-title');title?.focus({preventScroll:true});title?.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});});}
   const [expanded,setExpanded]=createSignal(false);
+  const [selecting,setSelecting]=createSignal(false),[selected,setSelected]=createSignal<number[]>([]);
+  let selectionScope='';
+  createEffect(()=>[profile()?.steamId??'local',games().map(g=>g.appId).join(',')].join('|'),scope=>{if(scope===selectionScope)return;selectionScope=scope;setSelected([]);setSelecting(false);});
+  function toggleSelection(id:number){setSelected(ids=>ids.includes(id)?ids.filter(n=>n!==id):[...ids,id]);}
   function focusProfile(){document.querySelector<HTMLButtonElement>('.switch-profile')?.click();requestAnimationFrame(()=>{const input=document.getElementById('steam-profile') as HTMLInputElement|null;input?.focus();input?.select();});}
   const clearedBacklog=()=>loaded()&&backlog().length===0&&games().length>0&&filters().state!=='all';
   const [libraryPage,setLibraryPage]=createSignal(1);
@@ -59,6 +65,7 @@ export default function BacklogPage(){
         </section>
 
         <DataTools canUndo={canUndo()} onUndo={undo} games={games()} onApply={next=>{if(!applyLibrary(next,null))return false;setFilters(current=>({...current,search:''}));return true;}} readOnly={Boolean(library.warning)} />
+          <PlayNextQueue onDetails={setDetailsId} />
           <section id="roulette" class="filter-panel" aria-label="What should I play tonight?">
             <div class="filter-heading"><h3>What should I play tonight?</h3><button onClick={() => setFilters({...defaultFilters})}>Reset filters</button></div>
             <div class="roulette-search"><label>{loaded()?'Search this library':'Search Top 250'}<input type="search" maxlength="300" placeholder="Find a game…" value={filters().search} onInput={e => changeFilter({search:e.currentTarget.value})} /></label></div>
@@ -101,7 +108,7 @@ export default function BacklogPage(){
 
         <aside class="pulse-home-teaser"><div><p class="eyebrow">A LITTLE INSPIRATION · YOUR BACKLOG STILL COMES FIRST</p><h2>What’s being played on Steam?</h2><p>Explore 1,000 popular games and see which ones are already in your library. Rankings load when you open Charts.</p></div><a href={pulseHref()}>Explore Charts →</a></aside>
         <section id="library" class="library-section" aria-labelledby="library-title">
-          <div class="section-heading"><div><p class="eyebrow">LESS COLLECTING. MORE COMPLETING.</p><h2 id="library-title" tabindex={-1}>{loaded()?profile()?profile()!.name+'’s library':'Your local library':'Explore the Top 250'}</h2></div><Show when={loaded()}><span class="section-note">{activeGames().length} games · Saved on this device</span></Show><label class="library-sort">Sort library<select value={preferences().librarySort} onChange={e=>setPreference({librarySort:e.currentTarget.value})}><option value="default">Original order</option><option value="title">Title</option><option value="remaining">Remaining time</option><option value="playtime">Most played</option><option value="priority">Play Next first</option></select></label><LibraryViewToggle /></div><LibraryFilterSummary />
+          <div class="section-heading"><div><p class="eyebrow">LESS COLLECTING. MORE COMPLETING.</p><h2 id="library-title" tabindex={-1}>{loaded()?profile()?profile()!.name+'’s library':'Your local library':'Explore the Top 250'}</h2></div><Show when={loaded()}><span class="section-note">{activeGames().length} games · Saved on this device</span></Show><label class="library-sort">Sort library<select value={preferences().librarySort} onChange={e=>setPreference({librarySort:e.currentTarget.value})}><option value="default">Original order</option><option value="title">Title</option><option value="remaining">Remaining time</option><option value="playtime">Most played</option><option value="priority">Play Next first</option></select></label><LibraryViewToggle /><Show when={loaded()}><button class="select-games" aria-pressed={selecting()?'true':'false'} disabled={Boolean(library.warning)} onClick={()=>{setSelecting(!selecting());setSelected([]);}}>Select games</button></Show></div><LibraryFilterSummary /><Show when={selecting()}><BulkActions selected={selected()} visible={visibleGames().map(g=>g.appId)} onSelect={setSelected} onClose={()=>{setSelecting(false);setSelected([]);}} /></Show>
           <Show when={!loaded()}><p class="demo-note">Ranking: <a href={catalogSource} target="_blank" rel="noopener noreferrer">Steam 250 ↗</a> · Snapshot {new Date(catalogUpdatedAt).toLocaleDateString()}. Based on Steam player reviews; not an official Valve ranking. These are recommendations, not games you own.</p></Show>
           <Show when={loaded()}><p class="demo-note">Playtime comes from the loaded library. Prices paid and completion times are unknown unless supplied; unknown values are excluded from planning and value calculations.</p></Show>
           <p class={["save-message", {"save-error": saveFailed()}]} role="status" aria-live="polite">{saveMessage()}</p>
@@ -109,7 +116,7 @@ export default function BacklogPage(){
           <Show when={loaded()}>{libraryPagination()}</Show>
           <ul class={["game-grid",{"list-view":preferences().libraryView==='list'}]} id="library-grid" aria-label="Game library">
             <For each={visibleGames()} keyed={item=>item.appId}>{game => <li class="game-card">
-              <div class="game-cover">
+              <div class="game-cover"><Show when={selecting()&&loaded()}><label class="bulk-check"><input type="checkbox" aria-label={'Select '+game().title} checked={selected().includes(game().appId)} onChange={()=>toggleSelection(game().appId)} /><span class="sr-only">Select {game().title}</span></label></Show>
                 <span class="cover-fallback" aria-hidden="true">{game().title}</span>
                 <img src={game().image??coverUrl(game().appId)} alt="" loading="lazy" width="460" height="215" onError={event => { event.currentTarget.style.visibility = "hidden"; }} onLoad={event=>{event.currentTarget.style.visibility="visible";}} />
                 <span class="score-badge">{game().steamPositivePercent!==undefined?`Steam ${game().steamPositivePercent}%`:game().metacritic!==null?`MC ${game().metacritic}`:'Score unknown'}</span>
@@ -130,7 +137,7 @@ export default function BacklogPage(){
                       <For each={statuses}>{status => <option value={status}>{status}</option>}</For>
                     </select>
                   </label>
-                  <button type="button" class={["play-next", {"is-next": game().playNext}]} aria-pressed={game().playNext ? "true" : "false"} aria-label={`Play next: ${game().title}`} disabled={Boolean(library.warning)} onClick={() => updateGame(game().appId, { playNext: !game().playNext })}>{game().playNext ? "✓ Play Next" : "+ Play Next"}</button>
+                  <button type="button" class={["play-next", {"is-next": game().playNext}]} aria-pressed={game().playNext ? "true" : "false"} aria-label={`Play next: ${game().title}`} disabled={Boolean(library.warning)||game().status==='Completed'||game().status==='Dropped'} onClick={() => updateGame(game().appId, { playNext: !game().playNext })}>{game().playNext ? "✓ Play Next" : "+ Play Next"}</button>
                 </div>
 
                 </Show>

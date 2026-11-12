@@ -1,3 +1,4 @@
+import {patchGames,moveQueuedGame,pinQueuedGame} from './queue-model';
 import {createContext,createEffect,createMemo,createSignal,useContext,type ParentProps} from 'solid-js';
 import {loadLibrary,remainingHours,saveLibrary,validateLibrary,type Game,type SteamProfile} from './library';
 import {analytics,exclusionReason,filterGames,sortLibrary,type Filters} from './planner';
@@ -53,8 +54,11 @@ function createLibraryState(){
     catch{setSaveFailed(true);setSaveMessage('Could not save this change. Your previous library is unchanged. Check browser storage and try again.');return false;}
   }
   function updateGame(appId:number,patch:Partial<Pick<Game,'status'|'playNext'|'tags'>>):boolean{
-    return applyLibrary(games().map(g=>g.appId===appId?{...g,...patch,userManaged:true}:g));
+    return updateGames([appId],patch);
   }
+  function updateGames(ids:number[],patch:Partial<Pick<Game,'status'|'playNext'|'tags'>>){const next=patchGames(games(),ids,patch);return next!==games()&&applyLibrary(next);}
+  function moveQueue(id:number,direction:-1|1){const next=moveQueuedGame(games(),id,direction);return next!==games()&&applyLibrary(next);}
+  function pinQueue(id:number|null){const next=pinQueuedGame(games(),id);return next!==games()&&applyLibrary(next);}
   function undo(){const previous=undoStack().at(-1);if(!previous)return;try{saveLibrary(storage,previous.games,previous.profile,previous.loaded);setGames(previous.games);setProfile(previous.profile);setLoaded(previous.loaded);setUndoStack(history=>history.slice(0,-1));setSaveFailed(false);setSaveMessage('Previous library restored.');setChangeRevision(n=>n+1);}catch{setSaveFailed(true);setSaveMessage('Undo could not be saved. Your current library is unchanged.');}}
   function removeGame(id:number){const game=games().find(g=>g.appId===id);if(game&&applyLibrary(games().filter(g=>g.appId!==id)))setSaveMessage(`Removed ${game.title} from this list. Steam ownership is unchanged.`);}
   const [metadataMessage,setMetadataMessage]=createSignal('');
@@ -78,7 +82,7 @@ function createLibraryState(){
     })();
     return ()=>controller.abort();
   });
-  return {library,games,loaded,profile,activity,setActivity,loadActivity,gameHistory,setGameHistory,saveMessage,saveFailed,changeRevision,filters,setFilters,worstValue,setWorstValue,weeklyHours,setWeeklyHours,soundEnabled,setSoundEnabled,activeGames,stats,filtered,libraryRows,eligible,genres,changeFilter,backlog,hoursLeft,applyLibrary,updateGame,undo,canUndo:()=>undoStack().length>0,removeGame,preferences,setPreference,preferenceWarning,toggleExcluded,metadataMessage};
+  return {library,games,loaded,profile,activity,setActivity,loadActivity,gameHistory,setGameHistory,saveMessage,saveFailed,changeRevision,filters,setFilters,worstValue,setWorstValue,weeklyHours,setWeeklyHours,soundEnabled,setSoundEnabled,activeGames,stats,filtered,libraryRows,eligible,genres,changeFilter,backlog,hoursLeft,applyLibrary,updateGame,updateGames,moveQueue,pinQueue,undo,canUndo:()=>undoStack().length>0,removeGame,preferences,setPreference,preferenceWarning,toggleExcluded,metadataMessage};
 }
 const LibraryContext=createContext<ReturnType<typeof createLibraryState>>();
 export function LibraryProvider(props:ParentProps){return <LibraryContext value={createLibraryState()}>{props.children}</LibraryContext>;}

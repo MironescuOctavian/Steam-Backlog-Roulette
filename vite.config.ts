@@ -81,7 +81,13 @@ export default defineConfig({
   "i-lucide-gamepad-2",
   "i-lucide-layout-dashboard",
   "i-lucide-library",
-  "i-lucide-shuffle"
+  "i-lucide-shuffle",
+  "i-lucide-pin",
+  "i-lucide-layout-grid",
+  "i-lucide-settings-2",
+  "i-lucide-user-round",
+  "i-lucide-refresh-cw",
+  "i-lucide-external-link"
 ],
       },
     }),
