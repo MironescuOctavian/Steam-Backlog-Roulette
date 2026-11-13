@@ -14,7 +14,7 @@ async function upstream(request){
   if(url.pathname.includes('GetGamesByConcurrentPlayers'))return Response.json({response:{last_update:Math.floor(at/1000),ranks}});
   if(url.pathname.includes('GetNumberOfCurrentPlayers'))return Response.json({response:{result:1,player_count:777}});
   if(url.pathname.includes('GetNewsForApp'))return Response.json({appnews:{newsitems:[{title:'Official update',url:'https://store.steampowered.com/news/app/70/view/1',date:Math.floor(at/1000),contents:'Fixes',tags:['patchnotes']}]}});
-  if(url.pathname.includes('appdetails'))return Response.json({70:{success:true,data:{short_description:'A classic game',developers:['Valve'],platforms:{windows:true},release_date:{date:'1998'},is_free:false}}});
+  if(url.pathname.includes('appdetails'))return Response.json(url.searchParams.get('filters')==='price_overview'?{70:{success:true,data:{price_overview:{final_formatted:'$4.99',initial_formatted:'$9.99',discount_percent:50}}},220:{success:true,data:[]}}:{70:{success:true,data:{short_description:'A classic game',developers:['Valve'],platforms:{windows:true},release_date:{date:'1998'},is_free:false}}});
   if(url.pathname.includes('GetMostPlayedGames'))return Response.json({response:{ranks:[]}});
   if(url.pathname.includes('GetPlayerSummaries'))return Response.json({response:{players:[{steamid:'76561198000000001',communityvisibilitystate:3,personaname:'Worker QA'}]}});
   if(url.pathname.includes('GetOwnedGames'))return Response.json({response:{games:[{appid:70,name:'Half-Life',playtime_forever:90}]}});
@@ -51,6 +51,7 @@ try{
   const profile=await runtime.dispatchFetch('https://app.test/api/steam/profile?profile=76561198000000001');assert.equal(profile.status,200);assert.equal((await profile.json()).profile.name,'Worker QA');
   const details=await runtime.dispatchFetch('https://app.test/api/game-details?ids=70');assert.equal(details.status,200);assert.equal((await details.json()).playersNow,777);
   const players=await runtime.dispatchFetch('https://app.test/api/game-players?ids=70,220');assert.equal(players.status,200);assert.equal((await players.json()).length,2);
+  const prices=await runtime.dispatchFetch('https://app.test/api/game-prices?ids=70,220');assert.equal(prices.status,200);const priceRows=await prices.json();assert.equal(priceRows[0].price,'$4.99');assert.equal(priceRows[1].free,true);
   const insights=await runtime.dispatchFetch('https://app.test/api/game-insights?ids=70');assert.equal(insights.status,200);const research=await insights.json();assert.equal(research.history.length,2);assert.equal(research.updates.length,1);
   assert.ok(upstreamCalls>=50,'real workerd outbound fetch paths were exercised');
   console.log('PASS: Cloudflare workerd serves routes and all Steam APIs with controlled upstream feeds, including the 1,000-game ranking.');

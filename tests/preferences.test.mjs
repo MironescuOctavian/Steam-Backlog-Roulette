@@ -23,8 +23,8 @@ test('exclusions use explicit classifications and never guess from titles',()=>{
   assert.equal(exclusionReason(game,{...p,excludedIds:[game.appId]}),'Manually excluded');
 });
 test('recommendations explain actual state and sorting preserves the source library',()=>{
-  const game={...demoLibrary()[0],playtimeHours:0,playNext:true,genres:['RPG']};
-  assert.match(recommendationReasons(game,{...defaultFilters,genre:'RPG'},true),/Unplayed · On your shortlist · Matches RPG/);
+  const game={...demoLibrary()[0],playtimeHours:0,genres:['RPG']};
+  assert.match(recommendationReasons(game,{...defaultFilters,genre:'RPG'},true),/Unplayed.+Matches RPG/);
   assert.doesNotMatch(recommendationReasons({...game,rank:3},defaultFilters,false),/Unplayed/);
   const games=demoLibrary(),ids=games.map(g=>g.appId);sortLibrary(games,'title');assert.deepEqual(games.map(g=>g.appId),ids);
 });

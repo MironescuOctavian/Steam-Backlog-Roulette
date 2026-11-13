@@ -24,9 +24,9 @@ export default {
     if(url.pathname==='/api/game-insights'){
       let ids;try{ids=parseGameIds(url.searchParams.get('ids'));if(ids.length!==1)throw Error('Provide one game ID.');}catch(e){return json(400,{error:e.message});}gameInsights??=createGameInsightsService({storage:env.HISTORY,priceDirectory:null});try{return json(200,await gameInsights(ids[0]));}catch{return json(503,{error:'Game insights unavailable.'});}
     }
-    if(url.pathname==='/api/game-details'||url.pathname==='/api/game-players'){
+    if(url.pathname==='/api/game-details'||url.pathname==='/api/game-players'||url.pathname==='/api/game-prices'){
       let ids;try{ids=parseGameIds(url.searchParams.get('ids'));if(url.pathname==='/api/game-details'&&ids.length!==1)throw Error('Provide one game ID.');}catch(e){return json(400,{error:e.message});}
-      try{return json(200,url.pathname==='/api/game-details'?await gameDetails.game(ids[0]):await gameDetails.players(ids));}catch{return json(503,{error:'Game details are unavailable.'});}
+      try{return json(200,url.pathname==='/api/game-details'?await gameDetails.game(ids[0]):url.pathname==='/api/game-prices'?await gameDetails.prices(ids):await gameDetails.players(ids));}catch{return json(503,{error:'Game details are unavailable.'});}
     }
     if(url.pathname==='/api/game-history'){let ids;try{ids=parseHistoryIds(url.searchParams.get('ids'));}catch(e){return json(400,{error:e.message});}gameHistory??=createGameHistoryService({storage:env.HISTORY});try{return json(200,await gameHistory(ids));}catch{return json(503,{error:'Game history unavailable.'});}}
     if(url.pathname==='/api/hero'){try{return json(200,await hero());}catch{return json(503,{error:'Steam hero is unavailable.'});}}

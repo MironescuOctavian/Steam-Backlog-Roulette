@@ -26,7 +26,6 @@ test('first load is empty without a default profile; saves preserve status, tags
   assert.deepEqual(loadLibrary(storage).games,games);
   games[0].status = 'Playing';
   games[0].tags = ['weekend'];
-  games[0].playNext = true;
   saveLibrary(storage,games);
   assert.deepEqual(loadLibrary(storage).games,games);
   saveLibrary(storage,[]);
@@ -59,7 +58,7 @@ test('legacy default demo entries are not mistaken for an owned library',()=>{
   const migrated=loadLibrary({getItem:()=>JSON.stringify({version:1,games}),setItem:()=>assert.fail('must not overwrite')});
   assert.equal(migrated.games.length,1);assert.equal(migrated.games[0].appId,games[0].appId);
 });
-test('status and priority changes affect planning independently; a failed save preserves the last library', () => {
+test('status changes affect planning; a failed save preserves the last library', () => {
   const storage = memory();
   const games = demoLibrary();
   const original = games[0];
@@ -67,9 +66,8 @@ test('status and priority changes affect planning independently; a failed save p
   original.playtimeHours = 2;
   original.timeToBeatHours = 10;
   saveLibrary(storage,games);
-  const completed = {...original,status:'Completed',playNext:true};
+  const completed = {...original,status:'Completed'};
   assert.equal(remainingHours(completed),0);
-  assert.equal(completed.playNext,true);
   assert.equal(remainingHours({...completed,status:'Backlog'}),8);
   assert.throws(() => saveLibrary({getItem:storage.getItem,setItem:()=>{throw new Error('quota');}},[completed]));
   assert.deepEqual(loadLibrary(storage).games,games);

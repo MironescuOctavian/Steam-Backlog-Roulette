@@ -1,5 +1,5 @@
 import {rouletteCandidates,rememberPick,tomorrowSkips,nextMidnight,type RecentPick} from './roulette-model';
-import {patchGames,moveQueuedGame,pinQueuedGame} from './queue-model';
+import {patchGames} from './game-patch';
 import {createContext,createEffect,createMemo,createSignal,onCleanup,useContext,type ParentProps} from 'solid-js';
 import {loadLibrary,remainingHours,saveLibrary,validateLibrary,type Game,type SteamProfile} from './library';
 import {analytics,exclusionReason,filterGames,sortLibrary,type Filters} from './planner';
@@ -67,12 +67,16 @@ function createLibraryState(){
     try{const valid=validateLibrary(next);saveLibrary(storage,valid,nextProfile);setUndoStack(history=>[...history.slice(-19),previous]);setGames(valid);setProfile(nextProfile);setLoaded(true);setSaveFailed(false);setSaveMessage('Library saved on this device.');setChangeRevision(n=>n+1);return true;}
     catch{setSaveFailed(true);setSaveMessage('Could not save this change. Your previous library is unchanged. Check browser storage and try again.');return false;}
   }
-  function updateGame(appId:number,patch:Partial<Pick<Game,'status'|'playNext'|'tags'>>):boolean{
+  function updateGame(appId:number,patch:Partial<Pick<Game,'status'|'tags'>>):boolean{
     return updateGames([appId],patch);
   }
-  function updateGames(ids:number[],patch:Partial<Pick<Game,'status'|'playNext'|'tags'>>){const next=patchGames(games(),ids,patch);return next!==games()&&applyLibrary(next);}
-  function moveQueue(id:number,direction:-1|1){const next=moveQueuedGame(games(),id,direction);return next!==games()&&applyLibrary(next);}
-  function pinQueue(id:number|null){const next=pinQueuedGame(games(),id);return next!==games()&&applyLibrary(next);}
+  function updateGames(ids:number[],patch:Partial<Pick<Game,'status'|'tags'>>){const next=patchGames(games(),ids,patch);return next!==games()&&applyLibrary(next);}
+  function disconnectProfile():boolean{
+    if(library.warning||!profile())return false;
+    const previous={games:games(),profile:profile(),loaded:loaded()};
+    try{saveLibrary(storage,[],null,false);setUndoStack(history=>[...history.slice(-19),previous]);setGames([]);setProfile(null);setLoaded(false);setSaveFailed(false);setSaveMessage('Profile disconnected. Its saved library was removed from this device.');setChangeRevision(n=>n+1);return true;}
+    catch{setSaveFailed(true);setSaveMessage('Could not disconnect. Your saved profile is unchanged.');return false;}
+  }
   function undo(){const previous=undoStack().at(-1);if(!previous)return;try{saveLibrary(storage,previous.games,previous.profile,previous.loaded);setGames(previous.games);setProfile(previous.profile);setLoaded(previous.loaded);setUndoStack(history=>history.slice(0,-1));setSaveFailed(false);setSaveMessage('Previous library restored.');setChangeRevision(n=>n+1);}catch{setSaveFailed(true);setSaveMessage('Undo could not be saved. Your current library is unchanged.');}}
   function removeGame(id:number){const game=games().find(g=>g.appId===id);if(game&&applyLibrary(games().filter(g=>g.appId!==id)))setSaveMessage(`Removed ${game.title} from this list. Steam ownership is unchanged.`);}
   const [metadataMessage,setMetadataMessage]=createSignal('');
@@ -96,7 +100,7 @@ function createLibraryState(){
     })();
     return ()=>controller.abort();
   });
-  return {library,games,loaded,profile,activity,setActivity,loadActivity,gameHistory,setGameHistory,saveMessage,saveFailed,changeRevision,filters,setFilters,worstValue,setWorstValue,weeklyHours,setWeeklyHours,soundEnabled,setSoundEnabled,activeGames,stats,filtered,libraryRows,eligible,rouletteGames,sessionSkipped:skippedGames,recentPicks,skipGame,restoreSkipped,recordPick,genres,changeFilter,backlog,hoursLeft,applyLibrary,updateGame,updateGames,moveQueue,pinQueue,undo,canUndo:()=>undoStack().length>0,removeGame,preferences,setPreference,preferenceWarning,toggleExcluded,metadataMessage};
+  return {library,games,loaded,profile,activity,setActivity,loadActivity,gameHistory,setGameHistory,saveMessage,saveFailed,changeRevision,filters,setFilters,worstValue,setWorstValue,weeklyHours,setWeeklyHours,soundEnabled,setSoundEnabled,activeGames,stats,filtered,libraryRows,eligible,rouletteGames,sessionSkipped:skippedGames,recentPicks,skipGame,restoreSkipped,recordPick,genres,changeFilter,backlog,hoursLeft,applyLibrary,updateGame,updateGames,disconnectProfile,undo,canUndo:()=>undoStack().length>0,removeGame,preferences,setPreference,preferenceWarning,toggleExcluded,metadataMessage};
 }
 const LibraryContext=createContext<ReturnType<typeof createLibraryState>>();
 export function LibraryProvider(props:ParentProps){return <LibraryContext value={createLibraryState()}>{props.children}</LibraryContext>;}

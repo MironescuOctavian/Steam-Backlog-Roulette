@@ -35,5 +35,5 @@ const rows: Row[] = [
 ];
 export const demoLibrary = (): Game[] => rows.map(([appId,title,genres,playtimeHours,timeToBeatHours,metacritic,pricePaid,status]) => ({
   appId,title,genres:[...genres],playtimeHours,timeToBeatHours,metacritic,pricePaid,status,
-  tags:[],playNext:false,metadataSource:"Demo estimates",
+  tags:[],metadataSource:"Demo estimates",
 }));

@@ -6,7 +6,7 @@ import {parseImport,mergeLibrary,parseSteam} from '../src/imports.ts';
 test('JSON round trips, defaults optional fields and rejects unsupported formats',()=>{
   const games=demoLibrary();
   assert.deepEqual(parseImport(JSON.stringify({version:1,games})),games);
-  const {tags,playNext,metadataSource,...minimal}=games[0];
+  const {tags,metadataSource,...minimal}=games[0];
   assert.equal(parseImport(JSON.stringify([minimal]))[0].metadataSource,'Custom');
   assert.throws(()=>parseImport('{broken'));
   assert.throws(()=>parseImport(JSON.stringify({version:99,games})));
@@ -26,7 +26,7 @@ test('Steam uses minute playtime, estimates and unknown costs without demo accou
   assert.throws(()=>parseSteam({response:{games:[{appid:1,name:'x',playtime_forever:-1}]}},[]));
 });
 test('Steam preserves user-managed fields for existing non-demo games',()=>{
-  const game={...demoLibrary()[0],metadataSource:'Custom',tags:['weekend'],playNext:true,status:'Completed'};
+  const game={...demoLibrary()[0],metadataSource:'Custom',tags:['weekend'],status:'Completed'};
   const [imported]=parseSteam({response:{games:[{appid:game.appId,name:game.title,playtime_forever:120}]}},[game]);
   assert.equal(imported.status,'Completed');assert.deepEqual(imported.tags,['weekend']);assert.equal(imported.priceKnown,true);
 });

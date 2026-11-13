@@ -3,9 +3,9 @@ import {useLibrary} from './library-state';
 import {coverUrl} from './library';
 export function RouletteModes(){
   const {loaded,filters,changeFilter}=useLibrary();
-  const modes=[{state:'backlog',title:'All games',detail:'Let chance decide'},{state:'never',title:'Unplayed',detail:'Zero hours played'},{state:'started',title:'In progress',detail:'Unfinished games you started'},{state:'next',title:'Play Next',detail:'Your personal shortlist'}];
-  const active=()=>['never','started','next'].includes(filters().state)?filters().state:'backlog';
-  return <div class="roulette-modes" role="group" aria-label="Roulette mode"><For each={modes}>{mode=><button disabled={!loaded()&&mode.state!=='backlog'} aria-pressed={active()===mode.state?'true':'false'} onClick={()=>changeFilter({state:mode.state})}><strong>{mode.title}</strong><small>{mode.detail}</small></button>}</For><p>Modes update the shared library filter. Length filters describe completion time, not session length.</p></div>;
+  const modes=[{state:'backlog',title:'All games',detail:'Let chance decide'},{state:'never',title:'Unplayed',detail:'Zero hours played'},{state:'started',title:'In progress',detail:'Unfinished games you started'}];
+  const active=()=>['never','started'].includes(filters().state)?filters().state:'backlog';
+  return <div class="roulette-modes" role="group" aria-label="Roulette mode"><For each={modes}>{mode=><button disabled={!loaded()&&mode.state!=='backlog'} aria-pressed={active()===mode.state?'true':'false'} onClick={()=>changeFilter({state:mode.state})}><strong>{mode.title}</strong><small>{mode.detail}</small></button>}</For></div>;
 }
 export function RouletteSession(props:{onDetails:(id:number)=>void}){
   const {activeGames,sessionSkipped,restoreSkipped,recentPicks}=useLibrary();

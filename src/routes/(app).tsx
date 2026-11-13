@@ -14,16 +14,16 @@ function AppShell(props:RouteSectionProps){
   }
   createEffect(()=>location.pathname,pathname=>{
     let frame=0;
-    const measure=()=>{frame=0;let current='main';for(const id of pathname==='/activity'?['overview','briefs','ranking']:pathname==='/'?['main','play-next','roulette','library']:[]){const section=document.getElementById(id);if(section&&section.getBoundingClientRect().top<=160)current=id;}setVisibleSection(current);};
+    const measure=()=>{frame=0;let current='main';for(const id of pathname==='/activity'?['overview','briefs','ranking']:pathname==='/'?['main','roulette','library']:[]){const section=document.getElementById(id);if(section&&section.getBoundingClientRect().top<=160)current=id;}setVisibleSection(current);};
     const schedule=()=>{if(!frame)frame=requestAnimationFrame(measure);};
     schedule();window.addEventListener('scroll',schedule,{passive:true});window.addEventListener('resize',schedule);
     return ()=>{cancelAnimationFrame(frame);window.removeEventListener('scroll',schedule);window.removeEventListener('resize',schedule);};
   });
   const [noticeVisible,setNoticeVisible]=createSignal(false);
   createEffect(()=>changeRevision(),revision=>{if(!revision)return;setNoticeVisible(true);const timer=setTimeout(()=>setNoticeVisible(false),10000);return ()=>clearTimeout(timer);});
-  createEffect(()=>location.pathname+location.hash,route=>{if(/^\/(?:activity|top250|news)?(?:#(?:main|play-next|roulette|library|overview|briefs|comparison|ranking))?$/.test(route)&&route!==preferences().lastRoute)setPreference({lastRoute:route});});
+  createEffect(()=>location.pathname+location.hash,route=>{if(/^\/(?:activity|top250|news)?(?:#(?:main|roulette|library|overview|briefs|comparison|ranking))?$/.test(route)&&route!==preferences().lastRoute)setPreference({lastRoute:route});});
   createEffect(()=>location.pathname,pathname=>{document.title=pathname==='/activity'?'Charts · SteamNext':pathname==='/top250'?'Top 250 · SteamNext':pathname==='/news'?'News · SteamNext':'SteamNext · Time-to-Beat Planner';});
-  const home=useHref(()=>'/#main'),roulette=useHref(()=>'/#roulette'),activity=useHref(()=>'/activity'),news=useHref(()=>'/news'),discovery=useHref(()=>'/top250'),libraryHref=useHref(()=>'/#library'),queueHref=useHref(()=>'/#play-next');
+  const home=useHref(()=>'/#main'),roulette=useHref(()=>'/#roulette'),activity=useHref(()=>'/activity'),news=useHref(()=>'/news'),discovery=useHref(()=>'/top250'),libraryHref=useHref(()=>'/#library');
   const isPulse=()=>location.pathname==='/activity';
   const pulseLinks=[
     {id:'overview',href:useHref(()=>'/activity#overview'),title:'Overview',icon:'i-lucide-activity'},
@@ -31,7 +31,7 @@ function AppShell(props:RouteSectionProps){
     {id:'ranking',href:useHref(()=>'/activity#ranking'),title:'Top 1,000',icon:'i-lucide-library'},
   ];
   const pulseActive=(id:string)=>(['overview','briefs','ranking'].includes(visibleSection())?visibleSection():'overview')===id;
-  const active=(page:string)=>page==='top250'?location.pathname==='/top250':location.pathname==='/'&&(page==='roulette'?visibleSection()==='roulette':page==='queue'?visibleSection()==='play-next':!['roulette','play-next'].includes(visibleSection()));
+  const active=(page:string)=>page==='top250'?location.pathname==='/top250':location.pathname==='/'&&(page==='roulette'?visibleSection()==='roulette':visibleSection()!=='roulette');
   return <>
     <a class="skip-link" href={home()}>Skip to content</a>
     <header class="site-header"><div class="header-inner flex items-center justify-between gap-4">
@@ -42,7 +42,6 @@ function AppShell(props:RouteSectionProps){
     <div class="app-layout">
       <aside class={["app-sidebar",{"pulse-sidebar":isPulse()}]}><p class="eyebrow">{isPulse()?"CHARTS":"MAKE TIME FOR PLAY"}</p><Show when={isPulse()} fallback={<nav aria-label="Backlog navigation">
         <a onClick={e=>jumpToSection(e,'library')} href={libraryHref()} class={active('backlog')?'sidebar-active':''} aria-current={active('backlog')?'page':undefined}><span class="sidebar-symbol i-lucide-layout-dashboard" aria-hidden="true" /><span class="sidebar-copy"><strong>Library</strong></span></a>
-        <Show when={loaded()}><a href={queueHref()} onClick={e=>jumpToSection(e,'play-next')} class={active('queue')?'sidebar-active':''} aria-current={active('queue')?'location':undefined}><span class="sidebar-symbol i-lucide-list-ordered" aria-hidden="true" /><span class="sidebar-copy"><strong>Play Next</strong></span></a></Show>
         <a onClick={e=>jumpToSection(e,'roulette')} href={roulette()} class={active('roulette')?'sidebar-active':''} aria-current={active('roulette')?'location':undefined}><span class="sidebar-symbol i-lucide-shuffle" aria-hidden="true" /><span class="sidebar-copy"><strong>Roulette</strong></span></a>
         <a href={discovery()} class={active('top250')?'sidebar-active':''} aria-current={active('top250')?'page':undefined}><span class="sidebar-symbol i-lucide-library" aria-hidden="true" /><span class="sidebar-copy"><strong>Top 250</strong></span></a>
       </nav>}><nav aria-label="Charts navigation"><For each={pulseLinks}>{link=><a onClick={e=>jumpToSection(e,link.id)} href={link.href()} class={pulseActive(link.id)?"sidebar-active":""} aria-current={pulseActive(link.id)?"location":undefined}><span class={"sidebar-symbol "+link.icon} aria-hidden="true" /><span class="sidebar-copy"><strong>{link.title}</strong></span></a>}</For></nav></Show></aside>
@@ -50,7 +49,7 @@ function AppShell(props:RouteSectionProps){
     </div>
     <footer class="site-footer">
       <div class="footer-intro"><div><a class="footer-brand" href={home()}><BrandMark class="footer-brand-icon" /><span>SteamNext<span class="brand-period">.</span></span></a><p>Good games deserve your time.</p></div><span class="footer-signoff">A little less choosing.<br /><strong>A little more playing.</strong></span></div>
-      <div class="footer-bottom"><div class="footer-links"><span class="eyebrow">PROJECT & SOURCES</span><a href={activity()}>Charts</a><a href={news()}>News</a><a href="https://store.steampowered.com/" target="_blank" rel="noopener noreferrer">Steam ↗</a><a href="https://steam250.com/top250" target="_blank" rel="noopener noreferrer">Steam 250 ↗</a><a href="https://github.com/MironescuOctavian/Steam-Backlog-Roulette" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div><a class="footer-credit" href="https://octavianmironescu.com/en/" target="_blank" rel="noopener noreferrer">Built by Mironescu Octavian. ↗</a><small>Independent project. Not affiliated with Valve or Steam.</small></div>
+      <div class="footer-bottom"><div class="footer-links"><span class="eyebrow">PROJECT & SOURCES</span><a href={activity()}>Charts</a><a href={news()}>News</a><a href="https://store.steampowered.com/" target="_blank" rel="noopener noreferrer">Steam ↗</a><a href="https://steam250.com/top250" target="_blank" rel="noopener noreferrer">Steam 250 ↗</a><a href="https://github.com/MironescuOctavian/Steam-Next" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div><a class="footer-credit" href="https://octavianmironescu.com/en/" target="_blank" rel="noopener noreferrer">Built by Mironescu Octavian. ↗</a><small>Independent project. Not affiliated with Valve or Steam.</small></div>
     </footer>
     <Show when={canUndo()&&noticeVisible()}><aside class="undo-toast" aria-label="Recent library change"><span role="status">{saveMessage()}</span><button onClick={undo}>Undo</button><button class="undo-dismiss" aria-label="Dismiss change notice" onClick={()=>setNoticeVisible(false)}>×</button></aside></Show>
   </>;

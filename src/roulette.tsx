@@ -1,6 +1,7 @@
 import { createEffect,createSignal, For, onCleanup } from 'solid-js';
 import { coverUrl, type Game } from './library';
 import { buildReel } from './roulette-model';
+import {RouletteModes} from './roulette-controls';
 import './roulette.css';
 
 export function Roulette(props: { games: Game[]; discovery?:boolean;spinRequest?:number; onWinner: (game: Game) => void; onTick?: () => void; onStart?: () => void }) {
@@ -60,8 +61,7 @@ export function Roulette(props: { games: Game[]; discovery?:boolean;spinRequest?
       <div class="roulette-pointer" />
       <div class="roulette-track" ref={track}><For each={cards().length ? cards() : pool().slice(0,8)}>{g=><div class="reel-card"><img src={coverUrl(g.appId)} alt="" onError={e=>{e.currentTarget.style.visibility='hidden';}} /><span>{g.title}</span></div>}</For></div>
     </div>
-    <div class="reel-footer"><span>{pool().length ? props.discovery?'Top-rated games. Your filters. Equal chances.':'This library. Your filters. Equal chances.' : 'No eligible games. Adjust your filters above.'}</span><button type="button" class="spin-button ready" disabled={spinning() || pool().length===0} onClick={()=>void spin()}>{spinning() ? 'SPINNING…' : 'SPIN THE ROULETTE'}<span class="i-lucide-shuffle" aria-hidden="true" /></button></div>
-    <button type="button" class="instant-pick" disabled={spinning()||pool().length===0} onClick={()=>void spin(true)}>Pick instantly</button>
+    <div class="reel-footer"><div class="reel-modes"><RouletteModes /><span class="reel-note">{pool().length ? props.discovery?'Top-rated games. Your filters. Equal chances.':'This library. Your filters. Equal chances.' : 'No eligible games. Adjust your filters above.'}</span></div><div class="reel-actions"><button type="button" class="spin-button ready" disabled={spinning() || pool().length===0} onClick={()=>void spin()}>{spinning() ? 'SPINNING…' : 'SPIN THE ROULETTE'}<span class="i-lucide-shuffle" aria-hidden="true" /></button><button type="button" class="instant-pick" disabled={spinning()||pool().length===0} onClick={()=>void spin(true)}>Pick instantly</button></div></div>
     <p class="roulette-result" role="status" aria-live="polite">{result()}</p>
   </section>;
 }

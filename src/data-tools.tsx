@@ -32,7 +32,7 @@ export function DataTools(props:{games:Game[];onApply:(games:Game[])=>boolean;re
     try {
       const game:Game={appId:Number(data.get('appId')),title:String(data.get('title')).trim(),genres:String(data.get('genres')).split(',').map(s=>s.trim()).filter(Boolean),
         playtimeHours:Number(data.get('playtime')),timeToBeatHours:data.get('ttb')===''?null:Number(data.get('ttb')),metacritic:data.get('score')===''?null:Number(data.get('score')),pricePaid:Number(data.get('price')),
-        status:String(data.get('status')) as Game['status'],tags:String(data.get('tags')).split(',').map(s=>s.trim()).filter(Boolean),playNext:false,metadataSource:'Custom',priceKnown:data.get('price')!==''};
+        status:String(data.get('status')) as Game['status'],tags:String(data.get('tags')).split(',').map(s=>s.trim()).filter(Boolean),metadataSource:'Custom',priceKnown:data.get('price')!==''};
       if(props.games.some(g=>g.appId===game.appId))throw new Error('This Steam App ID already exists in your library.');
       validateLibrary([game]);
       if(props.onApply([...props.games,game]))dialog.close();else setError('Could not save. The library was not changed.');

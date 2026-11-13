@@ -3,7 +3,7 @@ import type {Game} from './library.ts';
 export function filterChips(f:Filters){
   const chips:{key:keyof Filters;label:string;patch:Partial<Filters>}[]=[];
   if(f.search.trim())chips.push({key:'search',label:'Search: '+f.search.trim(),patch:{search:''}});
-  if(f.state!==defaultFilters.state)chips.push({key:'state',label:({never:'Never played',under2:'Under 2 hours played',started:'Already started',next:'Play Next',all:'All library'} as Record<string,string>)[f.state]??f.state,patch:{state:defaultFilters.state}});
+  if(f.state!==defaultFilters.state)chips.push({key:'state',label:({never:'Never played',under2:'Under 2 hours played',started:'Already started',all:'All library'} as Record<string,string>)[f.state]??f.state,patch:{state:defaultFilters.state}});
   if(f.genre)chips.push({key:'genre',label:f.genre,patch:{genre:''}});
   if(f.time!=='all')chips.push({key:'time',label:({quick:'Under 10h to finish',medium:'10–30h to finish',epic:'50h+ to finish'} as Record<string,string>)[f.time]??f.time,patch:{time:'all'}});
   if(f.score)chips.push({key:'score',label:'Reviews '+f.score+'%+',patch:{score:0}});

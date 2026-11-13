@@ -4,12 +4,12 @@ Too many games, nothing to play. Load a public Steam library, narrow it down, an
 
 ## What it does
 
-- **Public profile lookup:** paste a Steam profile URL, custom handle, or Steam64 ID. Loaded profiles get a compact identity strip with refresh and switch controls, plus direct library, roulette and Play Next actions. No login needed.
-- **Backlog roulette:** choose all matches, unplayed games, games you started, or your Play Next list. Reroll, skip a game for this visit, revisit recent picks, launch in Steam or mark a winner Playing. Recent picks step aside while alternatives remain. Sound starts off.
+- **Public profile lookup:** paste a Steam profile URL, custom handle, or Steam64 ID. Loaded profiles get a compact identity strip with refresh, switch and disconnect controls, plus direct library and roulette actions. Disconnecting removes the saved profile library from this device and can be undone. No login needed.
+- **Backlog roulette:** choose all matches, unplayed games, or games you started, right inside the roulette panel. Reroll, skip a game for this visit, revisit recent picks, launch in Steam or mark a winner Playing. Recent picks step aside while alternatives remain. Sound starts off.
+- **Top 250 prices:** Top 250 cards show the current US Steam price, discount and free-to-play status, loaded for the visible games and cached for 30 minutes.
 - **Exclusions:** leave individual titles, software, demos or multiplayer-only games out of roulette while keeping them in your library. Unknown classifications stay eligible.
 - **Library management:** browse 24 games per page in a saved grid or compact list view. Remove individual filter chips, recover empty results, and access imports, exports and manual additions through Library tools. Search and roulette still use the full library.
-- **Play Next:** reorder your queue, pin one game as your current focus, and launch it directly. Five-item queue pages stay fast with large libraries. Order and pins survive Steam refreshes and JSON backups.
-- **Bulk editing:** select games across pages to change status, add unfinished titles to Play Next, or exclude them from roulette. Library changes support single-step Undo; Steam ownership is never changed.
+- **Bulk editing:** select games across pages to change status or exclude them from roulette. Library changes support single-step Undo; Steam ownership is never changed.
 - **Remembered preferences:** filters, library sorting, exclusions, sound, gaming budget, Charts sorting/page and the last visited page stay saved in this browser.
 - **Charts:** browse 1,000 games in pages of 50, with reported all-time peaks, per-game research popups and an online Steam-user chart with range controls, a draggable history window and CSV export. Only ranges covered by actual samples are enabled. Four briefs show ten picks each, without mini charts. Its own sidebar links to Overview, Highlights and Top 1,000; backlog navigation stays separate.
 - **Backlog discovery hero:** four clearly labeled sample backlog picks illustrate unplayed games to rediscover. Try a spin jumps directly to roulette; loading a library replaces the introduction with a compact workspace.
