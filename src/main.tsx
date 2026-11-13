@@ -5,6 +5,7 @@ import './styles.css';
 import './cards.css';
 import './features.css';
 import './enhancements.css';
+import './motion.css';
 import './workspace.css';
 import './library-manager.css';
 
