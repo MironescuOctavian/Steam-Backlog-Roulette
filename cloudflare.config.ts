@@ -1,7 +1,7 @@
 import {bindings,defineConfig} from 'cf/config';
 
 export default defineConfig({worker:{
-  name:'steamnext',
+  name:'steam-next',
   entrypoint:'./server/worker.mjs',
   compatibilityDate:'2026-10-01',
   compatibilityFlags:['nodejs_compat'],
