@@ -1,3 +1,5 @@
+import {createNewsService} from './news.mjs';
+const news=createNewsService();
 import http from 'node:http';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -17,6 +19,7 @@ export function createApp({key=process.env.STEAM_API_KEY,lookup=fetchPublicProfi
     const send=(status,data)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
     try {
       const url=new URL(req.url,'http://localhost');
+    if(url.pathname==='/api/news'){if(req.method!=='GET')return send(405,{error:'Use GET.'});const section=url.searchParams.get('section')??'featured';if(!['featured','official'].includes(section))return send(400,{error:'Invalid section'});try{return send(200,await news(section));}catch{return send(503,{error:'Steam news unavailable'});}}
       if(url.pathname==='/api/game-insights'){
         if(req.method!=='GET')return send(405,{error:'Use GET.'});let ids;try{ids=parseGameIds(url.searchParams.get('ids'));if(ids.length!==1)throw Error('Provide one game ID.');}catch(e){return send(400,{error:e.message});}try{return send(200,await gameInsights(ids[0]));}catch{return send(503,{error:'Game insights unavailable.'});}
       }

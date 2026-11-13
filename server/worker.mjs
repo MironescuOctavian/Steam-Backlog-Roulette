@@ -1,3 +1,5 @@
+import {createNewsService} from './news.mjs';
+const news=createNewsService();
 import {fetchPublicProfile,parseProfileInput} from './steam.mjs';
 import {createActivityService} from './activity.mjs';
 import {createMetadataService,parseMetadataIds} from './metadata.mjs';
@@ -21,6 +23,7 @@ export default {
     const url=new URL(request.url);
     if(!url.pathname.startsWith('/api/'))return env.ASSETS.fetch(request);
     if(request.method!=='GET')return json(405,{error:'Use GET for this endpoint.'});
+    if(url.pathname==='/api/news'){if(request.method!=='GET')return json(405,{error:'Use GET.'});const section=url.searchParams.get('section')??'featured';if(!['featured','official'].includes(section))return json(400,{error:'Invalid section'});try{return json(200,await news(section));}catch{return json(503,{error:'Steam news unavailable'});}}
     if(url.pathname==='/api/game-insights'){
       let ids;try{ids=parseGameIds(url.searchParams.get('ids'));if(ids.length!==1)throw Error('Provide one game ID.');}catch(e){return json(400,{error:e.message});}gameInsights??=createGameInsightsService({storage:env.HISTORY,priceDirectory:null});try{return json(200,await gameInsights(ids[0]));}catch{return json(503,{error:'Game insights unavailable.'});}
     }
