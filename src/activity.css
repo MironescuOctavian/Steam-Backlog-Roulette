@@ -39,3 +39,4 @@
 
 /* overview-toolbar-merged */
 .activity-heading{margin-bottom:24px}.steam-online{padding:22px 24px 16px;margin-bottom:24px}.steam-online .activity-toolbar{border-block:0;border-top:1px solid #ffffff16;padding:14px 0 2px;margin:16px 0 0;gap:16px}.steam-online .activity-toolbar p{margin-top:4px;font-size:12px}@media(max-width:650px){.steam-online .activity-toolbar{flex-direction:column;align-items:flex-start;gap:12px}}
+.pulse-hover-preview{display:none;position:fixed;right:24px;top:100px;z-index:80;width:320px;padding:16px;background:#21211f;border:1px solid #b9954566;border-radius:12px;box-shadow:0 20px 60px #0009;pointer-events:none}.pulse-hover-preview img{width:100%;height:auto}.pulse-hover-preview strong,.pulse-hover-preview small{display:block;margin-top:10px}.pulse-game-open:focus-visible .pulse-hover-preview{display:block}@media(hover:hover){.pulse-game-open:hover .pulse-hover-preview{display:block}}

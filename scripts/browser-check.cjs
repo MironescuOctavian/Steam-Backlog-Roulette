@@ -420,8 +420,13 @@ async function main(){
  await evaluate(`document.querySelector('.game-details-modal .modal-close').click()`);await settle();
  await evaluate('scrollTo(0,0)');await settle();
  fs.writeFileSync(path.resolve('artifacts/activity-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
+ await evaluate(`document.getElementById('briefs').scrollIntoView({block:'center',behavior:'instant'})`);await settle();
+ assert.equal(await evaluate(`[...document.querySelectorAll('.pulse-brief li .brief-game-open')].every(b=>{const img=b.querySelector('img').getBoundingClientRect(),t=b.querySelector('.brief-game-title').getBoundingClientRect();return Math.abs((img.top+img.bottom)/2-(t.top+t.bottom)/2)<4;})`),true,'brief titles stay vertically centered to their icons');
+ fs.writeFileSync(path.resolve('artifacts/briefs-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await settle();
  assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth`),true,'activity page has no mobile overflow');
+ await evaluate(`document.getElementById('briefs').scrollIntoView({block:'start',behavior:'instant'})`);await settle();
+ fs.writeFileSync(path.resolve('artifacts/briefs-mobile.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  await evaluate('scrollTo(0,0)');await settle();
  fs.writeFileSync(path.resolve('artifacts/activity-mobile.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  await evaluate(`document.querySelector('.pulse-game-open').click()`);await delay(300);

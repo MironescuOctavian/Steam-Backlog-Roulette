@@ -36,7 +36,7 @@ function AppShell(props:RouteSectionProps){
     <a class="skip-link" href={home()}>Skip to content</a>
     <header class="site-header"><div class="header-inner flex items-center justify-between gap-4">
       <a class="brand flex items-center gap-3" href={home()} aria-label="SteamNext home"><span class="brand-emblem"><BrandMark class="brand-icon" /></span><span>SteamNext<span class="brand-period">.</span></span></a>
-      <nav class="flex items-center gap-3" aria-label="Main navigation"><a href={home()} class={location.pathname==='/'?'nav-active':''}>Backlog</a><a href={activity()} class={location.pathname==='/activity'?'nav-active':''}><span class="i-lucide-activity" aria-hidden="true" />Charts</a><a href={news()} class={location.pathname==='/news'?'nav-active':''}>News</a></nav>
+      <nav class="flex items-center gap-3" aria-label="Main navigation"><a href={home()} class={location.pathname==='/'?'nav-active':''}>Backlog</a><a href={activity()} class={location.pathname==='/activity'?'nav-active':''}><span class="i-lucide-activity" aria-hidden="true" />Charts</a><a href={news()} class={location.pathname==='/news'?'nav-active':''}>News / Patches</a></nav>
       <Show when={profile()} fallback={<span class="header-note">{loaded()?'LOCAL LIBRARY':'PUBLIC LIBRARIES · NO LOGIN'}</span>}><a class="header-profile" href={home()} title="View loaded library"><Show when={profile()?.avatar}><img src={profile()?.avatar} alt="" width="32" height="32" /></Show><span><small>VIEWING LIBRARY</small><strong>{profile()?.name}</strong></span></a></Show>
     </div></header>
     <div class="app-layout">
@@ -49,9 +49,10 @@ function AppShell(props:RouteSectionProps){
     </div>
     <footer class="site-footer">
       <div class="footer-intro"><div><a class="footer-brand" href={home()}><BrandMark class="footer-brand-icon" /><span>SteamNext<span class="brand-period">.</span></span></a><p>Good games deserve your time.</p></div><span class="footer-signoff">A little less choosing.<br /><strong>A little more playing.</strong></span></div>
-      <div class="footer-bottom"><div class="footer-links"><span class="eyebrow">PROJECT & SOURCES</span><a href={activity()}>Charts</a><a href={news()}>News</a><a href="https://store.steampowered.com/" target="_blank" rel="noopener noreferrer">Steam ↗</a><a href="https://steam250.com/top250" target="_blank" rel="noopener noreferrer">Steam 250 ↗</a><a href="https://github.com/MironescuOctavian/Steam-Next" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div><a class="footer-credit" href="https://octavianmironescu.com/en/" target="_blank" rel="noopener noreferrer">Built by Mironescu Octavian. ↗</a><small>Independent project. Not affiliated with Valve or Steam.</small></div>
+      <div class="footer-bottom"><div class="footer-links"><span class="eyebrow">PROJECT & SOURCES</span><a href={activity()}>Charts</a><a href={news()}>News / Patches</a><a href="https://store.steampowered.com/" target="_blank" rel="noopener noreferrer">Steam ↗</a><a href="https://steam250.com/top250" target="_blank" rel="noopener noreferrer">Steam 250 ↗</a><a href="https://github.com/MironescuOctavian/Steam-Next" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div><a class="footer-credit" href="https://octavianmironescu.com/en/" target="_blank" rel="noopener noreferrer">Built by Mironescu Octavian. ↗</a><small>Independent project. Not affiliated with Valve or Steam.</small></div>
     </footer>
     <Show when={canUndo()&&noticeVisible()}><aside class="undo-toast" aria-label="Recent library change"><span role="status">{saveMessage()}</span><button onClick={undo}>Undo</button><button class="undo-dismiss" aria-label="Dismiss change notice" onClick={()=>setNoticeVisible(false)}>×</button></aside></Show>
   </>;
 }
 export default function AppLayout(props:RouteSectionProps){return <LibraryProvider><AppShell {...props} /></LibraryProvider>;}
+
