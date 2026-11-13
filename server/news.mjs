@@ -1,5 +1,23 @@
-import {extractNewsImages} from '../src/steam-news-image.ts';
-const decode=s=>s.replaceAll('&quot;','"').replaceAll('&#39;',"'").replaceAll('&lt;','<').replaceAll('&gt;','>').replaceAll('&amp;','&');
+import {extractNewsImages,steamNewsImage} from '../src/steam-news-image.ts';
+const decode=s=>s.replaceAll('&quot;','"').replaceAll('&#39;',"'").replaceAll('&apos;',"'").replaceAll('&lt;','<').replaceAll('&gt;','>').replaceAll('&nbsp;',' ').replaceAll('&mdash;','—').replaceAll('&ndash;','–').replaceAll('&hellip;','…').replaceAll('&rsquo;','’').replaceAll('&lsquo;','‘').replaceAll('&rdquo;','”').replaceAll('&ldquo;','“').replaceAll('&amp;','&');
+function extractCapsuleImages(event){
+  const out=[];
+  const clan=typeof event?.clan_steamid==='string'&&/^\d+$/.test(event.clan_steamid)?Number(BigInt(event.clan_steamid)&0xffffffffn):null;
+  if(!clan)return out;
+  let jd={};
+  try{jd=typeof event.jsondata==='string'?JSON.parse(event.jsondata):event.jsondata&&typeof event.jsondata==='object'?event.jsondata:{};}catch{}
+  for(const field of ['localized_capsule_image','localized_sale_header']){
+    const list=Array.isArray(jd[field])?jd[field]:[];
+    for(const file of list){
+      if(typeof file==='string'&&/^[a-zA-Z0-9._-]+$/.test(file)){
+        const image=steamNewsImage(`https://clan.akamai.steamstatic.com/images/${clan}/${file}`);
+        if(image)out.push(image);
+        break;
+      }
+    }
+  }
+  return out;
+}
 export function parseFeatured(html){
   const match=html.match(/data-initialEvents="([^"]*)"/i);
   if(!match)throw Error('Featured feed unavailable');
@@ -18,7 +36,7 @@ export function createNewsService({request=fetch,now=Date.now}={}){
     for(const item of items){
       const event=events.find(e=>e.gid===item.url.split('/').at(-1));
       const body=typeof event?.announcement_body?.body==='string'?event.announcement_body.body:'';
-      item.images=extractNewsImages(body);
+      item.images=[...new Set([...extractNewsImages(body),...extractCapsuleImages(event)])];
       item.summary=decode(body.replace(/\[img\][\s\S]*?\[\/img\]/gi,'').replace(/<[^>]*>/g,'').replace(/\[[^\]]*\]/g,'')).trim().slice(0,600);
     }
     cache.set(section,{at:now(),items});return items;

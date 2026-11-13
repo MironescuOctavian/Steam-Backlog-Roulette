@@ -1,5 +1,5 @@
 import {createNewsService} from './news.mjs';
-const news=createNewsService();
+const defaultNews=createNewsService();
 import http from 'node:http';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -13,7 +13,7 @@ import {createGameInsightsService} from './game-insights.mjs';
 import {createGameHistoryService,parseHistoryIds} from './game-history.mjs';
 import {createCuratorSampleService} from './curator-samples.mjs';
 
-export function createApp({key=process.env.STEAM_API_KEY,lookup=fetchPublicProfile,activity=createActivityService({releasePlayerLimit:10}),metadata=createMetadataService(),hero=createHeroService({metadata}),gameHistory=createGameHistoryService(),gameDetails=createGameDetailsService(),gameInsights=createGameInsightsService(),curatorSamples=createCuratorSampleService(),root=path.resolve('dist')}={}) {
+export function createApp({key=process.env.STEAM_API_KEY,lookup=fetchPublicProfile,activity=createActivityService({releasePlayerLimit:10}),metadata=createMetadataService(),hero=createHeroService({metadata}),gameHistory=createGameHistoryService(),gameDetails=createGameDetailsService(),gameInsights=createGameInsightsService(),curatorSamples=createCuratorSampleService(),news=defaultNews,root=path.resolve('dist')}={}) {
   const cache=new Map();const limits=new Map();
   return http.createServer(async(req,res)=>{
     res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');
