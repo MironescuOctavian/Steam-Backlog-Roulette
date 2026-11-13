@@ -11,6 +11,7 @@ import {validateGameHistories,type GameHistory} from './charts';
 function createLibraryState(){
   const storage:Pick<Storage,'getItem'|'setItem'>={getItem:key=>window.localStorage.getItem(key),setItem:(key,value)=>window.localStorage.setItem(key,value)};
   const library=loadLibrary(storage);
+  const [calculatorReady,setCalculatorReady]=createSignal(false);
   const savedPreferences=loadPreferences(storage);
   let currentPreferences=savedPreferences.value;
   const [preferences,setPreferences]=createSignal(savedPreferences.value);
@@ -106,7 +107,7 @@ function createLibraryState(){
     })();
     return ()=>controller.abort();
   });
-  return {library,games,loaded,profile,activity,setActivity,loadActivity,gameHistory,setGameHistory,saveMessage,saveFailed,changeRevision,filters,setFilters,worstValue,setWorstValue,weeklyHours,setWeeklyHours,soundEnabled,setSoundEnabled,activeGames,stats,filtered,libraryRows,eligible,rouletteGames,sessionSkipped:skippedGames,recentPicks,skipGame,restoreSkipped,recordPick,genres,changeFilter,backlog,hoursLeft,applyLibrary,updateGame,updateGames,disconnectProfile,clearLibrary,undo,canUndo:()=>undoStack().length>0,removeGame,preferences,setPreference,preferenceWarning,toggleExcluded,metadataMessage};
+  return {library,games,loaded,profile,calculatorReady,setCalculatorReady,activity,setActivity,loadActivity,gameHistory,setGameHistory,saveMessage,saveFailed,changeRevision,filters,setFilters,worstValue,setWorstValue,weeklyHours,setWeeklyHours,soundEnabled,setSoundEnabled,activeGames,stats,filtered,libraryRows,eligible,rouletteGames,sessionSkipped:skippedGames,recentPicks,skipGame,restoreSkipped,recordPick,genres,changeFilter,backlog,hoursLeft,applyLibrary,updateGame,updateGames,disconnectProfile,clearLibrary,undo,canUndo:()=>undoStack().length>0,removeGame,preferences,setPreference,preferenceWarning,toggleExcluded,metadataMessage};
 }
 const LibraryContext=createContext<ReturnType<typeof createLibraryState>>();
 export function LibraryProvider(props:ParentProps){return <LibraryContext value={createLibraryState()}>{props.children}</LibraryContext>;}

@@ -2,6 +2,7 @@ const fs=require('node:fs');const cp=require('node:child_process');const path=re
 const profile=fs.mkdtempSync(path.join(require('node:os').tmpdir(),'backlog-qa-'));
 const chrome=cp.spawn(process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe',['--headless=new','--no-first-run','--no-default-browser-check','--remote-debugging-port=0','--user-data-dir='+profile,'about:blank'],{windowsHide:true,stdio:'ignore'});
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
+const rankingSnapshot=JSON.parse(fs.readFileSync('src/data/activity.json','utf8')).games.filter(g=>g.appId!==480);
 let ws;let appServer;const pending=new Map();let seq=0;const exceptions=[];const consoleErrors=[];
 async function main(){
  fs.mkdirSync('artifacts',{recursive:true});
@@ -39,22 +40,24 @@ async function main(){
  assert.equal(await evaluate(`document.querySelectorAll('.deck-card').length`),4,'four layered hero cards');
  assert.equal(await evaluate(`getComputedStyle(document.querySelector('.deck-card-inner')).animationName`),'deck-float','hero cards animate smoothly inside their fixed wrapper');
  assert.equal(await evaluate(`document.querySelectorAll('.site-header nav a').length`),4,'header has four page links');
+ assert.equal(await evaluate(`['.i-lucide-newspaper','.i-lucide-calculator'].every(selector=>{const style=getComputedStyle(document.querySelector('.site-header '+selector));return style.maskImage!=='none'||style.backgroundImage!=='none';})`),true,'News and Calculator icons are generated and visible');
  assert.equal(await evaluate(`document.querySelectorAll('.app-sidebar nav a').length`),3,'backlog tools live in the sidebar');
  assert.equal(await evaluate(`getComputedStyle(document.querySelector('.app-sidebar')).borderRightWidth`),'0px','sidebar divider is removed');
- assert.equal(await evaluate(`getComputedStyle(document.querySelector('.app-sidebar nav a')).borderTopWidth`),'0px','sidebar links have no border');
+ assert.equal(await evaluate(`getComputedStyle(document.querySelector('.app-sidebar nav a')).borderTopWidth`),'1px','sidebar destinations have individual subtle borders');
  assert.deepEqual(await evaluate(`[...document.querySelectorAll('.sidebar-copy strong')].map(e=>e.textContent)`),['Library','Roulette','Top 250'],'sidebar has the requested destinations');
  assert.equal(await evaluate(`document.querySelector('.sidebar-note')`),null,'no discovery note at the bottom of the sidebar');
  assert.equal(await evaluate(`document.querySelectorAll('.footer-destinations').length`),0,'footer destination cards are removed');
- assert.equal(await evaluate(`document.querySelectorAll('a.deck-card[href*="store.steampowered.com/app/"]').length`),4,'entire hero cards link to Steam');
- assert.equal(await evaluate(`document.querySelectorAll('.deck-card .i-lucide-arrow-up-right').length`),0,'hero link icons are removed');
+ assert.equal(await evaluate(`document.querySelectorAll('.deck-visit[href*="store.steampowered.com/app/"]').length`),4,'each hero card has an explicit Steam button');
+ assert.equal(await evaluate(`document.querySelectorAll('.deck-card .i-lucide-arrow-up-right').length`),4,'hero Steam buttons have icons');
  assert.equal(await evaluate(`document.querySelector('.brand-icon').getBoundingClientRect().width`),60,'desktop logo is large enough to read');
  assert.equal(await evaluate(`getComputedStyle(document.querySelector('.brand-orbit')).animationName`),'brand-orbit-spin','brand orbit circle rotates in animation');
- assert.equal(await evaluate(`document.querySelectorAll('.hero-deck button').length`),0,'hero has no shuffle or motion buttons');
+ assert.equal(await evaluate(`document.querySelectorAll('.deck-pause').length`),1,'hero rotation can be paused');
  await evaluate(`document.fonts.ready`);
  const heroBefore=await evaluate(`[...document.querySelectorAll('.deck-card')].map(e=>({title:e.getAttribute('aria-label'),x:e.getBoundingClientRect().x,y:e.getBoundingClientRect().y}))`);
  await delay(7800);
  const heroAfter=await evaluate(`[...document.querySelectorAll('.deck-card')].map(e=>({title:e.getAttribute('aria-label'),x:e.getBoundingClientRect().x,y:e.getBoundingClientRect().y}))`);
- assert.deepEqual(heroAfter.map(g=>g.title),heroBefore.map(g=>g.title),'sample backlog examples stay stable');
+ assert.notDeepEqual(heroAfter.map(g=>g.title),heroBefore.map(g=>g.title),'hero cycles to different catalogue games');
+ await evaluate(`document.querySelector('.deck-pause').click()`);await settle();
  assert.deepEqual(heroAfter.map(g=>[g.x,g.y]),heroBefore.map(g=>[g.x,g.y]),'card positions stay fixed');
  await evaluate(`Promise.race([Promise.all([...document.querySelectorAll('.hero-deck img')].map(i=>i.complete?Promise.resolve():new Promise(r=>{i.addEventListener('load',r,{once:true});i.addEventListener('error',r,{once:true});}))),new Promise(r=>setTimeout(r,10000))])`);
  fs.writeFileSync(path.resolve('artifacts/home-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
@@ -100,12 +103,12 @@ async function main(){
  assert.equal(await evaluate(`getComputedStyle(document.querySelector('.pulse-table th:nth-child(3)')).textAlign`),'center','player heading is centered');
  assert.equal(await evaluate(`getComputedStyle(document.querySelector('.pulse-table td.numeric')).textAlign`),'center','player values align with their heading');
  await evaluate(`document.querySelector('[aria-label="Ranking pages"] [aria-label="Next page"]').click()`);await settle();
- assert.equal(await evaluate(`document.querySelector('.pulse-rank').textContent`),'#51','next page starts at rank 51');
+ assert.equal(await evaluate(`document.querySelector('.pulse-rank').textContent`),'#'+rankingSnapshot[50].rank,'next page preserves source ranks after Spacewar exclusion');
  await evaluate(`document.querySelector('[aria-label="Bottom ranking pages"] [aria-label="Next page"]').click()`);await settle();
  assert.equal(await evaluate(`document.activeElement.id`),'ranking-title','bottom pagination returns focus to the ranking heading');
- assert.equal(await evaluate(`document.querySelector('.pulse-rank').textContent`),'#101','bottom pagination advances to the next fifty');
+ assert.equal(await evaluate(`document.querySelector('.pulse-rank').textContent`),'#'+rankingSnapshot[100].rank,'bottom pagination advances to the next fifty');
  await evaluate(`document.querySelector('[aria-label="Ranking pages"] [aria-label="Page 20"]').click()`);await settle();
- assert.equal(await evaluate(`document.querySelector('.pulse-rank').textContent`),'#951','last page starts at rank 951');
+ assert.equal(await evaluate(`document.querySelector('.pulse-rank').textContent`),'#'+rankingSnapshot[950].rank,'last page preserves the original source rank');
  assert.equal(await evaluate(`document.querySelector('[aria-label="Ranking pages"] [aria-label="Next page"]').disabled`),true);
  await evaluate(`(()=>{const q=document.querySelector('.pulse-table-filters input[type=search]');q.value='Counter-Strike';q.dispatchEvent(new Event('input',{bubbles:true}));})()`);await settle();
  assert.equal(await evaluate(`document.querySelector('[aria-label="Ranking pages"] [aria-current=page]').textContent`),'1','search resets pagination');
@@ -277,6 +280,7 @@ async function main(){
  assert.equal(await evaluate(`document.querySelectorAll('.kpi').length`),0,'hosted entry has no default profile stats');
  await evaluate(`document.querySelector('.page-navigation a[href*=calculator]').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('#calculator-profile').value`),'','calculator starts blank');
+ assert.equal(await evaluate(`document.querySelectorAll('.calculator-sidebar button:disabled').length`),3,'calculator result destinations start locked');
  assert.equal(await evaluate(`document.querySelector('.calculator-submit').textContent`),'Roast me','calculator has the requested action');
  assert.equal(await evaluate(`document.querySelector('.calculator-results')`),null,'calculator has no default results');
  const savedBeforeCalculator=await evaluate(`localStorage.getItem('steam-backlog-roulette.library.v1')`);
@@ -284,6 +288,15 @@ async function main(){
  assert.match(await evaluate(`document.querySelector('.calculator-value>strong').textContent`),/19\.98/,'calculator sums real-shaped current Steam prices');
  assert.equal(await evaluate(`document.querySelector('.calculator-shame strong').textContent`),'1','calculator counts the unplayed game');
  assert.equal(await evaluate(`localStorage.getItem('steam-backlog-roulette.library.v1')`),savedBeforeCalculator,'calculator does not replace the saved backlog');
+ assert.equal(await evaluate(`document.querySelectorAll('.calculator-sidebar button:disabled').length`),0,'valid results unlock calculator destinations');
+ await evaluate(`(()=>{const input=document.querySelector('#calculator-profile');input.value='private-profile';input.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('.calculator-form').requestSubmit();})()`);await delay(500);
+ assert.match(await evaluate(`document.querySelector('.calculator-error').textContent`),/keeping its secrets.*public/s,'calculator explains private profiles honestly');
+ assert.equal(await evaluate(`document.querySelectorAll('.calculator-sidebar button:disabled').length`),3,'private profiles keep result destinations locked');
+ await evaluate(`document.querySelector('.calculator-sample button').click()`);await delay(500);
+ assert.match(await evaluate(`document.querySelector('.calculator-profile h2').textContent`),/Curated sample/,'calculator loads a labeled curator sample');
+ assert.equal(await evaluate(`document.querySelectorAll('.calculator-sidebar button:disabled').length`),0,'curator sample unlocks results');
+ assert.equal(await evaluate(`localStorage.getItem('steam-backlog-roulette.library.v1')`),savedBeforeCalculator,'sample calculation leaves saved backlog untouched');
+
  await evaluate(`document.querySelector('.page-navigation a').click()`);await settle();
  await evaluate(`scrollTo(0,1200)`);await settle();
  assert.equal(await evaluate(`(()=>{const s=document.querySelector('.app-sidebar').getBoundingClientRect(),h=document.querySelector('.site-header').getBoundingClientRect();return s.top>=h.bottom-1&&s.top<h.bottom+2;})()`),true,'desktop sidebar stays visible below the header while scrolling');
@@ -292,6 +305,15 @@ async function main(){
  assert.match(await evaluate(`document.querySelector('.card-price').textContent`),/\$14\.99/,'Top 250 discovery cards on home show prices');
  assert.ok(await evaluate(`document.querySelectorAll('.discovery-card .meta-tray').length`)>0,'Top 250 home cards render bordered meta tray');
  assert.ok(await evaluate(`document.querySelectorAll('.discovery-card .genre-pill').length`)>0,'Top 250 home cards render bordered genre pills');
+ await evaluate(`document.querySelector('#library-grid [data-game-id]').dispatchEvent(new PointerEvent('pointerover',{bubbles:true,pointerType:'mouse'}))`);await delay(700);
+ assert.equal(await evaluate(`document.querySelector('.game-hover-card h3').textContent`),'Stardew Valley','hover card follows the hovered game');
+ assert.match(await evaluate(`document.querySelector('.game-hover-card').textContent`),/Valve.*1998.*1,234/s,'hover card shows requested store metadata and current players');
+ assert.equal(await evaluate(`getComputedStyle(document.querySelector('.game-hover-card')).borderRadius`),'18px','hover card matches the rounded reference border');
+ assert.equal(await evaluate(`(()=>{const r=document.querySelector('.game-hover-card').getBoundingClientRect();return r.left>=0&&r.right<=innerWidth&&r.bottom<=innerHeight;})()`),true,'hover card stays in the viewport');
+ fs.writeFileSync(path.resolve('artifacts/hover-card-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
+ await evaluate(`document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}))`);await settle();
+ assert.equal(await evaluate(`document.querySelector('.game-hover-card')`),null,'Escape closes quick preview');
+
  await evaluate(`document.querySelector('.app-sidebar nav a:last-child').click()`);await delay(400);
  assert.match(await evaluate(`document.querySelector('.discovery-grid .card-price').textContent`),/-25%.*\$19\.99.*\$14\.99/,'Top 250 page shows discounted Steam price');
  assert.ok(await evaluate(`document.querySelectorAll('.discovery-grid .meta-tray').length`)>0,'Top 250 page cards render bordered meta tray');

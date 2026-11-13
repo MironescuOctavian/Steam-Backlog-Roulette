@@ -126,7 +126,7 @@ export default function BacklogPage(){
 
           <Show when={loaded()}>{libraryPagination()}</Show>
           <ul class={["game-grid",{"list-view":preferences().libraryView==='list'}]} id="library-grid" aria-label="Game library">
-            <For each={visibleGames()} keyed={item=>item.appId}>{game => <li class={["game-card",{"discovery-card":!loaded()}]}>
+            <For each={visibleGames()} keyed={item=>item.appId}>{game => <li class={["game-card",{"discovery-card":!loaded()}]} data-game-id={game().appId} data-game-title={game().title} data-game-image={game().image??coverUrl(game().appId)} data-game-score={game().steamPositivePercent}>
               <div class="game-cover"><Show when={selecting()&&loaded()}><label class="bulk-check"><input type="checkbox" aria-label={'Select '+game().title} checked={selected().includes(game().appId)} onChange={()=>toggleSelection(game().appId)} /><span class="sr-only">Select {game().title}</span></label></Show>
                 <span class="cover-fallback" aria-hidden="true">{game().title}</span>
                 <img src={game().image??coverUrl(game().appId)} alt="" loading="lazy" width="460" height="215" onError={event => { event.currentTarget.style.visibility = "hidden"; }} onLoad={event=>{event.currentTarget.style.visibility="visible";}} />
@@ -156,7 +156,7 @@ export default function BacklogPage(){
                   </label>
                 </div>
                 </Show>
-                <a class="game-store" href={`https://store.steampowered.com/app/${game().appId}/`} target="_blank" rel="noopener noreferrer">View on Steam ↗</a>
+                <a class="game-store" href={`https://store.steampowered.com/app/${game().appId}/`} target="_blank" rel="noopener noreferrer">View on Steam <span class="i-lucide-arrow-up-right" aria-hidden="true"/></a>
                 <button class="game-details-button" onClick={e=>{e.currentTarget.focus({preventScroll:true});setDetailsId(game().appId);}}>Game details <span aria-hidden="true">＋</span></button>
               </div>
             </li>}</For>

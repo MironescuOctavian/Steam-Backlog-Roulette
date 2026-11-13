@@ -1,4 +1,5 @@
 import {NewsSidebar} from '../news-navigation';
+import {GameHover} from '../game-hover';
 import {EmberBackground} from '../ember-background';
 import type {RouteSectionProps} from '@solidjs/router';
 import {useHref,useLocation} from '@solidjs/router';
@@ -7,7 +8,7 @@ import {createEffect,createSignal,For,onCleanup,Show} from 'solid-js';
 import {BrandMark} from '../brand-mark';
 
 function AppShell(props:RouteSectionProps){
-  const {preferences,setPreference,preferenceWarning,canUndo,undo,saveMessage,changeRevision,profile,loaded}=useLibrary();
+  const {preferences,setPreference,preferenceWarning,canUndo,undo,saveMessage,changeRevision,profile,loaded,calculatorReady}=useLibrary();
   const location=useLocation();
   function watchHeader(element:HTMLElement){
     const measure=()=>document.documentElement.style.setProperty('--header-height',element.getBoundingClientRect().height+'px');
@@ -40,7 +41,7 @@ function AppShell(props:RouteSectionProps){
   const pulseActive=(id:string)=>(['overview','briefs','ranking'].includes(visibleSection())?visibleSection():'overview')===id;
   const active=(page:string)=>page==='top250'?location.pathname==='/top250':location.pathname==='/'&&(page==='roulette'?visibleSection()==='roulette':visibleSection()!=='roulette');
   return <>
-    <EmberBackground />
+    <EmberBackground /><GameHover />
     <a class="skip-link" href={home()}>Skip to content</a>
     <header ref={watchHeader} class="site-header"><div class="header-inner flex items-center justify-between gap-4">
       <a class="brand flex items-center gap-3" href={home()} aria-label="SteamNext home"><span class="brand-emblem"><BrandMark class="brand-icon" /></span><span>SteamNext<span class="brand-period">.</span></span></a>
@@ -53,7 +54,7 @@ function AppShell(props:RouteSectionProps){
         <a onClick={e=>jumpToSection(e,'library')} href={libraryHref()} class={active('backlog')?'sidebar-active':''} aria-current={active('backlog')?'page':undefined}><span class="sidebar-symbol i-lucide-layout-dashboard" aria-hidden="true" /><span class="sidebar-copy"><strong>Library</strong></span></a>
         <a onClick={e=>jumpToSection(e,'roulette')} href={roulette()} class={active('roulette')?'sidebar-active':''} aria-current={active('roulette')?'location':undefined}><span class="sidebar-symbol i-lucide-shuffle" aria-hidden="true" /><span class="sidebar-copy"><strong>Roulette</strong></span></a>
         <a href={discovery()} class={active('top250')?'sidebar-active':''} aria-current={active('top250')?'page':undefined}><span class="sidebar-symbol i-lucide-library" aria-hidden="true" /><span class="sidebar-copy"><strong>Top 250</strong></span></a>
-      </nav>}><nav aria-label="Charts navigation"><For each={pulseLinks}>{link=><a onClick={e=>jumpToSection(e,link.id)} href={link.href()} class={pulseActive(link.id)?"sidebar-active":""} aria-current={pulseActive(link.id)?"location":undefined}><span class={"sidebar-symbol "+link.icon} aria-hidden="true" /><span class="sidebar-copy"><strong>{link.title}</strong></span></a>}</For></nav></Show></>}><NewsSidebar /></Show><Show when={location.pathname==='/calculator'}><div class="calculator-sidebar"><p class="eyebrow">THE DAMAGE REPORT</p><nav aria-label="Calculator navigation"><a href={calculator()+'#calculator-title'}>Roast me</a><a href={calculator()+'#calculator-overview'}>Overview</a><a href={calculator()+'#calculator-shame'}>Pile of shame</a><a href={calculator()+'#calculator-games'}>Games</a></nav></div></Show></aside>
+      </nav>}><nav aria-label="Charts navigation"><For each={pulseLinks}>{link=><a onClick={e=>jumpToSection(e,link.id)} href={link.href()} class={pulseActive(link.id)?"sidebar-active":""} aria-current={pulseActive(link.id)?"location":undefined}><span class={"sidebar-symbol "+link.icon} aria-hidden="true" /><span class="sidebar-copy"><strong>{link.title}</strong></span></a>}</For></nav></Show></>}><NewsSidebar /></Show><Show when={location.pathname==='/calculator'}><div class="calculator-sidebar"><p class="eyebrow">THE DAMAGE REPORT</p><nav aria-label="Calculator navigation"><a href={calculator()+'#calculator-title'}>Roast me</a><button disabled={!calculatorReady()} onClick={()=>document.getElementById('calculator-overview')?.scrollIntoView({block:'start'})}><span class={calculatorReady()?'i-lucide-layout-dashboard':'i-lucide-lock'} aria-hidden="true"/>Overview</button><button disabled={!calculatorReady()} onClick={()=>document.getElementById('calculator-shame')?.scrollIntoView({block:'start'})}><span class={calculatorReady()?'i-lucide-archive':'i-lucide-lock'} aria-hidden="true"/>Pile of shame</button><button disabled={!calculatorReady()} onClick={()=>document.getElementById('calculator-games')?.scrollIntoView({block:'start'})}><span class={calculatorReady()?'i-lucide-library':'i-lucide-lock'} aria-hidden="true"/>Games</button></nav></div></Show></aside>
       <main id="main" class="page-wrap"><Show when={preferenceWarning()}><p class="storage-warning" role="status">{preferenceWarning()}</p></Show>{props.children}</main>
     </div>
     <footer class="site-footer">

@@ -26,7 +26,7 @@ function feeds(at){return async input=>{
   return {ok:true,json:async()=>data};
 };}
 test('real snapshot contains observed counts and releases, not generated history',()=>{
-  assert.equal(validateActivity(snapshot).games.length,1000);assert.equal(snapshot.history.length,1);
+  const visible=validateActivity(snapshot);assert.equal(visible.games.length,snapshot.games.filter(g=>g.appId!==480).length);assert.equal(visible.games.some(g=>g.appId===480),false);assert.equal(snapshot.history.length,1);
   assert.ok(snapshot.games.every(g=>Number.isInteger(g.playersNow)&&g.playersNow>=0));
 });
 test('malformed online history and missing game records are rejected before display',()=>{

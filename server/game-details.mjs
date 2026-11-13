@@ -1,4 +1,17 @@
 import {parseMetadataIds} from './metadata.mjs';
+export function steamMicrotrailer(movies){
+  for(const movie of Array.isArray(movies)?movies:[]){
+    const raw=movie?.microtrailer?.webm??movie?.microtrailer?.mp4??movie?.dash_h264??movie?.webm?.max??movie?.mp4?.max;
+    if(typeof raw!=='string')continue;
+    try{const url=new URL(raw);if(url.protocol!=='https:'||!/^(?:video|shared)\.(?:akamai|fastly|cloudflare)\.steamstatic\.com$/.test(url.hostname))continue;
+      if(/\/dash_h264\.mpd$/.test(url.pathname))url.pathname=url.pathname.replace(/dash_h264\.mpd$/,'microtrailer.webm');
+      else if(/\/movie_(?:max|480)\.(webm|mp4)$/.test(url.pathname))url.pathname=url.pathname.replace(/movie_(?:max|480)\.(webm|mp4)$/,'microtrailer.$1');
+      if(!/\/microtrailer\.(webm|mp4)$/.test(url.pathname))continue;
+      return url.href;
+    }catch{}
+  }
+  return null;
+}
 export function parseGameIds(value){const ids=parseMetadataIds(value);if(ids.length>24)throw Error('Provide up to 24 game IDs.');return ids;}
 export function createGameDetailsService({request=fetch,now=()=>Date.now()}={}){
   const counts=new Map(),details=new Map(),pending=new Map(),priceCache=new Map();
@@ -17,6 +30,7 @@ export function createGameDetailsService({request=fetch,now=()=>Date.now()}={}){
       const [current,store]=await Promise.all([player(appId),json('https://store.steampowered.com/api/appdetails?appids='+appId+'&cc=us&l=english').then(body=>body[appId]?.success?body[appId].data:null).catch(()=>null)]);
       const strings=value=>Array.isArray(value)?value.filter(v=>typeof v==='string').slice(0,20).map(v=>v.slice(0,200)):[];
       const data={...current,description:typeof store?.short_description==='string'?store.short_description.replace(/<[^>]*>/g,'').slice(0,3000):'',developers:strings(store?.developers),publishers:strings(store?.publishers),genres:strings(store?.genres?.map(g=>g.description)),platforms:['windows','mac','linux'].filter(p=>store?.platforms?.[p]===true),releaseDate:typeof store?.release_date?.date==='string'?store.release_date.date.slice(0,100):null,price:store?.is_free===true?'Free to play':typeof store?.price_overview?.final_formatted==='string'?store.price_overview.final_formatted.slice(0,100):null,available:Boolean(store)};
+      data.microtrailer=steamMicrotrailer(store?.movies);
       if(details.size>=5000)details.clear();details.set(appId,data);return data;
     })().finally(()=>pending.delete(key));pending.set(key,promise);return promise;
   }

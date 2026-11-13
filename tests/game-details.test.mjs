@@ -1,8 +1,15 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {createGameDetailsService,parseGameIds} from '../server/game-details.mjs';
+import {createGameDetailsService,parseGameIds,steamMicrotrailer} from '../server/game-details.mjs';
 import {validateGameInfo,validatePlayers,validatePrices} from '../src/game-details-model.ts';
 import {createApp} from '../server/index.mjs';
+
+test('microtrailers use game-specific Steam CDN paths and reject unrelated URLs',()=>{
+  assert.equal(steamMicrotrailer([{dash_h264:'https://video.akamai.steamstatic.com/store_trailers/620/abc/dash_h264.mpd?t=1'}]),'https://video.akamai.steamstatic.com/store_trailers/620/abc/microtrailer.webm?t=1');
+  assert.equal(steamMicrotrailer([{webm:{max:'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/123/movie_max.webm'}}]),'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/123/microtrailer.webm');
+  for(const raw of ['https://evil.test/movie_max.webm','http://video.akamai.steamstatic.com/store_trailers/1/microtrailer.webm','https://video.akamai.steamstatic.com/a/full-trailer.mp4'])assert.equal(steamMicrotrailer([{dash_h264:raw}]),null);
+  assert.equal(steamMicrotrailer(undefined),null);
+});
 
 test('game details combine real player counts and store fields, cache requests and reject invalid IDs',async()=>{
   assert.deepEqual(parseGameIds('70,70,220'),[70,220]);assert.throws(()=>parseGameIds(Array.from({length:25},(_,i)=>i+1).join(',')));assert.throws(()=>parseGameIds('https://evil.test'));

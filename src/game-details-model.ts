@@ -1,6 +1,6 @@
 export type PlayerCount={appId:number;playersNow:number|null;capturedAt:string};
 export type GamePrice={appId:number;price:string|null;initial:string|null;discountPercent:number;free:boolean};
-export type GameInfo=PlayerCount&{description:string;developers:string[];publishers:string[];genres:string[];platforms:string[];releaseDate:string|null;price:string|null;available:boolean};
+export type GameInfo=PlayerCount&{description:string;developers:string[];publishers:string[];genres:string[];platforms:string[];releaseDate:string|null;price:string|null;available:boolean;microtrailer?:string|null};
 export function validatePlayers(value:unknown):PlayerCount[]{
   if(!Array.isArray(value)||value.length>24)throw Error('Invalid player counts.');
   const ids=new Set<number>();
@@ -8,6 +8,7 @@ export function validatePlayers(value:unknown):PlayerCount[]{
 }
 export function validateGameInfo(value:unknown):GameInfo{
   const g=value as GameInfo;validatePlayers([g]);
+  if(g.microtrailer!==undefined&&g.microtrailer!==null&&!/^https:\/\/(?:video|shared)\.(?:akamai|fastly|cloudflare)\.steamstatic\.com\/[^\s?#]*\/microtrailer\.(?:webm|mp4)(?:\?[^\s#]*)?$/.test(g.microtrailer))throw Error('Invalid Steam trailer URL.');
   if(typeof g.description!=='string'||g.description.length>3000||typeof g.available!=='boolean'||![g.developers,g.publishers,g.genres,g.platforms].every(a=>Array.isArray(a)&&a.length<=20&&a.every(v=>typeof v==='string'&&v.length<=200))||![g.releaseDate,g.price].every(v=>v===null||typeof v==='string'&&v.length<=100))throw Error('Invalid game details.');
   return g;
 }

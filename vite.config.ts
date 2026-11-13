@@ -74,6 +74,17 @@ export default defineConfig({
       },
       unocss: {
         safelist: [
+  "i-lucide-newspaper",
+  "i-lucide-calculator",
+  "i-lucide-monitor",
+  "i-lucide-apple",
+  "i-lucide-terminal",
+  "i-lucide-lock",
+  "i-lucide-archive",
+  "i-lucide-play",
+  "i-lucide-pause",
+  "i-lucide-star",
+  "i-lucide-megaphone",
   "i-lucide-activity",
   "i-lucide-arrow-up-right",
   "i-lucide-chart-no-axes-combined",

@@ -16,7 +16,7 @@ export function validateActivity(value:unknown):ActivityData {
     }
   }
   if(!Array.isArray(data.history)||data.history.length>2500||data.history.some(p=>!p||!Number.isFinite(Date.parse(p.at))||!p.counts||Object.entries(p.counts).some(([id,n])=>!/^\d+$/.test(id)||!count(n))))throw new Error('Invalid observation history.');
-  return data;
+  return {...data,games:data.games.filter(g=>g.appId!==480),movers:data.movers.filter(g=>g.appId!==480),releases:data.releases.filter(g=>g.appId!==480),acclaimed:data.acclaimed.filter(g=>g.appId!==480)};
 }
 export function sortActivity(games:ActivityGame[],sort:string):ActivityGame[]{
   return [...games].sort((a,b)=>sort==='peak'?(b.peakToday??-1)-(a.peakToday??-1):sort==='name'?a.title.localeCompare(b.title):(b.playersNow??-1)-(a.playersNow??-1));
