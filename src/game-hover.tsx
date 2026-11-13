@@ -35,6 +35,24 @@ export function GameHover(){
     const item=preview();if(!item||!popup)return;
     const rect=item.anchor.getBoundingClientRect(),width=popup.offsetWidth,height=popup.offsetHeight;
     let left=rect.right+12;if(left+width>innerWidth-12)left=rect.left-width-12;
+    const brief=item.anchor.closest<HTMLElement>('.pulse-brief'),briefs=brief?.closest<HTMLElement>('.pulse-briefs');
+    const grid=item.anchor.closest<HTMLElement>('.game-grid:not(.list-view)');
+    if(brief&&briefs){
+      const briefRect=brief.getBoundingClientRect(),briefsRect=briefs.getBoundingClientRect();
+      if(briefRect.width<briefsRect.width*.75){
+        const isLeft=briefRect.left+briefRect.width/2<briefsRect.left+briefsRect.width/2;
+        left=isLeft?briefRect.left-width-12:briefRect.right+12;
+      }
+    }else if(grid){
+      const gridRect=grid.getBoundingClientRect();
+      const cols=Math.max(1,getComputedStyle(grid).gridTemplateColumns.trim().split(/\s+/).filter(Boolean).length);
+      if(cols>=2&&gridRect.width>0){
+        const col=Math.min(cols-1,Math.max(0,Math.floor((rect.left+rect.width/2-gridRect.left)/(gridRect.width/cols))));
+        left=col===0?rect.left-width-12:col===cols-1?rect.right+12:rect.left+(rect.width-width)/2;
+      }else if(cols===1){
+        left=rect.left+(rect.width-width)/2;
+      }
+    }
     popup.style.left=Math.max(12,Math.min(left,innerWidth-width-12))+'px';
     popup.style.top=Math.max(12,Math.min(rect.top,innerHeight-height-12))+'px';
   }

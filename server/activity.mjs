@@ -26,7 +26,7 @@ export function createActivityService({request=fetch,historyFile=path.resolve('.
     for(const game of official)combined.set(game.appid,{...combined.get(game.appid),...game});
     const ranks=[...combined.values()].sort((a,b)=>b.concurrent_in_game-a.concurrent_in_game).slice(0,1000).map((g,i)=>({...g,rank:i+1}));
     const weeklyRanks=(Array.isArray(weekly.response?.ranks)?weekly.response.ranks:[]).filter(g=>!EXCLUDED_APPS.has(g.appid));
-    const releases=Array.isArray(featured.new_releases?.items)?featured.new_releases.items.filter(g=>g.type===0&&!EXCLUDED_APPS.has(g.id)).slice(0,30):[];
+    const releases=Array.isArray(featured.new_releases?.items)?featured.new_releases.items.filter(g=>g.type===0&&!EXCLUDED_APPS.has(g.id)).slice(0,100):[];
     const ids=[...new Set([...ranks,...weeklyRanks].map(g=>g.appid).concat(releases.map(g=>g.id)))].filter(id=>Number.isSafeInteger(id)&&id>0);
     for(const [id,entry] of metadata)if(now()-entry.at>=3600000)metadata.delete(id);
     const details=new Map([...metadata].map(([id,entry])=>[id,entry.item]));

@@ -320,6 +320,15 @@ async function main(){
  await evaluate(`document.querySelector('.app-sidebar nav a:last-child').click()`);await delay(400);
  assert.match(await evaluate(`document.querySelector('.discovery-grid .card-price').textContent`),/-25%.*\$19\.99.*\$14\.99/,'Top 250 page shows discounted Steam price');
  assert.ok(await evaluate(`document.querySelectorAll('.discovery-grid .meta-tray').length`)>0,'Top 250 page cards render bordered meta tray');
+ for(const [col,label,check] of [
+   [0,'left','h.left<c.left&&h.right<cards[1].getBoundingClientRect().left'],
+   [1,'center','Math.abs((h.left+h.width/2)-(c.left+c.width/2))<2&&h.left>cards[0].getBoundingClientRect().right&&h.right<cards[2].getBoundingClientRect().left'],
+   [2,'right','h.right>c.right&&h.left>cards[1].getBoundingClientRect().right'],
+ ]){
+   await evaluate(`document.querySelectorAll('.discovery-grid [data-game-id]')[${col}].dispatchEvent(new PointerEvent('pointerover',{bubbles:true,pointerType:'mouse'}))`);await delay(450);
+   assert.equal(await evaluate(`(()=>{const cards=document.querySelectorAll('.discovery-grid [data-game-id]'),c=cards[${col}].getBoundingClientRect(),h=document.querySelector('.game-hover-card').getBoundingClientRect();return h.left>=0&&h.right<=innerWidth&&(${check});})()`),true,`Top 250 ${label} card hover aligns to ${label}`);
+   await evaluate(`document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}))`);await settle();
+ }
  await evaluate(`document.querySelector('.app-sidebar nav a:first-child').click()`);await delay(400);
  assert.equal(await evaluate(`performance.getEntriesByType('resource').some(r=>r.name.includes('/assets/activity-')&&r.name.endsWith('.js'))`),false,'Charts data is not downloaded on the backlog page');
  const lookup=async value=>{await evaluate(`new Promise((resolve,reject)=>{let n=0;const t=setInterval(()=>{if(document.querySelector('#steam-profile')){clearInterval(t);resolve(true);}else if(++n>100){clearInterval(t);reject(Error('Profile form did not mount at '+location.href));}},100);})`);await evaluate(`(()=>{const input=document.querySelector('#steam-profile');input.value=${JSON.stringify(value)};input.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('.profile-lookup form').requestSubmit();})()`);if(value==='example-profile'){await delay(30);assert.equal(await evaluate(`document.querySelector('.profile-lookup form').getAttribute('aria-busy')`),'true','profile lookup exposes its loading state');assert.match(await evaluate(`document.querySelector('.lookup-progress').textContent`),/Loading public profile/);}await delay(500);};
@@ -433,6 +442,24 @@ async function main(){
  assert.equal(await evaluate(`[...document.querySelectorAll('.pulse-brief li img')].every(img=>img.getBoundingClientRect().width<=100)`),true,'discovery thumbnails stay compact');
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-chart,.backlog-first').length`),0,'comparison and backlog-promotion cards are removed');
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-table tbody tr td:last-child a[href*="store.steampowered.com"]').length`),50,'every ranking row has its own Steam link');
+ assert.equal(await evaluate(`document.querySelectorAll('.pulse-brief .pulse-brief-action').length`),4,'each brief card has a top-right action button');
+ const firstBriefTitle=await evaluate(`document.querySelector('.pulse-brief[data-brief-key="acclaimed"] .brief-game-title').textContent`);
+ await evaluate(`document.querySelector('.pulse-brief[data-brief-key="acclaimed"] .pulse-brief-step:last-child').click()`);await settle();
+ assert.notEqual(await evaluate(`document.querySelector('.pulse-brief[data-brief-key="acclaimed"] .brief-game-title').textContent`),firstBriefTitle,'main brief card steps forward by 10 games');
+ await evaluate(`document.querySelector('.pulse-brief[data-brief-key="acclaimed"] .pulse-brief-step:first-child').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('.pulse-brief[data-brief-key="acclaimed"] .brief-game-title').textContent`),firstBriefTitle,'main brief card steps back to the first 10 games');
+ await evaluate(`document.querySelector('.pulse-brief[data-brief-key="acclaimed"]').scrollIntoView({block:'center',behavior:'instant'})`);await settle();
+ await evaluate(`document.querySelector('.pulse-brief[data-brief-key="acclaimed"] .pulse-brief-action').click()`);await delay(300);
+ assert.equal(await evaluate(`document.querySelector('.pulse-brief-modal').open`),true,'category action opens the expanded brief popup');
+ assert.equal(await evaluate(`document.querySelectorAll('.pulse-brief-modal-list li').length`),100,'expanded popup lists 100 games for Review Favorites');
+ assert.equal(await evaluate(`(()=>{const c=document.querySelector('.pulse-brief[data-brief-key="acclaimed"]').getBoundingClientRect(),m=document.querySelector('.pulse-brief-modal').getBoundingClientRect();return Math.abs(m.width-Math.min(Math.round(c.width*1.25),innerWidth-24))<=2&&m.left>=11&&m.right<=innerWidth-11&&m.top>=11&&m.bottom<=innerHeight-11&&Math.abs((m.left+m.width/2)-(c.left+c.width/2))<=Math.max(2,Math.abs(m.left-12)+Math.abs((innerWidth-12)-m.right));})()`),true,'brief popup is ~1.25x card width, centered over the card, and inside viewport');
+ const beforeScrollTop=await evaluate(`document.querySelector('.pulse-brief-modal-list').scrollTop`);
+ await evaluate(`document.querySelector('.pulse-brief-modal-steps button:last-child').click()`);await delay(400);
+ assert.ok(await evaluate(`document.querySelector('.pulse-brief-modal-list').scrollTop`)>beforeScrollTop,'popup Next 10 button scrolls the list forward');
+ await evaluate(`document.querySelector('.pulse-brief-modal-close').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('.pulse-brief-modal').open`),false,'brief popup closes cleanly');
+ await evaluate(`document.querySelector('.pulse-brief[data-brief-key="games"] .pulse-brief-action').click()`);await delay(300);
+ assert.equal(await evaluate(`document.activeElement.id`),'ranking-title','Live Crowd Top 100 button points to the ranking section');
  await evaluate(`document.querySelector('.owned-filter input').click()`);await settle();
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-table tbody tr').length`),1,'activity can filter to unfinished owned games');
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-owned-actions button').length`),1,'activity owned actions omit Play Next');
@@ -472,6 +499,11 @@ async function main(){
  fs.writeFileSync(path.resolve('artifacts/activity-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  await evaluate(`document.getElementById('briefs').scrollIntoView({block:'center',behavior:'instant'})`);await settle();
  assert.equal(await evaluate(`[...document.querySelectorAll('.pulse-brief li .brief-game-open')].every(b=>{const img=b.querySelector('img').getBoundingClientRect(),t=b.querySelector('.brief-game-title').getBoundingClientRect();return Math.abs((img.top+img.bottom)/2-(t.top+t.bottom)/2)<4;})`),true,'brief titles stay vertically centered to their icons');
+ for(const [index,isLeft] of [[0,true],[1,false],[2,true],[3,false]]){
+   await evaluate(`document.querySelectorAll('.pulse-brief')[${index}].querySelector('[data-game-id]').dispatchEvent(new PointerEvent('pointerover',{bubbles:true,pointerType:'mouse'}))`);await delay(450);
+   assert.equal(await evaluate(`(()=>{const briefs=document.querySelectorAll('.pulse-brief'),b=briefs[${index}].getBoundingClientRect(),h=document.querySelector('.game-hover-card').getBoundingClientRect();return h.left>=0&&h.right<=innerWidth&&(${isLeft?'h.left<b.left&&h.right<briefs[1].getBoundingClientRect().left':'h.right>b.right&&h.left>briefs[0].getBoundingClientRect().right'});})()`),true,`Charts brief ${index+1} hover opens on ${isLeft?'left':'right'}`);
+   await evaluate(`document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}))`);await settle();
+ }
  fs.writeFileSync(path.resolve('artifacts/briefs-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await settle();
  assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth`),true,'activity page has no mobile overflow');
