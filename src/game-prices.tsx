@@ -9,9 +9,9 @@ export function usePrices(ids:()=>number[]){
     return ()=>controller.abort();
   });return prices;
 }
-export function PriceBadge(props:{price:GamePrice|undefined}){
-  return <Show when={props.price}>{price=><p class="card-price" title="US store price from Steam">
-    <Show when={price().price} fallback={<span>{price().free?'Free to play':'Price unavailable'}</span>}>
+export function PriceBadge(props:{price:GamePrice|undefined;placeholder?:boolean}){
+  return <Show when={props.price} fallback={props.placeholder?<p class="card-price"><span class="price-unavailable">Live on web</span></p>:null}>{price=><p class="card-price" title="US store price from Steam">
+    <Show when={price().price} fallback={<span class={price().free?'price-free':'price-unavailable'}>{price().free?'Free to play':'Price unavailable'}</span>}>
       <Show when={price().discountPercent>0}><span class="price-discount">-{price().discountPercent}%</span><s>{price().initial}</s></Show><strong>{price().price}</strong>
     </Show>
   </p>}</Show>;

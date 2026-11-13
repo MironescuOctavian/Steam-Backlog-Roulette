@@ -9,8 +9,10 @@ import {createGameInsightsService} from './game-insights.mjs';
 let gameInsights;
 const gameDetails=createGameDetailsService();
 import {createGameHistoryService,parseHistoryIds} from './game-history.mjs';
+import {createCuratorSampleService} from './curator-samples.mjs';
 const metadata=createMetadataService();
 const hero=createHeroService({metadata});
+const curatorSamples=createCuratorSampleService();
 
 let activity;
 let gameHistory;
@@ -23,7 +25,12 @@ export default {
     const url=new URL(request.url);
     if(!url.pathname.startsWith('/api/'))return env.ASSETS.fetch(request);
     if(request.method!=='GET')return json(405,{error:'Use GET for this endpoint.'});
-    if(url.pathname==='/api/news'){if(request.method!=='GET')return json(405,{error:'Use GET.'});const section=url.searchParams.get('section')??'featured';if(!['featured','official'].includes(section))return json(400,{error:'Invalid section'});try{return json(200,await news(section));}catch{return json(503,{error:'Steam news unavailable'});}}
+    if(url.pathname==='/api/news'){const section=url.searchParams.get('section')??'featured';if(!['featured','official'].includes(section))return json(400,{error:'Invalid section'});try{return json(200,await news(section));}catch{return json(503,{error:'Steam news unavailable'});}}
+    if(url.pathname==='/api/sample-curator'){
+      const raw=Number(url.searchParams.get('slot')??'0');
+      if(!Number.isSafeInteger(raw)||raw<0||raw>4)return json(400,{error:'Invalid curator slot.'});
+      try{return json(200,await curatorSamples(raw));}catch{return json(503,{error:'Curator sample unavailable.'});}
+    }
     if(url.pathname==='/api/game-insights'){
       let ids;try{ids=parseGameIds(url.searchParams.get('ids'));if(ids.length!==1)throw Error('Provide one game ID.');}catch(e){return json(400,{error:e.message});}gameInsights??=createGameInsightsService({storage:env.HISTORY,priceDirectory:null});try{return json(200,await gameInsights(ids[0]));}catch{return json(503,{error:'Game insights unavailable.'});}
     }

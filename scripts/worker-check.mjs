@@ -15,6 +15,7 @@ async function upstream(request){
   if(url.pathname.includes('GetNumberOfCurrentPlayers'))return Response.json({response:{result:1,player_count:777}});
   if(url.pathname.includes('GetNewsForApp'))return Response.json({appnews:{newsitems:[{title:'Official update',url:'https://store.steampowered.com/news/app/70/view/1',date:Math.floor(at/1000),contents:'Fixes',tags:['patchnotes']}]}});
   if(url.pathname.includes('appdetails'))return Response.json(url.searchParams.get('filters')==='price_overview'?{70:{success:true,data:{price_overview:{final_formatted:'$4.99',initial_formatted:'$9.99',discount_percent:50}}},220:{success:true,data:[]}}:{70:{success:true,data:{short_description:'A classic game',developers:['Valve'],platforms:{windows:true},release_date:{date:'1998'},is_free:false}}});
+  if(url.pathname.includes('/curator/'))return Response.json({results_html:'<div class="recommendation" data-ds-appid="70"><a href="https://store.steampowered.com/app/70/Half_Life/">Half-Life</a><div data-price-final="999"></div></div>'});
   if(url.pathname.includes('GetMostPlayedGames'))return Response.json({response:{ranks:[]}});
   if(url.pathname.includes('GetPlayerSummaries'))return Response.json({response:{players:[{steamid:'76561198000000001',communityvisibilitystate:3,personaname:'Worker QA'}]}});
   if(url.pathname.includes('GetOwnedGames'))return Response.json({response:{games:[{appid:70,name:'Half-Life',playtime_forever:90}]}});
@@ -45,6 +46,7 @@ try{
   const news=await runtime.dispatchFetch('https://app.test/news',{headers:{Accept:'text/html'}});assert.equal(news.status,200);assert.match(await news.text(),/id="app"/);
   assert.equal((await runtime.dispatchFetch('https://app.test/api/activity',{method:'POST'})).status,405);
   const hero=await runtime.dispatchFetch('https://app.test/api/hero');assert.equal(hero.status,200);assert.equal((await hero.json()).games.length,25);
+  const curator=await runtime.dispatchFetch('https://app.test/api/sample-curator?slot=0');assert.equal(curator.status,200);assert.equal((await curator.json()).games[0].appId,70);
   const counts=await runtime.dispatchFetch('https://app.test/api/activity');assert.equal(counts.status,200);assert.equal((await counts.json()).games.length,1000);
   const metadata=await runtime.dispatchFetch('https://app.test/api/steam/metadata?ids=70');assert.equal(metadata.status,200);assert.equal((await metadata.json())[0].appId,70);
   const history=await runtime.dispatchFetch('https://app.test/api/game-history?ids=70');assert.equal(history.status,200);assert.equal((await history.json())[0].peakAllTime,1000);

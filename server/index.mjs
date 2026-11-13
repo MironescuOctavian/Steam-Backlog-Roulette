@@ -11,8 +11,9 @@ import {createHeroService} from './hero.mjs';
 import {createGameDetailsService,parseGameIds} from './game-details.mjs';
 import {createGameInsightsService} from './game-insights.mjs';
 import {createGameHistoryService,parseHistoryIds} from './game-history.mjs';
+import {createCuratorSampleService} from './curator-samples.mjs';
 
-export function createApp({key=process.env.STEAM_API_KEY,lookup=fetchPublicProfile,activity=createActivityService(),metadata=createMetadataService(),hero=createHeroService({metadata}),gameHistory=createGameHistoryService(),gameDetails=createGameDetailsService(),gameInsights=createGameInsightsService(),root=path.resolve('dist')}={}) {
+export function createApp({key=process.env.STEAM_API_KEY,lookup=fetchPublicProfile,activity=createActivityService(),metadata=createMetadataService(),hero=createHeroService({metadata}),gameHistory=createGameHistoryService(),gameDetails=createGameDetailsService(),gameInsights=createGameInsightsService(),curatorSamples=createCuratorSampleService(),root=path.resolve('dist')}={}) {
   const cache=new Map();const limits=new Map();
   return http.createServer(async(req,res)=>{
     res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');
@@ -20,6 +21,12 @@ export function createApp({key=process.env.STEAM_API_KEY,lookup=fetchPublicProfi
     try {
       const url=new URL(req.url,'http://localhost');
     if(url.pathname==='/api/news'){if(req.method!=='GET')return send(405,{error:'Use GET.'});const section=url.searchParams.get('section')??'featured';if(!['featured','official'].includes(section))return send(400,{error:'Invalid section'});try{return send(200,await news(section));}catch{return send(503,{error:'Steam news unavailable'});}}
+      if(url.pathname==='/api/sample-curator'){
+        if(req.method!=='GET')return send(405,{error:'Use GET.'});
+        const raw=Number(url.searchParams.get('slot')??'0');
+        if(!Number.isSafeInteger(raw)||raw<0||raw>4)return send(400,{error:'Invalid curator slot.'});
+        try{return send(200,await curatorSamples(raw));}catch{return send(503,{error:'Curator sample unavailable.'});}
+      }
       if(url.pathname==='/api/game-insights'){
         if(req.method!=='GET')return send(405,{error:'Use GET.'});let ids;try{ids=parseGameIds(url.searchParams.get('ids'));if(ids.length!==1)throw Error('Provide one game ID.');}catch(e){return send(400,{error:e.message});}try{return send(200,await gameInsights(ids[0]));}catch{return send(503,{error:'Game insights unavailable.'});}
       }

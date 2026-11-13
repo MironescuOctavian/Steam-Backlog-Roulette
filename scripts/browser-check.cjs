@@ -26,13 +26,18 @@ async function main(){
  assert.equal(await evaluate(`document.querySelector('.library-tools-menu').open`),true,'library tools expand with a native keyboard-accessible control');
  await evaluate(`document.querySelector('.library-tools-menu summary').click()`);
  await evaluate(`document.querySelector('.site-header a[href*=news]').click()`);await settle();
- assert.equal(await evaluate(`document.getElementById('news-title').textContent`),'News','blank news page is reachable');
+ assert.equal(await evaluate(`document.getElementById('news-title').textContent`),'News / Patches','news page is reachable');
  assert.equal(await evaluate(`document.title`),'News · SteamNext','news page has its own title');
  await evaluate(`document.querySelector('.site-header nav a').click()`);await settle();
- assert.equal(await evaluate(`document.querySelector('.advanced-filters').open`),false,'advanced filters start collapsed');
+ assert.equal(await evaluate(`document.getElementById('roulette-filters')`),null,'roulette filters block is removed');
+ assert.equal(await evaluate(`document.querySelector('.pulse-home-teaser')`),null,'charts teaser is removed from home');
+ assert.equal(await evaluate(`getComputedStyle(document.body,'::before').content`),'none','background grid overlay is removed');
+ assert.equal(await evaluate(`getComputedStyle(document.body,'::after').content`),'none','background icon pattern is removed');
  assert.equal(await evaluate(`document.querySelectorAll('.reel-footer .roulette-modes button').length`),3,'three shared roulette modes inside the roulette');
+ assert.equal(await evaluate(`(()=>{const h1=document.querySelector('.hero').getBoundingClientRect().height;document.querySelector('.profile-help-trigger').click();const pop=document.getElementById('profile-help-popover').getBoundingClientRect();const h2=document.querySelector('.hero').getBoundingClientRect().height;document.querySelector('.profile-help-trigger').click();return pop.height>40&&Math.abs(h1-h2)<1;})()`),true,'Where do I find this popover floats without shifting hero height');
  assert.equal(await evaluate(`document.querySelector('#profile-example').textContent.includes('steamcommunity.com/id/')`),true,'profile link example is visible');
  assert.equal(await evaluate(`document.querySelectorAll('.deck-card').length`),4,'four layered hero cards');
+ assert.equal(await evaluate(`getComputedStyle(document.querySelector('.deck-card-inner')).animationName`),'deck-float','hero cards animate smoothly inside their fixed wrapper');
  assert.equal(await evaluate(`document.querySelectorAll('.site-header nav a').length`),3,'header has three page links');
  assert.equal(await evaluate(`document.querySelectorAll('.app-sidebar nav a').length`),3,'backlog tools live in the sidebar');
  assert.equal(await evaluate(`getComputedStyle(document.querySelector('.app-sidebar')).borderRightWidth`),'0px','sidebar divider is removed');
@@ -164,9 +169,9 @@ async function main(){
  await evaluate(`document.querySelectorAll('.roulette-modes button')[1].click()`);await settle();
  assert.equal(await evaluate(`document.querySelectorAll('.roulette-modes button')[1].getAttribute('aria-pressed')`),'true','never-played quick filter activates');
  assert.ok(await evaluate(`document.querySelectorAll('.game-card').length`)<initial,'never-played filter narrows the library');
- await evaluate(`document.querySelector('.roulette-modes button').click();document.querySelector('.advanced-filters').open=true;document.querySelector('[aria-label="Remaining time presets"] button:nth-child(2)').click()`);await settle();
- assert.ok(await evaluate(`document.querySelectorAll('.game-card').length`)<initial,'under-ten-hours filter narrows the library');
- await evaluate(`document.querySelector('.filter-panel .filter-heading button').click()`);await settle();
+ await evaluate(`document.querySelector('.roulette-modes button').click();(()=>{const q=document.querySelector('.library-search input');q.value='Hollow';q.dispatchEvent(new Event('input',{bubbles:true}));})()`);await settle();
+ assert.ok(await evaluate(`document.querySelectorAll('.game-card').length`)<initial,'search filter narrows the library');
+ await evaluate(`document.querySelector('.library-reset').click()`);await settle();
  assert.equal(await evaluate(`document.querySelectorAll('.catalog-rank').length`),0,'Top 250 removed after library import');
  assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth`),true,'desktop no horizontal overflow');
  await evaluate(`(()=>{const s=document.querySelector('.game-controls select');s.value='Completed';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);await settle();
@@ -175,13 +180,13 @@ async function main(){
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),initial,'undo restores the prior status');
  await evaluate(`(()=>{const s=document.querySelector('.game-controls select');s.value='Completed';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);await settle();
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games[0].status`),'Completed','saved status');
- await evaluate(`(()=>{const s=document.querySelector('.filter-fields select');s.value='all';s.dispatchEvent(new Event('change',{bubbles:true}));const q=document.querySelector('input[type=search]');q.value='Elden Ring';q.dispatchEvent(new Event('input',{bubbles:true}));})()`);await settle();
+ await evaluate(`(()=>{const q=document.querySelector('.library-search input');q.value='Hades';q.dispatchEvent(new Event('input',{bubbles:true}));})()`);await settle();
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),1,'search');
- assert.equal(await evaluate(`document.querySelector('.play-next')`),null,'completed games have no Play Next control');
+ assert.equal(await evaluate(`document.querySelector('.play-next')`),null,'cards have no Play Next control');
  await evaluate(`document.querySelector('.game-details-button').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.value-badge').textContent.startsWith('$')`),true,'known cost per hour retains its currency marker');
  await evaluate(`(()=>{const i=document.querySelector('.tag-label input');i.value='weekend, favorite';i.dispatchEvent(new FocusEvent('blur'));})()`);await settle();
- assert.deepEqual(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games[0].tags`),['weekend','favorite'],'tags save');
+ assert.deepEqual(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).games.find(g=>g.title==='Hades').tags`),['weekend','favorite'],'tags save');
  await evaluate(`document.querySelector('.exclude-game input').click()`);await settle();
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),1,'excluded game remains visible in the library');
  assert.equal(await evaluate(`document.querySelector('.spin-button').disabled`),true,'manually excluded game leaves the roulette');
@@ -233,7 +238,7 @@ async function main(){
  await evaluate(`document.querySelector('.spin-button').click()`);await delay(5600);
  assert.equal(await evaluate(`document.querySelector('.winner-modal').open`),true,'animated roulette completes');
  assert.equal(await evaluate(`(()=>{const track=document.querySelector('.roulette-track');const x=new DOMMatrixReadOnly(getComputedStyle(track).transform).m41;return Math.abs(45*192+90+x-document.querySelector('.roulette-viewport').clientWidth/2)<1;})()`),true,'winning card aligns with pointer');
- await evaluate(`document.querySelector('.winner-modal').close();document.querySelector('.filter-panel .filter-heading button').click()`);await settle();
+ await evaluate(`document.querySelector('.winner-modal').close();document.querySelector('.library-reset').click()`);await settle();
  const importPath=path.join(profile,'library.json');
  fs.writeFileSync(importPath,JSON.stringify([{appId:220,title:'Half-Life 2 QA',genres:['Action'],playtimeHours:0,timeToBeatHours:12,metacritic:96,pricePaid:10,status:'Unplayed'}]));
  await evaluate(`document.querySelector('.library-tools-menu').open=true;[...document.querySelectorAll('.data-tools .tool-actions button')].find(b=>b.textContent.includes('Import JSON')).click()`);await settle();
@@ -260,7 +265,7 @@ async function main(){
  const {createApp}=await import(pathToFileURL(path.resolve('server/index.mjs')).href);
  let failActivity=false;
  const activityFixture=JSON.parse(fs.readFileSync(path.resolve('src/data/activity.json'),'utf8'));
- appServer=createApp({key:'test-only',gameInsights:async appId=>({appId,capturedAt:new Date().toISOString(),history:Array.from({length:169},(_,i)=>[Date.now()-(168-i)*3600000,100+i]),peakToday:200,peakAllTime:1000,monthly:[{month:'October 2026',average:123.45,gain:5,percent:4.2,peak:200},{month:'October 2025',average:100,gain:0,percent:0,peak:180},{month:'August 2012',average:50,gain:null,percent:null,peak:90}],prices:[{currency:'USD',amount:999,capturedAt:new Date().toISOString()}],currentPrices:[{currency:'USD',amount:999,capturedAt:new Date().toISOString()}],updates:[{title:'Official fixture update',url:'https://store.steampowered.com/news/app/'+appId+'/view/1',date:new Date().toISOString(),summary:'Reported fixes.',images:['https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/header.jpg','https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/570/header.jpg'],patch:true}],warnings:[]}),gameDetails:{players:async ids=>ids.map(appId=>({appId,playersNow:1234,capturedAt:new Date().toISOString()})),prices:async ids=>ids.map(appId=>({appId,price:appId===413150?'$14.99':'$9.99',initial:appId===413150?'$19.99':null,discountPercent:appId===413150?25:0,free:false})),game:async appId=>({appId,playersNow:1234,capturedAt:new Date().toISOString(),description:'A verified fixture description.',developers:['Valve'],publishers:['Valve'],genres:['Action'],platforms:['windows'],releaseDate:'1998',price:'$9.99',available:true})},metadata:async ids=>ids.map(appId=>({appId,appType:'game',multiplayerOnly:appId===730})),hero:async()=>JSON.parse(fs.readFileSync('src/data/hero.json','utf8')),gameHistory:async ids=>ids.map(appId=>({appId,peakAllTime:100000,samples:[[Date.now()-3600000,100],[Date.now(),120]],capturedAt:new Date().toISOString(),unavailable:false})),activity:async()=>{if(failActivity)throw new Error('offline');return activityFixture;},lookup:async input=>{
+ appServer=createApp({key:'test-only',curatorSamples:async slot=>({curator:{slot,id:1850,name:'PC Gamer',theme:'PC hits & editor picks',url:'https://store.steampowered.com/curator/1850-PC-Gamer/'},games:Array.from({length:15},(_,i)=>({appId:400+i,title:'Curator Pick '+(i+1),pricePaid:9.99,priceKnown:true})),capturedAt:new Date().toISOString()}),gameInsights:async appId=>({appId,capturedAt:new Date().toISOString(),history:Array.from({length:169},(_,i)=>[Date.now()-(168-i)*3600000,100+i]),peakToday:200,peakAllTime:1000,monthly:[{month:'October 2026',average:123.45,gain:5,percent:4.2,peak:200},{month:'October 2025',average:100,gain:0,percent:0,peak:180},{month:'August 2012',average:50,gain:null,percent:null,peak:90}],prices:[{currency:'USD',amount:999,capturedAt:new Date().toISOString()}],currentPrices:[{currency:'USD',amount:999,capturedAt:new Date().toISOString()}],updates:[{title:'Official fixture update',url:'https://store.steampowered.com/news/app/'+appId+'/view/1',date:new Date().toISOString(),summary:'Reported fixes.',images:['https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/header.jpg','https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/570/header.jpg'],patch:true}],warnings:[]}),gameDetails:{players:async ids=>ids.map(appId=>({appId,playersNow:1234,capturedAt:new Date().toISOString()})),prices:async ids=>ids.map(appId=>({appId,price:appId===413150?'$14.99':'$9.99',initial:appId===413150?'$19.99':null,discountPercent:appId===413150?25:0,free:false})),game:async appId=>({appId,playersNow:1234,capturedAt:new Date().toISOString(),description:'A verified fixture description.',developers:['Valve'],publishers:['Valve'],genres:['Action'],platforms:['windows'],releaseDate:'1998',price:'$9.99',available:true})},metadata:async ids=>ids.map(appId=>({appId,appType:'game',multiplayerOnly:appId===730})),hero:async()=>JSON.parse(fs.readFileSync('src/data/hero.json','utf8')),gameHistory:async ids=>ids.map(appId=>({appId,peakAllTime:100000,samples:[[Date.now()-3600000,100],[Date.now(),120]],capturedAt:new Date().toISOString(),unavailable:false})),activity:async()=>{if(failActivity)throw new Error('offline');return activityFixture;},lookup:async input=>{
    if(input==='example-profile')await delay(150);
    if(input==='private-profile')throw new Error('Game details are private.');
    if(input==='large-profile')return {profile:{steamId:'76561198000000004',name:'Large Library QA',avatar:'https://avatars.steamstatic.com/0000000000000000000000000000000000000000_full.jpg',url:'https://steamcommunity.com/profiles/76561198000000004/',updatedAt:new Date().toISOString()},steam:{response:{games:Array.from({length:5000},(_,i)=>({appid:1000000+i,name:'Library QA '+String(i+1).padStart(4,'0'),playtime_forever:0}))}}};
@@ -271,8 +276,11 @@ async function main(){
  await call('Page.navigate',{url:'http://127.0.0.1:'+appServer.address().port});await delay(600);
  assert.equal(await evaluate(`document.querySelectorAll('.kpi').length`),0,'hosted entry has no default profile stats');
  assert.match(await evaluate(`document.querySelector('.card-price').textContent`),/\$14\.99/,'Top 250 discovery cards on home show prices');
+ assert.ok(await evaluate(`document.querySelectorAll('.discovery-card .meta-tray').length`)>0,'Top 250 home cards render bordered meta tray');
+ assert.ok(await evaluate(`document.querySelectorAll('.discovery-card .genre-pill').length`)>0,'Top 250 home cards render bordered genre pills');
  await evaluate(`document.querySelector('.app-sidebar nav a:last-child').click()`);await delay(400);
  assert.match(await evaluate(`document.querySelector('.discovery-grid .card-price').textContent`),/-25%.*\$19\.99.*\$14\.99/,'Top 250 page shows discounted Steam price');
+ assert.ok(await evaluate(`document.querySelectorAll('.discovery-grid .meta-tray').length`)>0,'Top 250 page cards render bordered meta tray');
  await evaluate(`document.querySelector('.app-sidebar nav a:first-child').click()`);await delay(400);
  assert.equal(await evaluate(`performance.getEntriesByType('resource').some(r=>r.name.includes('/assets/activity-')&&r.name.endsWith('.js'))`),false,'Charts data is not downloaded on the backlog page');
  const lookup=async value=>{await evaluate(`new Promise((resolve,reject)=>{let n=0;const t=setInterval(()=>{if(document.querySelector('#steam-profile')){clearInterval(t);resolve(true);}else if(++n>100){clearInterval(t);reject(Error('Profile form did not mount at '+location.href));}},100);})`);await evaluate(`(()=>{const input=document.querySelector('#steam-profile');input.value=${JSON.stringify(value)};input.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('.profile-lookup form').requestSubmit();})()`);if(value==='example-profile'){await delay(30);assert.equal(await evaluate(`document.querySelector('.profile-lookup form').getAttribute('aria-busy')`),'true','profile lookup exposes its loading state');assert.match(await evaluate(`document.querySelector('.lookup-progress').textContent`),/Loading public profile/);}await delay(500);};
@@ -311,7 +319,7 @@ async function main(){
  await evaluate(`document.querySelector('.library-empty button').click()`);await settle();
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),2,'cleared backlog can reveal saved completed games');
  for(let i=0;i<2;i++){await evaluate(`(()=>{const s=document.querySelectorAll('.game-controls select')[${i}];s.value='Backlog';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);await settle();}
- await evaluate(`document.querySelector('.filter-panel .filter-heading button').click()`);await settle();
+ await evaluate(`document.querySelector('.library-reset').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('#insights .section-note').textContent.startsWith('Last synced')`),true,'backlog shows source sync time');
  await evaluate(`document.querySelectorAll('.roulette-modes button')[1].click()`);await settle();
  await evaluate(`document.querySelector('.profile-summary button').click()`);await delay(500);
@@ -326,7 +334,7 @@ async function main(){
  assert.equal(await evaluate(`document.querySelector('.profile-editor').hidden`),true,'cancelling profile switching restores the compact workspace');
  assert.equal(await evaluate(`document.activeElement.className`),'switch-profile','cancel returns focus to the profile switch control');
  await evaluate(`document.querySelector('.switch-profile').click()`);await settle();
- await evaluate(`document.querySelector('.filter-panel .filter-heading button').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('.library-reset').disabled`),true,'default filters disable Reset filters button');
 
  await lookup('private-profile');
  assert.equal(await evaluate(`document.querySelector('.lookup-error strong').textContent`),'This library is private','private libraries get specific guidance');
@@ -345,13 +353,10 @@ async function main(){
  await evaluate(`document.querySelector('.undo-toast button').click()`);await settle();
  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('steam-backlog-roulette.library.v1')).profile.name`),'Empty QA','undo restores the prior profile identity');
  await lookup('other-profile');
- await evaluate(`document.querySelector('.advanced-filters').open=true;document.querySelector('.roulette-exclusions input').click();const s=document.querySelector('.library-sort select');s.value='title';s.dispatchEvent(new Event('change',{bubbles:true}));`);await settle();
- assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),1,'category exclusion keeps the game in the library');
- assert.equal(await evaluate(`document.querySelector('.spin-button').disabled`),true,'verified multiplayer-only games are excluded');
+ await evaluate(`(()=>{const s=document.querySelector('.library-sort select');s.value='title';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);await settle();
+ assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),1,'sorting keeps the game in the library');
  await call('Page.reload');await delay(700);
  assert.equal(await evaluate(`document.querySelector('.library-sort select').value`),'title','library sorting survives reload');
- assert.equal(await evaluate(`document.querySelector('.roulette-exclusions input').checked`),true,'category exclusion survives reload');
- await evaluate(`document.querySelector('.advanced-filters').open=true;document.querySelector('.roulette-exclusions input').click()`);await settle();
  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await settle();
  assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth`),true,'profile lookup has no mobile overflow');
  await evaluate('scrollTo(0,0)');await settle();
@@ -441,7 +446,6 @@ async function main(){
  await call('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});await settle();
  const largeStarted=Date.now();await lookup('large-profile');
  await evaluate(`new Promise((resolve,reject)=>{let n=0;const t=setInterval(()=>{if(document.querySelector('.lookup-success')?.textContent.includes('5000 games')){clearInterval(t);resolve(true);}else if(++n>100){clearInterval(t);reject(Error('Large profile did not finish'));}},100);})`);
- await evaluate(`document.querySelector('.filter-panel .filter-heading button').click()`);await settle();
  assert.equal(await evaluate(`document.querySelectorAll('#library-grid>.game-card').length`),24,'5,000-game profile mounts only 24 game cards');
  await evaluate(`document.querySelector('.library-view-toggle button:last-child').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('#library-grid').classList.contains('list-view')`),true,'compact list view renders the same library');
@@ -461,7 +465,7 @@ async function main(){
  await evaluate(`document.querySelector('[aria-label="Library pages"] [aria-label="Next library page"]').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.game-title-row h3').textContent`),'Library QA 0025','second library page starts at game 25');
  assert.equal(await evaluate(`document.querySelectorAll('#library-grid>.game-card').length`),24,'changing pages keeps the DOM bounded');
- await evaluate(`(()=>{const q=document.querySelector('.roulette-search input');q.value='Library QA 5000';q.dispatchEvent(new Event('input',{bubbles:true}));})()`);await settle();
+ await evaluate(`(()=>{const q=document.querySelector('.library-search input');q.value='Library QA 5000';q.dispatchEvent(new Event('input',{bubbles:true}));})()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.game-title-row h3').textContent`),'Library QA 5000','search finds a game outside the mounted page');
  assert.equal(await evaluate(`document.querySelector('.active-filter-chips button').textContent.includes('Library QA 5000')`),true,'active search is represented by a removable chip');
  assert.equal(await evaluate(`document.querySelector('[aria-label="Library pages"] [aria-current=page]').textContent`),'1','filtering resets the library page');

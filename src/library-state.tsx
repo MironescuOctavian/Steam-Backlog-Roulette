@@ -77,6 +77,12 @@ function createLibraryState(){
     try{saveLibrary(storage,[],null,false);setUndoStack(history=>[...history.slice(-19),previous]);setGames([]);setProfile(null);setLoaded(false);setSaveFailed(false);setSaveMessage('Profile disconnected. Its saved library was removed from this device.');setChangeRevision(n=>n+1);return true;}
     catch{setSaveFailed(true);setSaveMessage('Could not disconnect. Your saved profile is unchanged.');return false;}
   }
+  function clearLibrary():boolean{
+    if(library.warning)return false;
+    const previous={games:games(),profile:profile(),loaded:loaded()};
+    try{saveLibrary(storage,[],null,false);setUndoStack(history=>[...history.slice(-19),previous]);setGames([]);setProfile(null);setLoaded(false);setSaveFailed(false);setSaveMessage('Returned to Top 250 discovery.');setChangeRevision(n=>n+1);return true;}
+    catch{setSaveFailed(true);setSaveMessage('Could not clear the library.');return false;}
+  }
   function undo(){const previous=undoStack().at(-1);if(!previous)return;try{saveLibrary(storage,previous.games,previous.profile,previous.loaded);setGames(previous.games);setProfile(previous.profile);setLoaded(previous.loaded);setUndoStack(history=>history.slice(0,-1));setSaveFailed(false);setSaveMessage('Previous library restored.');setChangeRevision(n=>n+1);}catch{setSaveFailed(true);setSaveMessage('Undo could not be saved. Your current library is unchanged.');}}
   function removeGame(id:number){const game=games().find(g=>g.appId===id);if(game&&applyLibrary(games().filter(g=>g.appId!==id)))setSaveMessage(`Removed ${game.title} from this list. Steam ownership is unchanged.`);}
   const [metadataMessage,setMetadataMessage]=createSignal('');
@@ -100,7 +106,7 @@ function createLibraryState(){
     })();
     return ()=>controller.abort();
   });
-  return {library,games,loaded,profile,activity,setActivity,loadActivity,gameHistory,setGameHistory,saveMessage,saveFailed,changeRevision,filters,setFilters,worstValue,setWorstValue,weeklyHours,setWeeklyHours,soundEnabled,setSoundEnabled,activeGames,stats,filtered,libraryRows,eligible,rouletteGames,sessionSkipped:skippedGames,recentPicks,skipGame,restoreSkipped,recordPick,genres,changeFilter,backlog,hoursLeft,applyLibrary,updateGame,updateGames,disconnectProfile,undo,canUndo:()=>undoStack().length>0,removeGame,preferences,setPreference,preferenceWarning,toggleExcluded,metadataMessage};
+  return {library,games,loaded,profile,activity,setActivity,loadActivity,gameHistory,setGameHistory,saveMessage,saveFailed,changeRevision,filters,setFilters,worstValue,setWorstValue,weeklyHours,setWeeklyHours,soundEnabled,setSoundEnabled,activeGames,stats,filtered,libraryRows,eligible,rouletteGames,sessionSkipped:skippedGames,recentPicks,skipGame,restoreSkipped,recordPick,genres,changeFilter,backlog,hoursLeft,applyLibrary,updateGame,updateGames,disconnectProfile,clearLibrary,undo,canUndo:()=>undoStack().length>0,removeGame,preferences,setPreference,preferenceWarning,toggleExcluded,metadataMessage};
 }
 const LibraryContext=createContext<ReturnType<typeof createLibraryState>>();
 export function LibraryProvider(props:ParentProps){return <LibraryContext value={createLibraryState()}>{props.children}</LibraryContext>;}
