@@ -3,6 +3,7 @@ import {coverUrl,type Game} from './library';
 import {paginationPages,sortActivity,validateActivity,type ActivityData,type ActivityGame} from './activity-model';
 import './activity.css';
 import {GameDetails} from './game-details';
+import {usePlayerCounts} from './player-counts';
 import {useLibrary} from './library-state';
 import {validateGameHistories} from './charts';
 
@@ -25,6 +26,7 @@ export function SteamActivity(props:{data:ActivityData;onData:(data:ActivityData
   const pageCount=()=>Math.max(1,Math.ceil(rows().length/50));
   const currentPage=()=>Math.min(page(),pageCount());
   const visibleRows=()=>rows().slice((currentPage()-1)*50,currentPage()*50);
+  const releasePlayers=usePlayerCounts(()=>props.data.releases.slice(0,10).map(g=>g.appId));
   createEffect(()=>historyRevision()+'|'+visibleRows().map(g=>g.appId).join(','),key=>{
     if(location.protocol==='file:')return;
     const ids=key.split('|')[1]!.split(',').filter(Boolean).map(Number).filter(id=>!gameHistory()[id]||Date.parse(gameHistory()[id]!.capturedAt)<Date.now()-3600000),controller=new AbortController();
@@ -67,7 +69,7 @@ export function SteamActivity(props:{data:ActivityData;onData:(data:ActivityData
     <div id="briefs" class="pulse-briefs">
       {brief('Where everyone is playing','01 / LIVE CROWD',props.data.games,g=>g.playersNow!==null?<><b class="brief-num brief-num-players">{g.playersNow.toLocaleString()}</b> <span class="brief-label">playing now</span></>:<span class="brief-label">Count unavailable</span>,'Current player counts are unavailable.')}
       {brief('Moving up the weekly chart','02 / GAINING GROUND',props.data.movers,g=>g.weeklyChange!==null?<><b class="brief-num brief-num-gain">↑ {g.weeklyChange}</b> <span class="brief-label">places this week</span></>:<span class="brief-label">Rank unavailable</span>,'No rank gainers are available from this snapshot.')}
-      {brief('Fresh from the store','03 / NEW ARRIVALS',props.data.releases,g=>g.price?<><b class="brief-num brief-num-price">{g.price}</b> <span class="brief-label">US store price</span></>:<span class="brief-label">Price unavailable</span>,'Steam’s new-release feed is unavailable.')}
+      {brief('Fresh from the store','03 / NEW ARRIVALS',props.data.releases,g=><><span class="release-player-count"><b class="brief-num brief-num-players">{(releasePlayers()[g.appId]?.playersNow??g.playersNow)?.toLocaleString()??'—'}</b> <span class="brief-label">playing now</span></span>{g.price?<><b class="brief-num brief-num-price">{g.price}</b> <span class="brief-label">US store price</span></>:<span class="brief-label">Price unavailable</span>}</>,'Steam’s new-release feed is unavailable.')}
       {brief('Crowd-approved picks','04 / REVIEW FAVORITES',props.data.acclaimed,g=>g.reviewPercent!==null?<><b class="brief-num brief-num-score">{g.reviewPercent}%</b> <span class="brief-label">positive</span> <span class="brief-sep" aria-hidden="true">·</span> <b class="brief-num brief-num-reviews">{g.reviewCount?.toLocaleString()??'0'}</b> <span class="brief-label">reviews</span></>:<span class="brief-label">Reviews unavailable</span>,'Review summaries are unavailable or have fewer than 50 reviews.')}
     </div>
     <section id="ranking" class="pulse-ranking" aria-labelledby="ranking-title"><div class="pulse-section-heading"><div><p class="eyebrow">TOP 1,000 · REPORTED PLAYER COUNTS</p><h2 id="ranking-title" tabindex={-1}>Find familiar names in the crowd</h2></div><button class="backlog-link" onClick={()=>props.onBacklog()}>Go to my backlog →</button></div><div class="pulse-table-filters"><label>Search games<input type="search" maxlength="300" value={search()} onInput={e=>{setSearch(e.currentTarget.value);setPage(1);}} placeholder="Find a game in the top 1,000…" /></label><label>Sort by<select value={sort()} onChange={e=>{setSort(e.currentTarget.value);setPage(1);}}><option value="players">Players now</option><option value="peak">Peak today</option><option value="name">Title</option></select></label><label class="owned-filter"><input type="checkbox" checked={ownedOnly()} disabled={!props.loaded} onChange={e=>{setOwnedOnly(e.currentTarget.checked);setPage(1);}} /> Loaded library only · unfinished</label></div>
