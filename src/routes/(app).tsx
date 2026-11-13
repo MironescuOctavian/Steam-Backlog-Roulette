@@ -1,4 +1,5 @@
 import {NewsSidebar} from '../news-navigation';
+import {EmberBackground} from '../ember-background';
 import type {RouteSectionProps} from '@solidjs/router';
 import {useHref,useLocation} from '@solidjs/router';
 import {LibraryProvider,useLibrary} from '../library-state';
@@ -39,6 +40,7 @@ function AppShell(props:RouteSectionProps){
   const pulseActive=(id:string)=>(['overview','briefs','ranking'].includes(visibleSection())?visibleSection():'overview')===id;
   const active=(page:string)=>page==='top250'?location.pathname==='/top250':location.pathname==='/'&&(page==='roulette'?visibleSection()==='roulette':visibleSection()!=='roulette');
   return <>
+    <EmberBackground />
     <a class="skip-link" href={home()}>Skip to content</a>
     <header ref={watchHeader} class="site-header"><div class="header-inner flex items-center justify-between gap-4">
       <a class="brand flex items-center gap-3" href={home()} aria-label="SteamNext home"><span class="brand-emblem"><BrandMark class="brand-icon" /></span><span>SteamNext<span class="brand-period">.</span></span></a>

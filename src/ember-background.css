@@ -1,0 +1,12 @@
+:root{--surface-page:#000;--surface-card:#080808;--surface-inset:#030303;--border-default:#242424}
+body{background:#000;isolation:isolate}
+.ember-background{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;contain:strict}
+.ember-glow{position:absolute;width:90%;height:100%;border-radius:50%;background:radial-gradient(ellipse,#ffbf002b,transparent 66%);animation:ember-breathe 18s ease-in-out infinite alternate}
+.ember-glow-left{left:-48%;top:-30%}.ember-glow-right{right:-48%;top:25%;opacity:.65;animation-delay:-8s}
+.ember-motifs{position:absolute;inset:-15px 0;background:url('./assets/gaming-motifs.svg') center top/1500px auto repeat-y;mask-image:linear-gradient(90deg,#000,transparent 27%,transparent 73%,#000);animation:ember-motif-drift 16s ease-in-out infinite alternate}
+.ember-particle{position:absolute;width:2px;height:2px;border-radius:50%;background:#ffbf00;box-shadow:0 0 8px #ffbf00;opacity:0;animation:ember-rise 14s linear infinite;will-change:transform,opacity}
+@keyframes ember-breathe{to{transform:translate3d(4%,3%,0) scale(1.15);opacity:.6}}
+@keyframes ember-motif-drift{to{transform:translateY(-12px)}}
+@keyframes ember-rise{0%{transform:translate3d(0,30px,0);opacity:0}20%,70%{opacity:.4}100%{transform:translate3d(25px,-420px,0);opacity:0}}
+@media(max-width:650px){.ember-particle:nth-of-type(n+11){display:none}.ember-motifs{opacity:.65}}
+@media(prefers-reduced-motion:reduce){.ember-glow,.ember-motifs,.ember-particle{animation:none}.ember-particle{opacity:.2;will-change:auto}}
