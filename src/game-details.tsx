@@ -3,12 +3,13 @@ import {coverUrl,type Game} from './library';
 import {validateGameInfo,type GameInfo} from './game-details-model';
 import {GameInsights} from './game-insights';
 const cache=new Map<number,GameInfo>();
-export function GameDetails(props:{game:Game|null;owned?:boolean;compact?:boolean;initialTab?:string;onClose:()=>void;children?:ParentProps['children']}){
+export function GameDetails(props:{game:Game|null;owned?:boolean;compact?:boolean;initialTab?:string;fallback?:{playersNow?:number|null|undefined;peakToday?:number|null|undefined;peakAllTime?:number|null|undefined}|undefined;onClose:()=>void;children?:ParentProps['children']}){
   let dialog!:HTMLDialogElement;
   const [tab,setTab]=createSignal(props.initialTab??'overview');
   const [research,setResearch]=createSignal(false);
   const [info,setInfo]=createSignal<GameInfo|null>(null),[loading,setLoading]=createSignal(false),[failed,setFailed]=createSignal(false);
   const [revision,setRevision]=createSignal(0);
+  const playersNow=()=>info()?.playersNow??props.fallback?.playersNow??null;
   function selectTab(next:string){setTab(next);if(next!=='overview')setResearch(true);}
   createEffect(()=>[props.game?.appId,revision()] as const,([id])=>{
     if(!id){if(dialog.open)dialog.close();return;}
@@ -43,9 +44,9 @@ export function GameDetails(props:{game:Game|null;owned?:boolean;compact?:boolea
       <div class="details-body">
         <div hidden={tab()!=='overview'} class="details-overview">
           <div class="details-about"><h3>About the game</h3><p class="details-description">{info()?.description||'Explore this game on Steam for its full description and latest store information.'}</p><p class="details-loading" role="status">{loading()?'Loading details from Steam…':failed()?'Steam details are unavailable. Your library is unchanged.':location.protocol==='file:'?'Live details are available in the hosted app.':info()?'Steam data checked '+new Date(info()!.capturedAt).toLocaleString():''}</p><Show when={failed()}><button onClick={()=>setRevision(n=>n+1)}>Retry details</button></Show><div class="details-facts"><p><strong>Developer</strong><span>{info()?.developers.join(', ')||'Unavailable'}</span></p><p><strong>Genres</strong><span>{info()?.genres.join(' · ')||game().genres.join(' · ')||'Unavailable'}</span></p><p><strong>Platforms</strong><span>{info()?.platforms.join(' · ')||'Unavailable'}</span></p></div></div>
-          <aside class="details-at-glance"><h3>At a glance</h3><dl class="details-stats"><div><dt>Playing now</dt><dd>{info()?.playersNow?.toLocaleString()??'Unavailable'}</dd></div><div><dt>Steam reviews</dt><dd>{game().steamPositivePercent!==undefined?game().steamPositivePercent+'% positive':'Unavailable'}</dd></div><div><dt>Release date</dt><dd>{info()?.releaseDate||'Unavailable'}</dd></div><div><dt>Current US store price</dt><dd>{info()?.price??'Unavailable'}</dd></div></dl><Show when={props.owned}><p class="details-owned"><strong>{game().playtimeHours}h</strong> played · <strong>{game().status}</strong>{game().timeToBeatHours!==null?' · ~'+game().timeToBeatHours+'h to beat':''}</p><a class="details-launch" href={`steam://run/${game().appId}`}><span class="i-lucide-gamepad-2" aria-hidden="true" /> Launch game</a></Show><div class="details-library-tools">{props.children}</div></aside>
+          <aside class="details-at-glance"><h3>At a glance</h3><dl class="details-stats"><div><dt>Playing now</dt><dd>{playersNow()?.toLocaleString()??'Unavailable'}</dd></div><div><dt>Steam reviews</dt><dd>{game().steamPositivePercent!==undefined?game().steamPositivePercent+'% positive':'Unavailable'}</dd></div><div><dt>Release date</dt><dd>{info()?.releaseDate||'Unavailable'}</dd></div><div><dt>Current US store price</dt><dd>{info()?.price??'Unavailable'}</dd></div></dl><Show when={props.owned}><p class="details-owned"><strong>{game().playtimeHours}h</strong> played · <strong>{game().status}</strong>{game().timeToBeatHours!==null?' · ~'+game().timeToBeatHours+'h to beat':''}</p><a class="details-launch" href={`steam://run/${game().appId}`}><span class="i-lucide-gamepad-2" aria-hidden="true" /> Launch game</a></Show><div class="details-library-tools">{props.children}</div></aside>
         </div>
-        <Show when={research()}><div hidden={tab()==='overview'}><GameInsights appId={game().appId} view={tab()} playersNow={info()?.playersNow} /></div></Show>
+        <Show when={research()}><div hidden={tab()==='overview'}><GameInsights appId={game().appId} view={tab()} playersNow={playersNow()} fallbackPeakToday={props.fallback?.peakToday} fallbackPeakAllTime={props.fallback?.peakAllTime} /></div></Show>
       </div>
     </>}</Show>
   </dialog>;

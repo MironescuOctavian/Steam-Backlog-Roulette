@@ -5,12 +5,12 @@ import {GameDetails} from './game-details';
 import {useLibrary} from './library-state';
 import {useLocation} from '@solidjs/router';
 
-type Preview={appId:number;title:string;image:string;score:string;anchor:HTMLElement};
+type Preview={appId:number;title:string;image:string;score:string;playersNow:number|null;anchor:HTMLElement};
 export function GameHover(){
   const {games}=useLibrary();
   const route=useLocation();
   const [preview,setPreview]=createSignal<Preview|null>(null),[info,setInfo]=createSignal<GameInfo|null>(null);
-  const [failed,setFailed]=createSignal(false),[videoFailed,setVideoFailed]=createSignal(false),[details,setDetails]=createSignal<Game|null>(null);
+  const [failed,setFailed]=createSignal(false),[videoFailed,setVideoFailed]=createSignal(false),[details,setDetails]=createSignal<{game:Game;playersNow:number|null}|null>(null);
   const cache=new Map<number,GameInfo>();
   let openTimer:ReturnType<typeof setTimeout>|undefined,closeTimer:ReturnType<typeof setTimeout>|undefined;
   let popup:HTMLDivElement|undefined,video:HTMLVideoElement|undefined;
@@ -19,7 +19,7 @@ export function GameHover(){
   function schedule(anchor:HTMLElement){
     if(document.querySelector('dialog[open]'))return;
     clearTimeout(closeTimer);clearTimeout(openTimer);if(preview()?.anchor===anchor)return;
-    openTimer=setTimeout(()=>{const appId=Number(anchor.dataset['gameId']);if(!anchor.isConnected||document.querySelector('dialog[open]')||!Number.isSafeInteger(appId)||appId<1)return;setPreview({appId,title:anchor.dataset['gameTitle']??'',image:anchor.dataset['gameImage']??coverUrl(appId),score:anchor.dataset['gameScore']??'',anchor});},300);
+    openTimer=setTimeout(()=>{const appId=Number(anchor.dataset['gameId']);if(!anchor.isConnected||document.querySelector('dialog[open]')||!Number.isSafeInteger(appId)||appId<1)return;const rawPlayers=anchor.dataset['gamePlayers'];const playersNow=rawPlayers!==undefined&&rawPlayers!==''&&Number.isSafeInteger(Number(rawPlayers))&&Number(rawPlayers)>=0?Number(rawPlayers):null;setPreview({appId,title:anchor.dataset['gameTitle']??'',image:anchor.dataset['gameImage']??coverUrl(appId),score:anchor.dataset['gameScore']??'',playersNow,anchor});},300);
   }
   const leave=()=>{clearTimeout(openTimer);clearTimeout(closeTimer);closeTimer=setTimeout(close,250);};
   createEffect(()=>preview()?.appId,id=>{
@@ -51,12 +51,12 @@ export function GameHover(){
     document.addEventListener('visibilitychange',visibility);
     return ()=>{document.removeEventListener('pointerover',over);document.removeEventListener('pointerout',out);document.removeEventListener('focusin',focus);document.removeEventListener('keydown',key);document.removeEventListener('visibilitychange',visibility);window.removeEventListener('scroll',scroll,true);window.removeEventListener('resize',close);close();};
   });
-  function showDetails(){const item=preview();if(!item)return;setDetails(games().find(g=>g.appId===item.appId)??{appId:item.appId,title:item.title,image:item.image,genres:info()?.genres??[],playtimeHours:0,timeToBeatHours:null,metacritic:null,pricePaid:0,priceKnown:false,status:'Unplayed',tags:[],metadataSource:'Steam',...(item.score?{steamPositivePercent:Number(item.score)}:{})});close();}
+  function showDetails(){const item=preview();if(!item)return;setDetails({game:games().find(g=>g.appId===item.appId)??{appId:item.appId,title:item.title,image:item.image,genres:info()?.genres??[],playtimeHours:0,timeToBeatHours:null,metacritic:null,pricePaid:0,priceKnown:false,status:'Unplayed',tags:[],metadataSource:'Steam',...(item.score?{steamPositivePercent:Number(item.score)}:{})},playersNow:info()?.playersNow??item.playersNow});close();}
   return <><Show when={preview()}>{item=><div class="game-hover-card" ref={attach} role="region" aria-label={item().title+' quick preview'} onPointerEnter={()=>{clearTimeout(closeTimer);}} onPointerLeave={leave} onFocusIn={()=>clearTimeout(closeTimer)} onFocusOut={e=>{if(!e.currentTarget.contains(e.relatedTarget as Node))leave();}}>
     <div class="hover-media"><img src={item().image} alt="" width="460" height="215"/><Show when={trailer()}><video ref={video} src={trailer()!} poster={item().image} autoplay muted loop playsinline preload="none" onError={()=>setVideoFailed(true)}/></Show><button class="hover-close" aria-label="Close game preview" onClick={close}>×</button><Show when={item().score}><span class="score-badge">{item().score}% positive</span></Show></div>
     <div class="hover-content"><h3>{item().title}</h3><div class="card-genre-pills"><For each={(info()?.genres??[]).slice(0,4)}>{genre=><span class="genre-pill">{genre}</span>}</For></div>
     <div class="hover-facts"><p><span>Developer</span><strong>{info()?.developers.join(', ')||'Unavailable'}</strong></p><p><span>Release date</span><strong>{info()?.releaseDate??'Unavailable'}</strong></p><p class="hover-platforms"><span>Platforms</span><strong><For each={info()?.platforms??[]}>{platform=><span class={platform==='windows'?'i-lucide-monitor':platform==='mac'?'i-lucide-apple':'i-lucide-terminal'} aria-label={platform}/>}</For><Show when={!info()?.platforms.length}>Unavailable</Show></strong></p></div>
-    <div class="meta-tray"><div class="meta-cell"><span class="meta-k">US Price</span><strong class="hover-price">{info()?.price??'Unavailable'}</strong></div><div class="meta-cell"><span class="meta-k">Playing now</span><strong class="hover-players">{info()?.playersNow?.toLocaleString()??'Unavailable'}</strong></div></div>
+    <div class="meta-tray"><div class="meta-cell"><span class="meta-k">US Price</span><strong class="hover-price">{info()?.price??'Unavailable'}</strong></div><div class="meta-cell"><span class="meta-k">Playing now</span><strong class="hover-players">{(info()?.playersNow??item().playersNow)?.toLocaleString()??'Unavailable'}</strong></div></div>
     <p class="hover-loading" role="status">{!info()&&!failed()?'Loading Steam details…':failed()?'Live details unavailable.':trailer()?'Steam microtrailer · muted':'Steam store information'}</p><a class="discovery-store" href={'https://store.steampowered.com/app/'+item().appId+'/'} target="_blank" rel="noopener noreferrer">View on Steam <span class="i-lucide-arrow-up-right" aria-hidden="true"/></a><button class="game-details-button" onClick={showDetails}>Game details <span aria-hidden="true">＋</span></button></div>
-  </div>}</Show><Show when={details()}><GameDetails compact game={details()} onClose={()=>setDetails(null)}/></Show></>;
+  </div>}</Show><Show when={details()}>{entry=><GameDetails compact game={entry().game} fallback={entry().playersNow!==null?{playersNow:entry().playersNow}:undefined} onClose={()=>setDetails(null)}/>}</Show></>;
 }

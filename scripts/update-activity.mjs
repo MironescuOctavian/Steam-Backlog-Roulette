@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import {createActivityService} from '../server/activity.mjs';
 import {createGameHistoryService} from '../server/game-history.mjs';
-const snapshot=await createActivityService({historyFile:null})();
+const snapshot=await createActivityService({historyFile:null,releasePlayerLimit:10})();
 const ids=[...new Set([...snapshot.games.slice(0,50),...snapshot.movers.slice(0,10),...snapshot.releases.slice(0,10),...snapshot.acclaimed.slice(0,10)].map(g=>g.appId))];
 const gameHistory=createGameHistoryService();snapshot.details=[];
 for(let i=0;i<ids.length;i+=8)snapshot.details.push(...await gameHistory(ids.slice(i,i+8)));

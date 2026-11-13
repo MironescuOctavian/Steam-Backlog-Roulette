@@ -17,6 +17,19 @@ test('game details combine real player counts and store fields, cache requests a
   const game=await service.game(70);assert.equal(validateGameInfo(game).playersNow,0);assert.equal(game.description,'A classic game');assert.deepEqual(game.platforms,['windows']);assert.equal(game.price,'$9.99');await service.game(70);await service.players([70]);assert.equal(calls,2);
   assert.throws(()=>validatePlayers([{appId:70,playersNow:-1,capturedAt:new Date().toISOString()}]));assert.throws(()=>validateGameInfo({...game,developers:['x'.repeat(201)]}));
 });
+test('game details fall back to Steam concurrent chart when GetNumberOfCurrentPlayers omits a count',async()=>{
+  let chartCalls=0;
+  const service=createGameDetailsService({request:async url=>{
+    const u=String(url);
+    if(u.includes('GetNumberOfCurrentPlayers'))return {ok:true,json:async()=>({response:{result:42}})};
+    if(u.includes('GetGamesByConcurrentPlayers')){chartCalls++;return {ok:true,json:async()=>({response:{ranks:[{appid:1422450,concurrent_in_game:183389},{appid:999,concurrent_in_game:0}]}})};}
+    return {ok:false};
+  }});
+  const [deadlock,zero]=await service.players([1422450,999]);
+  assert.equal(deadlock.playersNow,183389);
+  assert.equal(zero.playersNow,0);
+  assert.equal(chartCalls,1);
+});
 test('unavailable Steam data is unknown, not zero or invented metadata',async()=>{
   const service=createGameDetailsService({request:async()=>({ok:false})});const game=await service.game(70);assert.equal(game.playersNow,null);assert.equal(game.price,null);assert.equal(game.available,false);assert.deepEqual(game.developers,[]);validateGameInfo(game);
 });

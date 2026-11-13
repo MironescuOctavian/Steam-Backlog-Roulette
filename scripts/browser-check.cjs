@@ -102,6 +102,9 @@ async function main(){
  assert.equal(await evaluate(`document.querySelectorAll('.pulse-table tbody tr').length`),50,'first page contains 50 games from the 1000-game snapshot');
  assert.equal(await evaluate(`getComputedStyle(document.querySelector('.pulse-table th:nth-child(3)')).textAlign`),'center','player heading is centered');
  assert.equal(await evaluate(`getComputedStyle(document.querySelector('.pulse-table td.numeric')).textAlign`),'center','player values align with their heading');
+ assert.equal(await evaluate(`document.querySelector('[data-game-id="480"]')`),null,'Spacewar is removed from Charts');
+ assert.equal(await evaluate(`[...document.querySelectorAll('.pulse-table td.numeric')].every(td=>/^[0-9,]+$/.test(td.textContent.trim()))`),true,'top 50 rows display numeric player counts and peaks instead of dashes');
+ assert.equal(await evaluate(`[...document.querySelectorAll('.release-player-count .brief-num-players')].length`),10,'new arrivals display reported player counts including 0');
  await evaluate(`document.querySelector('[aria-label="Ranking pages"] [aria-label="Next page"]').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.pulse-rank').textContent`),'#'+rankingSnapshot[50].rank,'next page preserves source ranks after Spacewar exclusion');
  await evaluate(`document.querySelector('[aria-label="Bottom ranking pages"] [aria-label="Next page"]').click()`);await settle();

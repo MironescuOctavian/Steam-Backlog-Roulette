@@ -15,11 +15,24 @@ export function steamMicrotrailer(movies){
 export function parseGameIds(value){const ids=parseMetadataIds(value);if(ids.length>24)throw Error('Provide up to 24 game IDs.');return ids;}
 export function createGameDetailsService({request=fetch,now=()=>Date.now()}={}){
   const counts=new Map(),details=new Map(),pending=new Map(),priceCache=new Map();
+  let chartCache,chartPending;
   async function json(url){const response=await request(url,{redirect:'manual',signal:AbortSignal.timeout(10000)});if(!response.ok)throw Error('Steam is unavailable.');return response.json();}
+  async function chartPlayer(appId){
+    if(!chartCache||now()-chartCache.at>=300000){
+      if(!chartPending)chartPending=(async()=>{
+        const map=new Map();
+        try{const body=await json('https://api.steampowered.com/ISteamChartsService/GetGamesByConcurrentPlayers/v1/');for(const g of body.response?.ranks??[])if(Number.isSafeInteger(g.appid)&&Number.isSafeInteger(g.concurrent_in_game)&&g.concurrent_in_game>=0)map.set(g.appid,g.concurrent_in_game);}catch{}
+        chartCache={at:now(),map};return map;
+      })().finally(()=>{chartPending=undefined;});
+      await chartPending;
+    }
+    return chartCache.map.get(appId)??null;
+  }
   async function player(appId){
     const saved=counts.get(appId);if(saved&&now()-Date.parse(saved.capturedAt)<300000)return saved;
     const key='players:'+appId;if(pending.has(key))return pending.get(key);
     const promise=(async()=>{let playersNow=null;try{const body=await json('https://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid='+appId);if(body.response?.result===1&&Number.isSafeInteger(body.response.player_count)&&body.response.player_count>=0)playersNow=body.response.player_count;}catch{}
+      if(playersNow===null)playersNow=await chartPlayer(appId);
       const data={appId,playersNow,capturedAt:new Date(now()).toISOString()};if(counts.size>=20000)counts.clear();counts.set(appId,data);return data;
     })().finally(()=>pending.delete(key));pending.set(key,promise);return promise;
   }

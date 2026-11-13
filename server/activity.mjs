@@ -4,7 +4,9 @@ import {validateActivity} from '../src/activity-model.ts';
 import {createExtendedChart} from './extended-chart.mjs';
 import {parseSteamOnline} from './game-history.mjs';
 
-export function createActivityService({request=fetch,historyFile=path.resolve('.data/activity-history.json'),historyStore,metadataBatchLimit=Infinity,now=()=>Date.now(),extended=createExtendedChart({request,now})}={}) {
+const EXCLUDED_APPS=new Set([480]);
+
+export function createActivityService({request=fetch,historyFile=path.resolve('.data/activity-history.json'),historyStore,metadataBatchLimit=Infinity,releasePlayerLimit=0,now=()=>Date.now(),extended=createExtendedChart({request,now})}={}) {
   let cached;let expires=0;let pending;
   const metadata=new Map();
   async function json(url){const response=await request(url,{signal:AbortSignal.timeout(15000),redirect:'manual'});if(!response.ok)throw new Error('Steam feed unavailable.');return response.json();}
@@ -19,12 +21,12 @@ export function createActivityService({request=fetch,historyFile=path.resolve('.
     ]);
     if(!Array.isArray(live.response?.ranks)||!live.response.ranks.length)throw new Error('Steam player activity is unavailable.');
     if(wider.stale)warnings.push('The extended ranking could not refresh. Its last successful capture is shown.');
-    const official=live.response.ranks.slice(0,100);
-    const combined=new Map(wider.ranks.map(g=>[g.appid,g]));
+    const official=live.response.ranks.filter(g=>!EXCLUDED_APPS.has(g.appid)).slice(0,100);
+    const combined=new Map(wider.ranks.filter(g=>!EXCLUDED_APPS.has(g.appid)).map(g=>[g.appid,g]));
     for(const game of official)combined.set(game.appid,{...combined.get(game.appid),...game});
     const ranks=[...combined.values()].sort((a,b)=>b.concurrent_in_game-a.concurrent_in_game).slice(0,1000).map((g,i)=>({...g,rank:i+1}));
-    const weeklyRanks=Array.isArray(weekly.response?.ranks)?weekly.response.ranks:[];
-    const releases=Array.isArray(featured.new_releases?.items)?featured.new_releases.items.filter(g=>g.type===0).slice(0,30):[];
+    const weeklyRanks=(Array.isArray(weekly.response?.ranks)?weekly.response.ranks:[]).filter(g=>!EXCLUDED_APPS.has(g.appid));
+    const releases=Array.isArray(featured.new_releases?.items)?featured.new_releases.items.filter(g=>g.type===0&&!EXCLUDED_APPS.has(g.id)).slice(0,30):[];
     const ids=[...new Set([...ranks,...weeklyRanks].map(g=>g.appid).concat(releases.map(g=>g.id)))].filter(id=>Number.isSafeInteger(id)&&id>0);
     for(const [id,entry] of metadata)if(now()-entry.at>=3600000)metadata.delete(id);
     const details=new Map([...metadata].map(([id,entry])=>[id,entry.item]));
@@ -36,12 +38,19 @@ export function createActivityService({request=fetch,historyFile=path.resolve('.
       catch{warnings.push('Some game names or reviews are unavailable.');break;}
     }
     const liveById=new Map(ranks.map(g=>[g.appid,g]));const weeklyById=new Map(weeklyRanks.map(g=>[g.appid,g]));
+    const releasePlayers=new Map();
+    if(releasePlayerLimit>0&&releases.length){
+      const targetIds=releases.slice(0,releasePlayerLimit).map(g=>g.id).filter(id=>!liveById.has(id));
+      await Promise.all(targetIds.map(async id=>{
+        try{const body=await json('https://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid='+id);if(body.response?.result===1&&Number.isSafeInteger(body.response.player_count)&&body.response.player_count>=0)releasePlayers.set(id,body.response.player_count);}catch{}
+      }));
+    }
     const game=(id,release)=>{
       const item=details.get(id);const current=liveById.get(id);const week=weeklyById.get(id);const review=item?.reviews?.summary_filtered;
       const asset=item?.assets;
       const image=asset?.asset_url_format&&asset?.header?'https://shared.akamai.steamstatic.com/store_item_assets/'+asset.asset_url_format.replace('${FILENAME}',asset.header):release?.header_image;
       const price=release&&typeof release.final_price==='number'&&release.currency?new Intl.NumberFormat('en-US',{style:'currency',currency:release.currency}).format(release.final_price/100):null;
-      return {appId:id,title:item?.name??current?.name??release?.name??`Steam app ${id}`,rank:current?.rank??null,playersNow:current?.concurrent_in_game??null,peakToday:current?.peak_in_game??null,weeklyChange:week&&week.last_week_rank>0?week.last_week_rank-week.rank:null,reviewPercent:review?.percent_positive??null,reviewCount:review?.review_count??null,price,...(image?{image}:{})};
+      return {appId:id,title:item?.name??current?.name??release?.name??`Steam app ${id}`,rank:current?.rank??null,playersNow:current?.concurrent_in_game??releasePlayers.get(id)??null,peakToday:current?.peak_in_game??null,weeklyChange:week&&week.last_week_rank>0?week.last_week_rank-week.rank:null,reviewPercent:review?.percent_positive??null,reviewCount:review?.review_count??null,price,...(image?{image}:{})};
     };
     const games=ranks.map(g=>game(g.appid));
     const releaseGames=releases.map(g=>game(g.id,g));

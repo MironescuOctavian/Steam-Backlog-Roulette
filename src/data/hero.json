@@ -1,180 +1,180 @@
 {
-  "sampledAt": "2026-11-11T18:25:54.000Z",
+  "sampledAt": "2026-11-13T02:24:28.000Z",
   "games": [
     {
       "appId": 730,
       "title": "Counter-Strike 2",
       "rank": 1,
       "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/162664aa5da85f418105350c5d67ca565f6c3713/header.jpg?t=1793054556",
-      "playersNow": 1105617
+      "playersNow": 434356
     },
     {
       "appId": 570,
       "title": "Dota 2",
       "rank": 2,
       "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/570/header.jpg?t=1791407503",
-      "playersNow": 686078
+      "playersNow": 368046
     },
     {
       "appId": 4262460,
       "title": "ROB RUN",
       "rank": 3,
       "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4262460/db8e0cf43c9475b96fb9446b4908de79fcb9f619/header.jpg?t=1793811654",
-      "playersNow": 255858
-    },
-    {
-      "appId": 578080,
-      "title": "PUBG: BATTLEGROUNDS",
-      "rank": 4,
-      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/578080/841ea38bc58cabb70aef65365cf50bc2d79329d9/header.jpg?t=1792718193",
-      "playersNow": 235764
+      "playersNow": 223675
     },
     {
       "appId": 1422450,
       "title": "Deadlock",
-      "rank": 5,
+      "rank": 4,
       "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1422450/aa249c5e8cc8f90941bd1dbdc311773cd1afe065/header.jpg?t=1790716179",
-      "playersNow": 195844
-    },
-    {
-      "appId": 3393110,
-      "title": "AION 2",
-      "rank": 6,
-      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3393110/10aa4b096ebe6af0d1dd7882e5ba004271aef6f7/header.jpg?t=1792771538",
-      "playersNow": 176173
+      "playersNow": 183819
     },
     {
       "appId": 3419430,
       "title": "Bongo Cat",
-      "rank": 7,
+      "rank": 5,
       "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3419430/2e6c93c020fe13d09d8120bb9164ed7cb58f00c5/header.jpg?t=1791309178",
-      "playersNow": 174538
+      "playersNow": 164550
     },
     {
       "appId": 1938090,
       "title": "Call of Duty®",
-      "rank": 8,
+      "rank": 6,
       "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1938090/23af6cf41e2d09620caa07700a4cb3288dbcbaa8/header.jpg?t=1793996750",
-      "playersNow": 139302
+      "playersNow": 135598
     },
     {
-      "appId": 252490,
-      "title": "Rust",
+      "appId": 2868840,
+      "title": "Slay the Spire 2",
+      "rank": 7,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2868840/b0958d387dc366211e0f353443710cfcf9fdb020/header.jpg?t=1787169309",
+      "playersNow": 134408
+    },
+    {
+      "appId": 578080,
+      "title": "PUBG: BATTLEGROUNDS",
+      "rank": 8,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/578080/841ea38bc58cabb70aef65365cf50bc2d79329d9/header.jpg?t=1792718193",
+      "playersNow": 127331
+    },
+    {
+      "appId": 3393110,
+      "title": "AION 2",
       "rank": 9,
-      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/252490/header.jpg?t=1781536981",
-      "playersNow": 112915
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3393110/10aa4b096ebe6af0d1dd7882e5ba004271aef6f7/header.jpg?t=1792771538",
+      "playersNow": 124411
     },
     {
-      "appId": 1091500,
-      "title": "Cyberpunk 2077",
+      "appId": 1867240,
+      "title": "WARDOGS",
       "rank": 10,
-      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/48a93d6445a67520ea49833c93dae8f2e68fc540/header_alt_assets_9.jpg?t=1792682505",
-      "playersNow": 95303
-    },
-    {
-      "appId": 4115450,
-      "title": "Phantom Blade Zero",
-      "rank": 11,
-      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4115450/7f882f889630270d3d3fb93825ac6f55b55e7a6c/header.jpg?t=1793261976",
-      "playersNow": 95017
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1867240/fba79a72d6bf20722284bdfd01615752ec08965b/header_alt_assets_1.jpg?t=1794488577",
+      "playersNow": 116512
     },
     {
       "appId": 440,
       "title": "Team Fortress 2",
-      "rank": 12,
+      "rank": 11,
       "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/440/header.jpg?t=1757348372",
-      "playersNow": 94199
+      "playersNow": 88426
+    },
+    {
+      "appId": 4115450,
+      "title": "Phantom Blade Zero",
+      "rank": 12,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4115450/7f882f889630270d3d3fb93825ac6f55b55e7a6c/header.jpg?t=1793261976",
+      "playersNow": 78439
+    },
+    {
+      "appId": 1091500,
+      "title": "Cyberpunk 2077",
+      "rank": 13,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/48a93d6445a67520ea49833c93dae8f2e68fc540/header_alt_assets_9.jpg?t=1794474878",
+      "playersNow": 71981
     },
     {
       "appId": 1172470,
       "title": "Apex Legends™",
-      "rank": 13,
-      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1172470/dc5c390e9a273a7248f75c1b2d59987f6179323c/header_alt_assets_7.jpg?t=1794339458",
-      "playersNow": 81918
-    },
-    {
-      "appId": 236390,
-      "title": "War Thunder",
       "rank": 14,
-      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/236390/09150b32d79fc827c2d24bc7ee200748a3c1e43e/header.jpg?t=1794405808",
-      "playersNow": 75181
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1172470/dc5c390e9a273a7248f75c1b2d59987f6179323c/header_alt_assets_7.jpg?t=1794339458",
+      "playersNow": 64041
     },
     {
-      "appId": 4530370,
-      "title": "Football Manager 27",
+      "appId": 252490,
+      "title": "Rust",
       "rank": 15,
-      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4530370/32b41d18ffaac3d2e1dc1a9c3915538db0ba3fca/header.jpg?t=1794391162",
-      "playersNow": 69799
-    },
-    {
-      "appId": 4348910,
-      "title": "Probably Stolen - Cyberpunk Shopkeeper Sim",
-      "rank": 16,
-      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4348910/b241a3bc1cb144e70a4840157e127212738ea5b3/header_alt_assets_3.jpg?t=1794162078",
-      "playersNow": 66675
-    },
-    {
-      "appId": 271590,
-      "title": "Grand Theft Auto V Legacy",
-      "rank": 17,
-      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/271590/header.jpg?t=1765387725",
-      "playersNow": 60040
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/252490/header.jpg?t=1781536981",
+      "playersNow": 61434
     },
     {
       "appId": 359550,
       "title": "Tom Clancy's Rainbow Six Siege",
-      "rank": 18,
+      "rank": 16,
       "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/359550/1c7b1ea3405a69c54429e2aa3dc31f3cbbeaa456/header_alt_assets_28.jpg?t=1792001976",
-      "playersNow": 59950
+      "playersNow": 59986
+    },
+    {
+      "appId": 2767030,
+      "title": "Marvel Rivals",
+      "rank": 17,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2767030/4c1bfbd580030210d8006af8bc1cca594c1f1635/header.jpg?t=1794453707",
+      "playersNow": 56429
     },
     {
       "appId": 431960,
       "title": "Wallpaper Engine",
-      "rank": 19,
+      "rank": 18,
       "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/431960/header.jpg?t=1779452230",
-      "playersNow": 58373
+      "playersNow": 54760
     },
     {
-      "appId": 322170,
-      "title": "Geometry Dash",
+      "appId": 1973530,
+      "title": "Limbus Company",
+      "rank": 19,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1973530/header.jpg?t=1793975559",
+      "playersNow": 53924
+    },
+    {
+      "appId": 4348910,
+      "title": "Probably Stolen - Cyberpunk Shopkeeper Sim",
       "rank": 20,
-      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/322170/header.jpg?t=1775300400",
-      "playersNow": 57762
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4348910/b241a3bc1cb144e70a4840157e127212738ea5b3/header_alt_assets_3.jpg?t=1794473922",
+      "playersNow": 53585
     },
     {
       "appId": 3678970,
       "title": "TBH: Task Bar Hero",
       "rank": 21,
-      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3678970/b817bb52f45ee036ec1319010324e86fce8e602c/header_alt_assets_1.jpg?t=1794173787",
-      "playersNow": 56791
-    },
-    {
-      "appId": 1867240,
-      "title": "WARDOGS",
-      "rank": 22,
-      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1867240/59d4daf753bd5d982e6675f7eee363bc817c574e/header.jpg?t=1794420220",
-      "playersNow": 56589
-    },
-    {
-      "appId": 227300,
-      "title": "Euro Truck Simulator 2",
-      "rank": 23,
-      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/227300/9a81dc3126c56637297b654f9dcac057cfd79b77/header.jpg?t=1793285269",
-      "playersNow": 55853
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3678970/be640d1ea4db8d9139069e3799d8d4553f0c2131/header.jpg?t=1794173787",
+      "playersNow": 50477
     },
     {
       "appId": 230410,
       "title": "Warframe",
-      "rank": 24,
+      "rank": 22,
       "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/230410/1a3e7c2a05ce4e5cad5ac4c7e858cf5b0934704e/header.jpg?t=1793987416",
-      "playersNow": 54184
+      "playersNow": 47813
+    },
+    {
+      "appId": 2357570,
+      "title": "Overwatch®",
+      "rank": 23,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2357570/5c208b2699cd38ed6125d039be388fa744db54a4/header_alt_assets_23.jpg?t=1793732501",
+      "playersNow": 47025
+    },
+    {
+      "appId": 438100,
+      "title": "VRChat",
+      "rank": 24,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/438100/header.jpg?t=1762366454",
+      "playersNow": 40517
     },
     {
       "appId": 1808500,
       "title": "ARC Raiders",
       "rank": 25,
       "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1808500/41ee6c5c81a5797132879892586465b917acc563/header_alt_assets_9.jpg?t=1794215815",
-      "playersNow": 54144
+      "playersNow": 40062
     }
   ]
 }

@@ -25,21 +25,35 @@ function feeds(at){return async input=>{
   else data={response:{store_items:[{success:1,appid:70,name:'Half-Life',reviews:{summary_filtered:{percent_positive:96,review_count:1000}}},{success:1,appid:220,name:'Half-Life 2',reviews:{summary_filtered:{percent_positive:98,review_count:800}}}]}};
   return {ok:true,json:async()=>data};
 };}
-test('real snapshot contains observed counts and releases, not generated history',()=>{
-  const visible=validateActivity(snapshot);assert.equal(visible.games.length,snapshot.games.filter(g=>g.appId!==480).length);assert.equal(visible.games.some(g=>g.appId===480),false);assert.equal(snapshot.history.length,1);
-  assert.ok(snapshot.games.every(g=>Number.isInteger(g.playersNow)&&g.playersNow>=0));
+import pulseDetails from '../src/data/pulse-details.json' with {type:'json'};
+import heroSnapshot from '../src/data/hero.json' with {type:'json'};
+test('real snapshot contains observed counts and releases without Spacewar',()=>{
+  const visible=validateActivity(snapshot);assert.equal(visible.games.length,snapshot.games.length);assert.equal(snapshot.games.some(g=>g.appId===480),false);assert.equal(pulseDetails.some(g=>g.appId===480),false);assert.equal(heroSnapshot.games.some(g=>g.appId===480),false);assert.equal(snapshot.history.length,1);
+  assert.ok(snapshot.games.every((g,i)=>g.rank===i+1&&Number.isInteger(g.playersNow)&&g.playersNow>=0));
 });
 test('malformed online history and missing game records are rejected before display',()=>{
   assert.throws(()=>validateActivity({...snapshot,online:{sampledAt:snapshot.sampledAt,samples:[]}}),/online history/);
   assert.throws(()=>validateActivity({...snapshot,games:[null]}),/Invalid activity game/);
 });
-test('activity joins public feeds, distinguishes current counts, rank movement and prices, and caches requests',async()=>{
+test('activity joins public feeds, excludes Spacewar before ranking, preserves 0 release counts, and caches requests',async()=>{
   let now=Date.parse('2026-11-11T08:00:00Z');let calls=0;
   const service=createActivityService({extended:async()=>({ranks:[],capturedAt:new Date().toISOString()}),now:()=>now,historyFile:null,request:async input=>{calls++;return feeds(now)(input);}});
   const data=await service();assert.equal(data.games[0].title,'Half-Life');assert.equal(data.games[0].playersNow,100);assert.equal(data.games[0].peakToday,200);
   assert.equal(data.movers[0].weeklyChange,4);assert.equal(data.releases[0].price,'$9.99');assert.equal(data.releases[0].playersNow,null);assert.equal(data.acclaimed[0].reviewPercent,98);
   const total=calls;await Promise.all([service(),service()]);assert.equal(calls,total);
   now+=300001;await Promise.all([service(),service()]);assert.equal(calls,total+4,'concurrent refreshes share one upstream collection');
+
+  const releaseService=createActivityService({extended:async()=>({ranks:[],capturedAt:new Date().toISOString()}),now:()=>now,historyFile:null,releasePlayerLimit:5,request:async input=>{
+    const u=new URL(input);
+    if(u.pathname.includes('GetGamesByConcurrentPlayers'))return {ok:true,json:async()=>({response:{last_update:now/1000,ranks:[{appid:480,rank:1,concurrent_in_game:50000,peak_in_game:60000},{appid:70,rank:2,concurrent_in_game:100,peak_in_game:200}]}})};
+    if(u.pathname.includes('GetNumberOfCurrentPlayers'))return {ok:true,json:async()=>({response:{result:1,player_count:0}})};
+    return feeds(now)(input);
+  }});
+  const released=await releaseService();
+  assert.equal(released.games.length,1);
+  assert.equal(released.games[0].appId,70);
+  assert.equal(released.games[0].rank,1);
+  assert.equal(released.releases[0].playersNow,0);
 });
 test('history records only actual distinct observations and keeps the prior snapshot when Steam fails',async()=>{
   const directory=await fs.mkdtemp(path.join(os.tmpdir(),'activity-history-test-'));
