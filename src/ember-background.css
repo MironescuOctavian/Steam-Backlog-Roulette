@@ -1,9 +1,14 @@
 :root{--surface-page:#000;--surface-card:#080808;--surface-inset:#030303;--border-default:#242424}
 body{background:#000;isolation:isolate}
-.ember-background{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;contain:strict}
+.ember-background{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;contain:strict;background:radial-gradient(ellipse at 85% 70%,#48220720,transparent 55%),radial-gradient(ellipse at 15% 15%,#5c410d18,transparent 50%),#000}
+.ember-background::before{content:"";position:absolute;inset:0;background-image:linear-gradient(#e8b95b09 1px,transparent 1px),linear-gradient(90deg,#e8b95b09 1px,transparent 1px);background-size:72px 72px;mask-image:linear-gradient(110deg,#0008,transparent 45%,#000)}
+.ember-background::after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 12% 23%,#ffe3a080 0 1px,transparent 2px),radial-gradient(circle at 86% 18%,#ffe3a060 0 1px,transparent 2px),radial-gradient(circle at 94% 62%,#ffe3a080 0 1px,transparent 2px),radial-gradient(circle at 7% 78%,#ffe3a050 0 1px,transparent 2px),radial-gradient(circle at 72% 88%,#ffe3a050 0 1px,transparent 2px);box-shadow:inset 0 0 160px #0008}
 .ember-glow{position:absolute;width:90%;height:100%;border-radius:50%;background:radial-gradient(ellipse,#ffbf002b,transparent 66%);animation:ember-breathe 18s ease-in-out infinite alternate}
 .ember-glow-left{left:-48%;top:-30%}.ember-glow-right{right:-48%;top:25%;opacity:.65;animation-delay:-8s}
-.ember-motifs{display:none}
+.ember-motifs{position:absolute;inset:-30px;animation:ember-motif-drift 24s ease-in-out infinite alternate;mask-image:linear-gradient(90deg,#000,transparent 48%,#000)}
+.ember-motifs::before,.ember-motifs::after{content:"";position:absolute;width:clamp(500px,65vw,1100px);aspect-ratio:1;border:1px solid #dba84b1f;border-radius:50%;background:repeating-radial-gradient(circle,transparent 0 79px,#dba84b0d 80px 81px,transparent 82px 160px);box-shadow:0 0 80px #e9900705,inset 0 0 80px #e9900705}
+.ember-motifs::before{left:-38%;top:-35%;transform:scaleY(.82) rotate(-25deg)}
+.ember-motifs::after{right:-35%;bottom:-45%;transform:scaleY(.75) rotate(-25deg);border-color:#dba84b30}
 .ember-particle{position:absolute;width:2px;height:2px;border-radius:50%;background:#ffbf00;box-shadow:0 0 8px #ffbf00;opacity:0;animation:ember-rise 14s linear infinite;will-change:transform,opacity}
 @keyframes ember-breathe{to{transform:translate3d(4%,3%,0) scale(1.15);opacity:.6}}
 @keyframes ember-motif-drift{to{transform:translateY(-12px)}}
