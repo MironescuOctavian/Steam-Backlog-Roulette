@@ -1,3 +1,4 @@
+import {NewsSidebar} from '../news-navigation';
 import type {RouteSectionProps} from '@solidjs/router';
 import {useHref,useLocation} from '@solidjs/router';
 import {LibraryProvider,useLibrary} from '../library-state';
@@ -41,11 +42,11 @@ function AppShell(props:RouteSectionProps){
       <Show when={profile()} fallback={<span class="header-note">{loaded()?'LOCAL LIBRARY':'PUBLIC LIBRARIES · NO LOGIN'}</span>}><a class="header-profile" href={home()} title="View loaded library"><Show when={profile()?.avatar}><img src={profile()?.avatar} alt="" width="32" height="32" /></Show><span><small>VIEWING LIBRARY</small><strong>{profile()?.name}</strong></span></a></Show>
     </div></header>
     <div class="app-layout">
-      <aside class={["app-sidebar",{"pulse-sidebar":isPulse()}]}><p class="eyebrow">{isPulse()?"CHARTS":"MAKE TIME FOR PLAY"}</p><Show when={isPulse()} fallback={<nav aria-label="Backlog navigation">
+      <aside class={["app-sidebar",{"pulse-sidebar":isPulse()}]}><Show when={location.pathname==='/news'} fallback={<><p class="eyebrow">{isPulse()?"CHARTS":"MAKE TIME FOR PLAY"}</p><Show when={isPulse()} fallback={<nav aria-label="Backlog navigation">
         <a onClick={e=>jumpToSection(e,'library')} href={libraryHref()} class={active('backlog')?'sidebar-active':''} aria-current={active('backlog')?'page':undefined}><span class="sidebar-symbol i-lucide-layout-dashboard" aria-hidden="true" /><span class="sidebar-copy"><strong>Library</strong></span></a>
         <a onClick={e=>jumpToSection(e,'roulette')} href={roulette()} class={active('roulette')?'sidebar-active':''} aria-current={active('roulette')?'location':undefined}><span class="sidebar-symbol i-lucide-shuffle" aria-hidden="true" /><span class="sidebar-copy"><strong>Roulette</strong></span></a>
         <a href={discovery()} class={active('top250')?'sidebar-active':''} aria-current={active('top250')?'page':undefined}><span class="sidebar-symbol i-lucide-library" aria-hidden="true" /><span class="sidebar-copy"><strong>Top 250</strong></span></a>
-      </nav>}><nav aria-label="Charts navigation"><For each={pulseLinks}>{link=><a onClick={e=>jumpToSection(e,link.id)} href={link.href()} class={pulseActive(link.id)?"sidebar-active":""} aria-current={pulseActive(link.id)?"location":undefined}><span class={"sidebar-symbol "+link.icon} aria-hidden="true" /><span class="sidebar-copy"><strong>{link.title}</strong></span></a>}</For></nav></Show></aside>
+      </nav>}><nav aria-label="Charts navigation"><For each={pulseLinks}>{link=><a onClick={e=>jumpToSection(e,link.id)} href={link.href()} class={pulseActive(link.id)?"sidebar-active":""} aria-current={pulseActive(link.id)?"location":undefined}><span class={"sidebar-symbol "+link.icon} aria-hidden="true" /><span class="sidebar-copy"><strong>{link.title}</strong></span></a>}</For></nav></Show></>}><NewsSidebar /></Show></aside>
       <main id="main" class="page-wrap"><Show when={preferenceWarning()}><p class="storage-warning" role="status">{preferenceWarning()}</p></Show>{props.children}</main>
     </div>
     <footer class="site-footer">
