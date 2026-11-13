@@ -77,7 +77,7 @@ export default function BacklogPage(){
             <Show when={loaded()}><div class="loaded-actions"><a class="pick-tonight" href={rouletteHref()}><span class="i-lucide-shuffle" aria-hidden="true" />Pick for tonight</a><a class="browse-library" href={libraryHref()}><span class="i-lucide-library" aria-hidden="true" />Browse library</a></div></Show>
             <Show when={library.warning}><p class="storage-warning" role="alert">{library.warning}</p></Show>
           </div>
-          <Show when={!loaded()}><HeroDeck /></Show>
+          <HeroDeck />
         </section>
 
         <div id="roulette" class="roulette-area"><p class="pool-label">{loaded()?`Picking only from ${profile()?.name ? profile()!.name+"’s" : sampleCurator() ? sampleCurator()!.name + ' sample' : 'your loaded'} library. The Top 250 is no longer in this pool.`:'Discover from 250 top-rated games. No profile is loaded.'}</p><label class="sound-toggle"><input type="checkbox" checked={soundEnabled()} onChange={e=>setSoundEnabled(e.currentTarget.checked)} /> Roulette sound</label><For each={[loaded()?`personal:${profile()?.steamId??'local'}`:'catalog']}>{()=> <Roulette discovery={!loaded()} games={rouletteGames()} spinRequest={spinRequest()} onWinner={celebrate} onStart={()=>{setSpinFilters({...filters()});if(soundEnabled())void sound.start();}} onTick={()=>{if(soundEnabled())sound.tick();}} />}</For><RouletteSession onDetails={setDetailsId} /></div>

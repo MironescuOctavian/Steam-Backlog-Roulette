@@ -44,6 +44,7 @@ try{
   const activity=await runtime.dispatchFetch('https://app.test/activity',{headers:{Accept:'text/html'}});assert.equal(activity.status,200);assert.match(await activity.text(),/id="app"/);
   const discovery=await runtime.dispatchFetch('https://app.test/top250',{headers:{Accept:'text/html'}});assert.equal(discovery.status,200);assert.match(await discovery.text(),/id="app"/);
   const news=await runtime.dispatchFetch('https://app.test/news',{headers:{Accept:'text/html'}});assert.equal(news.status,200);assert.match(await news.text(),/id="app"/);
+  const calculator=await runtime.dispatchFetch('https://app.test/calculator',{headers:{Accept:'text/html'}});assert.equal(calculator.status,200);assert.match(await calculator.text(),/id="app"/);
   assert.equal((await runtime.dispatchFetch('https://app.test/api/activity',{method:'POST'})).status,405);
   const hero=await runtime.dispatchFetch('https://app.test/api/hero');assert.equal(hero.status,200);assert.equal((await hero.json()).games.length,25);
   const curator=await runtime.dispatchFetch('https://app.test/api/sample-curator?slot=0');assert.equal(curator.status,200);assert.equal((await curator.json()).games[0].appId,70);

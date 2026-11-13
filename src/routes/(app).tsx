@@ -2,12 +2,17 @@ import {NewsSidebar} from '../news-navigation';
 import type {RouteSectionProps} from '@solidjs/router';
 import {useHref,useLocation} from '@solidjs/router';
 import {LibraryProvider,useLibrary} from '../library-state';
-import {createEffect,createSignal,For,Show} from 'solid-js';
+import {createEffect,createSignal,For,onCleanup,Show} from 'solid-js';
 import {BrandMark} from '../brand-mark';
 
 function AppShell(props:RouteSectionProps){
   const {preferences,setPreference,preferenceWarning,canUndo,undo,saveMessage,changeRevision,profile,loaded}=useLibrary();
   const location=useLocation();
+  function watchHeader(element:HTMLElement){
+    const measure=()=>document.documentElement.style.setProperty('--header-height',element.getBoundingClientRect().height+'px');
+    measure();const observer=new ResizeObserver(measure);observer.observe(element);
+    onCleanup(()=>observer.disconnect());
+  }
   const [visibleSection,setVisibleSection]=createSignal('main');
   function jumpToSection(event:MouseEvent,id:string){
     if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
@@ -22,9 +27,9 @@ function AppShell(props:RouteSectionProps){
   });
   const [noticeVisible,setNoticeVisible]=createSignal(false);
   createEffect(()=>changeRevision(),revision=>{if(!revision)return;setNoticeVisible(true);const timer=setTimeout(()=>setNoticeVisible(false),10000);return ()=>clearTimeout(timer);});
-  createEffect(()=>location.pathname+location.hash,route=>{if(/^\/(?:activity|top250|news)?(?:#(?:main|roulette|library|overview|briefs|comparison|ranking))?$/.test(route)&&route!==preferences().lastRoute)setPreference({lastRoute:route});});
-  createEffect(()=>location.pathname,pathname=>{document.title=pathname==='/activity'?'Charts · SteamNext':pathname==='/top250'?'Top 250 · SteamNext':pathname==='/news'?'News · SteamNext':'SteamNext · Time-to-Beat Planner';});
-  const home=useHref(()=>'/#main'),roulette=useHref(()=>'/#roulette'),activity=useHref(()=>'/activity'),news=useHref(()=>'/news'),discovery=useHref(()=>'/top250'),libraryHref=useHref(()=>'/#library');
+  createEffect(()=>location.pathname+location.hash,route=>{if(/^\/(?:activity|top250|news|calculator)?(?:#(?:main|roulette|library|overview|briefs|comparison|ranking))?$/.test(route)&&route!==preferences().lastRoute)setPreference({lastRoute:route});});
+  createEffect(()=>location.pathname,pathname=>{document.title=pathname==='/activity'?'Charts · SteamNext':pathname==='/top250'?'Top 250 · SteamNext':pathname==='/news'?'News · SteamNext':pathname==='/calculator'?'Calculator · SteamNext':'SteamNext · Time-to-Beat Planner';});
+  const home=useHref(()=>'/#main'),roulette=useHref(()=>'/#roulette'),activity=useHref(()=>'/activity'),news=useHref(()=>'/news'),calculator=useHref(()=>'/calculator'),discovery=useHref(()=>'/top250'),libraryHref=useHref(()=>'/#library');
   const isPulse=()=>location.pathname==='/activity';
   const pulseLinks=[
     {id:'overview',href:useHref(()=>'/activity#overview'),title:'Overview',icon:'i-lucide-activity'},
@@ -35,18 +40,18 @@ function AppShell(props:RouteSectionProps){
   const active=(page:string)=>page==='top250'?location.pathname==='/top250':location.pathname==='/'&&(page==='roulette'?visibleSection()==='roulette':visibleSection()!=='roulette');
   return <>
     <a class="skip-link" href={home()}>Skip to content</a>
-    <header class="site-header"><div class="header-inner flex items-center justify-between gap-4">
+    <header ref={watchHeader} class="site-header"><div class="header-inner flex items-center justify-between gap-4">
       <a class="brand flex items-center gap-3" href={home()} aria-label="SteamNext home"><span class="brand-emblem"><BrandMark class="brand-icon" /></span><span>SteamNext<span class="brand-period">.</span></span></a>
 
-<nav class="page-navigation" aria-label="Main navigation"><a href={home()} aria-current={location.pathname==='/'?'page':undefined}><span class="i-lucide-library" aria-hidden="true" />Backlog</a><a href={activity()} aria-current={location.pathname==='/activity'?'page':undefined}><span class="i-lucide-activity" aria-hidden="true" />Charts</a><a href={news()} aria-current={location.pathname==='/news'?'page':undefined}><span class="i-lucide-newspaper" aria-hidden="true" />News / Patches</a></nav>
+<nav class="page-navigation" aria-label="Main navigation"><a href={home()} aria-current={location.pathname==='/'?'page':undefined}><span class="i-lucide-library" aria-hidden="true" />Backlog</a><a href={activity()} aria-current={location.pathname==='/activity'?'page':undefined}><span class="i-lucide-activity" aria-hidden="true" />Charts</a><a href={news()} aria-current={location.pathname==='/news'?'page':undefined}><span class="i-lucide-newspaper" aria-hidden="true" />News / Patches</a><a href={calculator()} aria-current={location.pathname==='/calculator'?'page':undefined}><span class="i-lucide-calculator" aria-hidden="true" />Calculator</a></nav>
       <Show when={profile()} fallback={<span class="header-note">{loaded()?'LOCAL LIBRARY':'PUBLIC LIBRARIES · NO LOGIN'}</span>}><a class="header-profile" href={home()} title="View loaded library"><Show when={profile()?.avatar}><img src={profile()?.avatar} alt="" width="32" height="32" /></Show><span><small>VIEWING LIBRARY</small><strong>{profile()?.name}</strong></span></a></Show>
     </div></header>
     <div class="app-layout">
-      <aside class={["app-sidebar",{"pulse-sidebar":isPulse()}]}><Show when={location.pathname==='/news'} fallback={<><p class="eyebrow">{isPulse()?"CHARTS":"MAKE TIME FOR PLAY"}</p><Show when={isPulse()} fallback={<nav aria-label="Backlog navigation">
+      <aside class={["app-sidebar",{"pulse-sidebar":isPulse(),"calculator-route":location.pathname==='/calculator'}]}><Show when={location.pathname==='/news'} fallback={<><p class="eyebrow">{isPulse()?"CHARTS":"MAKE TIME FOR PLAY"}</p><Show when={isPulse()} fallback={<nav aria-label="Backlog navigation">
         <a onClick={e=>jumpToSection(e,'library')} href={libraryHref()} class={active('backlog')?'sidebar-active':''} aria-current={active('backlog')?'page':undefined}><span class="sidebar-symbol i-lucide-layout-dashboard" aria-hidden="true" /><span class="sidebar-copy"><strong>Library</strong></span></a>
         <a onClick={e=>jumpToSection(e,'roulette')} href={roulette()} class={active('roulette')?'sidebar-active':''} aria-current={active('roulette')?'location':undefined}><span class="sidebar-symbol i-lucide-shuffle" aria-hidden="true" /><span class="sidebar-copy"><strong>Roulette</strong></span></a>
         <a href={discovery()} class={active('top250')?'sidebar-active':''} aria-current={active('top250')?'page':undefined}><span class="sidebar-symbol i-lucide-library" aria-hidden="true" /><span class="sidebar-copy"><strong>Top 250</strong></span></a>
-      </nav>}><nav aria-label="Charts navigation"><For each={pulseLinks}>{link=><a onClick={e=>jumpToSection(e,link.id)} href={link.href()} class={pulseActive(link.id)?"sidebar-active":""} aria-current={pulseActive(link.id)?"location":undefined}><span class={"sidebar-symbol "+link.icon} aria-hidden="true" /><span class="sidebar-copy"><strong>{link.title}</strong></span></a>}</For></nav></Show></>}><NewsSidebar /></Show></aside>
+      </nav>}><nav aria-label="Charts navigation"><For each={pulseLinks}>{link=><a onClick={e=>jumpToSection(e,link.id)} href={link.href()} class={pulseActive(link.id)?"sidebar-active":""} aria-current={pulseActive(link.id)?"location":undefined}><span class={"sidebar-symbol "+link.icon} aria-hidden="true" /><span class="sidebar-copy"><strong>{link.title}</strong></span></a>}</For></nav></Show></>}><NewsSidebar /></Show><Show when={location.pathname==='/calculator'}><div class="calculator-sidebar"><p class="eyebrow">THE DAMAGE REPORT</p><nav aria-label="Calculator navigation"><a href={calculator()+'#calculator-title'}>Roast me</a><a href={calculator()+'#calculator-overview'}>Overview</a><a href={calculator()+'#calculator-shame'}>Pile of shame</a><a href={calculator()+'#calculator-games'}>Games</a></nav></div></Show></aside>
       <main id="main" class="page-wrap"><Show when={preferenceWarning()}><p class="storage-warning" role="status">{preferenceWarning()}</p></Show>{props.children}</main>
     </div>
     <footer class="site-footer">

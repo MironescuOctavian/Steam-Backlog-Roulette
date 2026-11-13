@@ -53,6 +53,12 @@ declare module "virtual:file-routes" {
       $$route?: undefined;
     },
     {
+      path: "/(app)/calculator/";
+      page: true;
+      $component: FileRouteEagerRef<Pick<typeof import("./routes/(app)/calculator/index"), Extract<"default", keyof typeof import("./routes/(app)/calculator/index")>>>;
+      $$route?: undefined;
+    },
+    {
       path: "/(app)/";
       page: true;
       $component: FileRouteEagerRef<Pick<typeof import("./routes/(app)/index"), Extract<"default", keyof typeof import("./routes/(app)/index")>>>;
@@ -119,6 +125,14 @@ declare module "virtual:file-routes" {
           id: "/activity/";
           page: true;
           $component: FileRouteEagerRef<Pick<typeof import("./routes/(app)/activity/index"), Extract<"default", keyof typeof import("./routes/(app)/activity/index")>>>;
+          $$route?: undefined;
+          children?: undefined;
+        },
+        {
+          path: "/calculator/";
+          id: "/calculator/";
+          page: true;
+          $component: FileRouteEagerRef<Pick<typeof import("./routes/(app)/calculator/index"), Extract<"default", keyof typeof import("./routes/(app)/calculator/index")>>>;
           $$route?: undefined;
           children?: undefined;
         }

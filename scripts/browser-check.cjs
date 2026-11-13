@@ -38,7 +38,7 @@ async function main(){
  assert.equal(await evaluate(`document.querySelector('#profile-example').textContent.includes('steamcommunity.com/id/')`),true,'profile link example is visible');
  assert.equal(await evaluate(`document.querySelectorAll('.deck-card').length`),4,'four layered hero cards');
  assert.equal(await evaluate(`getComputedStyle(document.querySelector('.deck-card-inner')).animationName`),'deck-float','hero cards animate smoothly inside their fixed wrapper');
- assert.equal(await evaluate(`document.querySelectorAll('.site-header nav a').length`),3,'header has three page links');
+ assert.equal(await evaluate(`document.querySelectorAll('.site-header nav a').length`),4,'header has four page links');
  assert.equal(await evaluate(`document.querySelectorAll('.app-sidebar nav a').length`),3,'backlog tools live in the sidebar');
  assert.equal(await evaluate(`getComputedStyle(document.querySelector('.app-sidebar')).borderRightWidth`),'0px','sidebar divider is removed');
  assert.equal(await evaluate(`getComputedStyle(document.querySelector('.app-sidebar nav a')).borderTopWidth`),'0px','sidebar links have no border');
@@ -275,6 +275,20 @@ async function main(){
  await new Promise(resolve=>appServer.listen(0,'127.0.0.1',resolve));
  await call('Page.navigate',{url:'http://127.0.0.1:'+appServer.address().port});await delay(600);
  assert.equal(await evaluate(`document.querySelectorAll('.kpi').length`),0,'hosted entry has no default profile stats');
+ await evaluate(`document.querySelector('.page-navigation a[href*=calculator]').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('#calculator-profile').value`),'','calculator starts blank');
+ assert.equal(await evaluate(`document.querySelector('.calculator-submit').textContent`),'Roast me','calculator has the requested action');
+ assert.equal(await evaluate(`document.querySelector('.calculator-results')`),null,'calculator has no default results');
+ const savedBeforeCalculator=await evaluate(`localStorage.getItem('steam-backlog-roulette.library.v1')`);
+ await evaluate(`(()=>{const input=document.querySelector('#calculator-profile');input.value='calculator-profile';input.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('.calculator-form').requestSubmit();})()`);await delay(600);
+ assert.match(await evaluate(`document.querySelector('.calculator-value>strong').textContent`),/19\.98/,'calculator sums real-shaped current Steam prices');
+ assert.equal(await evaluate(`document.querySelector('.calculator-shame strong').textContent`),'1','calculator counts the unplayed game');
+ assert.equal(await evaluate(`localStorage.getItem('steam-backlog-roulette.library.v1')`),savedBeforeCalculator,'calculator does not replace the saved backlog');
+ await evaluate(`document.querySelector('.page-navigation a').click()`);await settle();
+ await evaluate(`scrollTo(0,1200)`);await settle();
+ assert.equal(await evaluate(`(()=>{const s=document.querySelector('.app-sidebar').getBoundingClientRect(),h=document.querySelector('.site-header').getBoundingClientRect();return s.top>=h.bottom-1&&s.top<h.bottom+2;})()`),true,'desktop sidebar stays visible below the header while scrolling');
+ await evaluate(`scrollTo(0,0)`);await settle();
+
  assert.match(await evaluate(`document.querySelector('.card-price').textContent`),/\$14\.99/,'Top 250 discovery cards on home show prices');
  assert.ok(await evaluate(`document.querySelectorAll('.discovery-card .meta-tray').length`)>0,'Top 250 home cards render bordered meta tray');
  assert.ok(await evaluate(`document.querySelectorAll('.discovery-card .genre-pill').length`)>0,'Top 250 home cards render bordered genre pills');
@@ -285,6 +299,10 @@ async function main(){
  assert.equal(await evaluate(`performance.getEntriesByType('resource').some(r=>r.name.includes('/assets/activity-')&&r.name.endsWith('.js'))`),false,'Charts data is not downloaded on the backlog page');
  const lookup=async value=>{await evaluate(`new Promise((resolve,reject)=>{let n=0;const t=setInterval(()=>{if(document.querySelector('#steam-profile')){clearInterval(t);resolve(true);}else if(++n>100){clearInterval(t);reject(Error('Profile form did not mount at '+location.href));}},100);})`);await evaluate(`(()=>{const input=document.querySelector('#steam-profile');input.value=${JSON.stringify(value)};input.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('.profile-lookup form').requestSubmit();})()`);if(value==='example-profile'){await delay(30);assert.equal(await evaluate(`document.querySelector('.profile-lookup form').getAttribute('aria-busy')`),'true','profile lookup exposes its loading state');assert.match(await evaluate(`document.querySelector('.lookup-progress').textContent`),/Loading public profile/);}await delay(500);};
  await lookup('example-profile');
+ await evaluate(`document.querySelector('.page-navigation a[href*=calculator]').click()`);await settle();
+ assert.equal(await evaluate(`document.querySelector('#calculator-profile').value`),'','calculator stays blank even with a saved Steam profile');
+ assert.equal(await evaluate(`document.querySelector('.calculator-results')`),null,'saved profile does not automatically produce calculator results');
+ await evaluate(`document.querySelector('.page-navigation a').click()`);await settle();
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),2,'profile replaces Top 250 instead of merging');
  assert.equal(await evaluate(`document.querySelector('.profile-summary a').textContent.trim()`),'Viewing Profile QA’s library','correct profile identity');
  assert.equal(await evaluate(`document.querySelectorAll('.recent-picks li').length`),0,'changing libraries clears session picks');
@@ -293,14 +311,15 @@ async function main(){
  assert.equal(await evaluate(`document.querySelectorAll('#library-grid>.game-card').length`),1,'continue mode only shows unfinished started games');
  await evaluate(`document.querySelector('.roulette-modes button').click()`);await settle();
  assert.equal(await evaluate(`document.querySelector('.profile-editor').hidden`),true,'loaded profile collapses the lookup editor');
- assert.equal(await evaluate(`document.querySelectorAll('.hero-deck').length`),0,'loaded library removes the discovery hero');
+ assert.equal(await evaluate(`document.querySelectorAll('.hero-deck').length`),1,'loaded library retains the hero game cards');
  assert.equal(await evaluate(`document.querySelector('.header-profile strong').textContent`),'Profile QA','header identifies the loaded profile');
  assert.equal(await evaluate(`document.querySelectorAll('.loaded-actions>a,.loaded-actions>button').length`),2,'loaded homepage exposes library and roulette actions');
- assert.equal(await evaluate(`document.querySelector('.hero-loaded').getBoundingClientRect().height<460`),true,'loaded homepage has a compact introduction');
+ assert.equal(await evaluate(`document.querySelectorAll('.hero-loaded .deck-card').length===4`),true,'loaded homepage keeps all four original hero cards');
  await evaluate(`scrollTo(0,0)`);await settle();
  fs.writeFileSync(path.resolve('artifacts/loaded-home-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  await evaluate(`document.querySelector('.game-details-button').click()`);await settle();
  assert.match(await evaluate(`document.querySelector('.details-description').textContent`),/verified fixture/,'hosted popup loads real-shaped game details');
+ assert.equal(await evaluate(`getComputedStyle(document.querySelector('.details-header')).backgroundColor`),await evaluate(`getComputedStyle(document.querySelector('.game-card')).backgroundColor`),'game dialog and cards share one surface color');
  assert.match(await evaluate(`document.querySelector('.details-stats').textContent`),/1,234/,'popup shows the reported player count');
  fs.writeFileSync(path.resolve('artifacts/game-details-desktop.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));
  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await settle();
@@ -356,6 +375,7 @@ async function main(){
  await evaluate(`(()=>{const s=document.querySelector('.library-sort select');s.value='title';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);await settle();
  assert.equal(await evaluate(`document.querySelectorAll('.game-card').length`),1,'sorting keeps the game in the library');
  await call('Page.reload');await delay(700);
+ await evaluate(`new Promise((resolve,reject)=>{let n=0;const timer=setInterval(()=>{if(document.querySelector('.library-sort select')){clearInterval(timer);resolve(true);}else if(++n>100){clearInterval(timer);reject(Error('Library did not mount after reload at '+location.href));}},100);})`);
  assert.equal(await evaluate(`document.querySelector('.library-sort select').value`),'title','library sorting survives reload');
  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await settle();
  assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth`),true,'profile lookup has no mobile overflow');
@@ -471,6 +491,7 @@ async function main(){
  assert.equal(await evaluate(`document.querySelector('[aria-label="Library pages"] [aria-current=page]').textContent`),'1','filtering resets the library page');
  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await settle();
  assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth`),true,'large profile has no mobile overflow');
+ assert.equal(await evaluate(`(()=>{const s=document.querySelector('.app-sidebar').getBoundingClientRect(),h=document.querySelector('.site-header').getBoundingClientRect();return s.top>=h.bottom-1&&s.top<h.bottom+2;})()`),true,'mobile sidebar remains below the header after scrolling');
  assert.ok(await evaluate(`document.querySelector('.profile-summary>div').getBoundingClientRect().width`)>150,'mobile identity stays readable');
  await evaluate(`document.querySelector('.profile-lookup').scrollIntoView({block:'start',behavior:'instant'})`);await settle();
  fs.writeFileSync(path.resolve('artifacts/large-profile-mobile.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false})).data,'base64'));

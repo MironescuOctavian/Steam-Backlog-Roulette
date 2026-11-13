@@ -8,6 +8,7 @@ import './enhancements.css';
 import './motion.css';
 import './workspace.css';
 import './library-manager.css';
+import './theme.css';
 
 const root=document.getElementById('app');
 if(!root)throw new Error('Application root is missing');
